@@ -2,6 +2,7 @@
 
 At the moment, _MalScraper_ is able to:
 * Gather information about all the anime being releases in a season
+* Gather anime-related news (include light-novels, manga, films...). 300 news available.
 
 _MalScraper_ is being developed mainly for [_KawAnime_](https://github.com/Kylart/KawAnime) but anyone can use it for
  its own purpose.
@@ -15,9 +16,12 @@ Any contribution is welcomed.
 ```javascript
 const malScraper = require('mal-scraper')
   
-// Get information 
-let seasonalInfo = malScraper.getSeason(2016, 'fall')
-  
+// Get seasonal information 
+let seasonalInfo = malScraper.getSeason(2016, 'fall', () => {
+    console.log("Finished gathering information.")
+})
+```
+```javascript
 //Want stats for this season ? 
 console.log(seasonalInfo.stats)
 /* 
@@ -28,10 +32,23 @@ console.log(seasonalInfo.stats)
       SpecialNumber: 14 }
  */
   
-// All the anime of this season along with their information are in seasonalInfo.info
+// All the anime of this season along with their information are
+// in seasonalInfo.info
 console.log(seasonalInfo.info)
 ```
    
+```javascript
+// Want Anime related news ? (Include light novels, mangas, films...)
+let news = malScraper.getNewsNoDetails( () => {
+    console.log('Finished gathering the news.')
+})
+  
+// A news object is like this: 
+console.log(news)
+  
+// One news can be seen with 
+console.log(news[index])    // index in 0, 300 
+```
 
 ## Contributing
 1. Fork it!
@@ -44,7 +61,7 @@ console.log(seasonalInfo.info)
 - [x] Make it into a NPM Module
 - [ ] Info for Light novels
 - [ ] Info for mangas
-- [ ] Daily news
+- [x] Daily news
 
 ## License
 MIT License

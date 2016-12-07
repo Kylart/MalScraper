@@ -5,7 +5,10 @@
 const req = require('req-fast')
 const cheerio = require('cheerio')
 
-const SEASON_URL_PATH = 'https://myanimelist.net/anime/season/'
+const SEASON_URL_URI = 'https://myanimelist.net/anime/season/'
+const NEWS_URL_URI = 'https://myanimelist.net/news?p='
+
+/* GETTING SEASONAL ANIMES PART */
 
 let animeJSON = {
     titles: [],
@@ -155,8 +158,8 @@ let loadJSON = ($) => {
     loadFromType($)
 }
 
-exports.getSeason = (year, season) => {
-    const url = `${SEASON_URL_PATH}${year}/${season}`
+exports.getSeason = (year, season, callback) => {
+    const url = `${SEASON_URL_URI}${year}/${season}`
 
     // Make array to return
     let result = {
@@ -189,7 +192,84 @@ exports.getSeason = (year, season) => {
                 fromType: animeJSON.fromType[i]
             })
         }
+        callback()
     })
 
     return result
 }
+
+/* END OF GETTING SEASONAL ANIMES PART */
+
+
+/* GETTING ANIME RELATED NEWS PART */
+
+let byProperty = (prop) => {
+    return function(a, b) {
+        if (typeof a[prop] == "number") {
+            return (a[prop] - b[prop])
+        }
+        return ((a[prop] < b[prop]) ? -1 : ((a[prop] > b[prop]) ? 1 : 0))
+    }
+}
+
+exports.getNewsNoDetails = (callback) => {
+    let completedReq = 0
+    let result = []
+
+    // We have a maximum of 300 news, it's enough
+    for (let i = 1; i < 16; ++i)
+    {
+        req(`${NEWS_URL_URI}${i}`, (err, response) => {
+            if (err) throw err
+
+            const html = response.body
+            const $ = cheerio.load(html)
+
+            let pageElements = $('.news-unit-right')   // 20 elements
+
+            // Pictures for each element
+            let images = []
+            $('.image').each( function () {
+                images.push($(this).attr('src'))
+            })
+
+            // Get links for info
+            let links = []
+            $('.image-link').each( function () {
+                links.push($(this).attr('href'))
+            })
+
+            // Gathering news' Titles
+            let titles = pageElements.find('p.title').text().split('\n      ')
+            titles.shift()
+            let texts = pageElements.find('div.text').text().split('\n      ')
+            texts.shift()
+
+            for (let i = 0; i < titles.length; ++i) {
+                titles[i] = titles[i].slice(0, -5)
+                texts[i] = texts[i].slice(0, -5)
+            }
+
+            for (let j = 0; j < titles.length; ++j) {
+                let tmp = links[j].split('/')
+                result.push({
+                    title: titles[j],
+                    link: links[j],
+                    image: images[j],
+                    text: texts[j],
+                    newsNumber: tmp[tmp.length - 1]
+                })
+            }
+            ++completedReq
+            if (completedReq === 15)
+            {
+                // Getting the order right
+                result.sort(byProperty('newsNumber'))
+                result.reverse()
+                callback()
+            }
+        })
+    }
+}
+
+/* END OF GETTING ANIME RELATED NEWS PART */

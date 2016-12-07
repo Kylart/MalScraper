@@ -1,6 +1,6 @@
 {
   "name": "mal-scraper",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Module to scrap informations from MyAnimeList.net",
   "main": "main.js",
   "scripts": {
@@ -13,7 +13,9 @@
     "MalScraper",
     "Seasonal Anime",
     "information",
-    "Scraping"
+    "Scraping",
+    "Anime",
+    "news"
   ],
   "dependencies" : {
     "cheerio"    : "latest",
