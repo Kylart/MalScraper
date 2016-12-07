@@ -2,7 +2,7 @@
   "name": "mal-scraper-node",
   "version": "1.0.0",
   "description": "Module to scrap informations from MyAnimeList.net",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
