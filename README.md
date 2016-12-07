@@ -1,7 +1,4 @@
 # _MalScraper_
-This will be a npm module getting information about anime on MyAnimeList.net.
-
-At the moment, MalScraper is not ready to be used as a NPM module (TODO).
 
 At the moment, _MalScraper_ is able to:
 * Gather information about all the anime being releases in a season
@@ -12,9 +9,30 @@ _MalScraper_ is being developed mainly for [_KawAnime_](https://github.com/Kylar
 Any contribution is welcomed.
 
 ## Installation
-TODO
+    `npm install --save mal-scraper`
     
-    `npm install <TO DEFINE>`
+## Use
+```javascript
+const malScraper = require('mal-scraper')
+  
+// Get information 
+let seasonalInfo = malScraper.getSeason(2016, 'fall')
+  
+//Want stats for this season ? 
+console.log(seasonalInfo.stats)
+/* 
+    { TVNumber: 151,
+      ONANumber: 10,
+      OVANumber: 32,
+      MovieNumber: 24,
+      SpecialNumber: 14 }
+ */
+  
+// All the anime of this season along with their information are in seasonalInfo.info
+console.log(seasonalInfo.info)
+```
+   
+
 ## Contributing
 1. Fork it!
 2. Create your feature branch: `git checkout -b my-new-feature`
@@ -23,8 +41,10 @@ TODO
 5. Submit a pull request.
 
 ## TODOs
-* Make it into a NPM Module
-* More features
+- [x] Make it into a NPM Module
+- [ ] Info for Light novels
+- [ ] Info for mangas
+- [ ] Daily news
 
 ## License
 MIT License

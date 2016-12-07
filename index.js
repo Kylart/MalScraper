@@ -7,9 +7,6 @@ const cheerio = require('cheerio')
 
 const SEASON_URL_PATH = 'https://myanimelist.net/anime/season/'
 
-// For performance
-let t1, t2
-
 let animeJSON = {
     titles: [],
     genres: [],
@@ -158,10 +155,14 @@ let loadJSON = ($) => {
     loadFromType($)
 }
 
-let getSeason = (year, season) => {
-    t1 = Date.now()
-
+exports.getSeason = (year, season) => {
     const url = `${SEASON_URL_PATH}${year}/${season}`
+
+    // Make array to return
+    let result = {
+        info: [],
+        stats: {}
+    }
 
     req(url, (err, response) => {
         if (err) throw err
@@ -171,12 +172,11 @@ let getSeason = (year, season) => {
 
         loadJSON($)
 
-        // Make array to return
-        let result = []
+        result.stats = animeJSON.stats
 
         for (let i = 0; i < animeJSON.titles.length; ++i)
         {
-            result.push({
+            result.info.push({
                 title: animeJSON.titles[i],
                 genres: animeJSON.genres[i],
                 image: animeJSON.images[i],
@@ -189,12 +189,7 @@ let getSeason = (year, season) => {
                 fromType: animeJSON.fromType[i]
             })
         }
-
-        console.log(result[0])
-
-        t2 = Date.now()
-        console.log(`Seasonal information gathered in: ${(t2 - t1) / 1000}s.`)
     })
-}
 
-getSeason(2017, 'winter')
+    return result
+}
