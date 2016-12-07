@@ -9,7 +9,7 @@ At the moment, _MalScraper_ is able to:
 _MalScraper_ is being developed mainly for [_KawAnime_](https://github.com/Kylart/KawAnime) but anyone can use it for
  its own purpose.
 
-Any contribution would be welcomed :simple_smile:
+Any contribution is welcomed.
 
 ## Installation
 TODO

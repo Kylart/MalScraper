@@ -2,8 +2,6 @@
  * Created by Kylart on 07/12/2016.
  */
 
-const fs = require('fs')
-const express = require('express')
 const req = require('req-fast')
 const cheerio = require('cheerio')
 
