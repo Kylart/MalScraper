@@ -1,5 +1,5 @@
 {
-  "name": "mal-scraper",
+  "name": "mal-scraper-node",
   "version": "1.0.0",
   "description": "Module to scrap informations from MyAnimeList.net",
   "main": "index.js",
@@ -8,6 +8,7 @@
   },
   "author": "Kylart",
   "license": "MIT",
+  "repository": "https://github.com/Kylart/MalScraper",
   "keywords": [
     "MalScraper",
     "Seasonal Anime",
