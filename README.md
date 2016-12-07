@@ -9,11 +9,11 @@ _MalScraper_ is being developed mainly for [_KawAnime_](https://github.com/Kylar
 Any contribution is welcomed.
 
 ## Installation
-    `npm install --save mal-scraper-node`
+    `npm install --save mal-scraper`
     
 ## Use
 ```javascript
-const malScraper = require('mal-scraper-node')
+const malScraper = require('mal-scraper')
   
 // Get information 
 let seasonalInfo = malScraper.getSeason(2016, 'fall')
