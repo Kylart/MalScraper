@@ -270,6 +270,7 @@ exports.getNewsNoDetails = (callback) => {
             }
         })
     }
+    return result
 }
 
 /* END OF GETTING ANIME RELATED NEWS PART */
