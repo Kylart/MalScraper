@@ -86,7 +86,7 @@ let loadSynopsis = ($) => {
 
 let loadImages = ($) => {
     $('.image').each( function () {
-        animeJSON.images.push($(this).attr('data-bg'))
+        animeJSON.images.push($(this).css('background-image').replace('url(','').replace(')','').replace(/\"/gi, ""))
     })
 }
 
