@@ -2,15 +2,17 @@
  * Created by Kylart on 07/12/2016.
  */
 
+const request = require('request')
 const req = require('req-fast')
 const cheerio = require('cheerio')
 
 const SEASON_URL_URI = 'https://myanimelist.net/anime/season/'
 const NEWS_URL_URI = 'https://myanimelist.net/news?p='
+const SEARCH_URI = 'https://myanimelist.net/search/prefix.json'
 
 /* GETTING SEASONAL ANIMES PART */
 
-let loadTitles = ($, animeJSON) => {
+const loadTitles = ($, animeJSON) => {
   let tmp = $('.title-text').text().split('\n        ')
 
   tmp.shift()     // Getting rid of an empty element at the beginning.
@@ -20,13 +22,13 @@ let loadTitles = ($, animeJSON) => {
   })
 }
 
-let loadProducer = ($, animeJSON) => {
+const loadProducer = ($, animeJSON) => {
   $('.producer').each( function () {
     animeJSON.producers.push($(this).text())
   })
 }
 
-let loadNbEpisodes = ($, animeJSON) => {
+const loadNbEpisodes = ($, animeJSON) => {
   let tmp = []
 
   $('.eps').each( function () {
@@ -44,7 +46,7 @@ let loadNbEpisodes = ($, animeJSON) => {
   })
 }
 
-let loadGenres = ($, animeJSON) => {
+const loadGenres = ($, animeJSON) => {
   $('.genres-inner').each(function () {
     let tmp = $(this).text().split('\n        ')
     tmp.shift()
@@ -58,31 +60,31 @@ let loadGenres = ($, animeJSON) => {
   })
 }
 
-let loadSynopsis = ($, animeJSON) => {
+const loadSynopsis = ($, animeJSON) => {
   $('.synopsis').each( function () {
     animeJSON.synopsis.push($(this).text().slice(5, -8))
   })
 }
 
-let loadImages = ($, animeJSON) => {
+const loadImages = ($, animeJSON) => {
   $('.image img').each( function () {
     animeJSON.images.push($(this).attr('data-src'))
   })
 }
 
-let loadScores = ($, animeJSON) => {
+const loadScores = ($, animeJSON) => {
   $('.score').each( function () {
     animeJSON.scores.push($(this).text().slice(9, 13))
   })
 }
 
-let loadReleaseDates = ($, animeJSON) => {
+const loadReleaseDates = ($, animeJSON) => {
   $('.remain-time').each(function () {
     animeJSON.releaseDates.push($(this).text().slice(19, -27))
   })
 }
 
-let loadTypes = ($, animeJSON) => {
+const loadTypes = ($, animeJSON) => {
   let stats = {
     TVNumber: 0,        // js-seasonal-anime-list-key-1
     ONANumber: 0,       // js-seasonal-anime-list-key-5
@@ -119,13 +121,13 @@ let loadTypes = ($, animeJSON) => {
   animeJSON.stats = stats
 }
 
-let loadFromType = ($, animeJSON) => {
+const loadFromType = ($, animeJSON) => {
   $('.source').each(function () {
     animeJSON.fromType.push($(this).text())
   })
 }
 
-let loadJSON = ($, animeJSON) => {
+const loadJSON = ($, animeJSON) => {
   loadTitles($, animeJSON)
   loadProducer($, animeJSON)
   loadNbEpisodes($, animeJSON)
@@ -203,7 +205,7 @@ exports.getSeason = (year, season, callback) => {
 
 /* GETTING ANIME RELATED NEWS PART */
 
-let byProperty = (prop) => {
+const byProperty = (prop) => {
   return function(a, b) {
     if (typeof a[prop] == "number") {
       return (a[prop] - b[prop])
@@ -274,3 +276,67 @@ exports.getNewsNoDetails = (callback) => {
 }
 
 /* END OF GETTING ANIME RELATED NEWS PART */
+
+
+/* SEARCHING FOR ANIME */
+
+exports.getResultsFromSearch = (keyword) => {
+  let items = []
+
+  return new Promise((resolve, reject) => {
+    request.get({
+      uri: SEARCH_URI,
+      qs: {
+        type: 'anime',
+        keyword: keyword
+      }
+    }, (err, response, body) => {
+      if (err) return reject(err)
+
+      const json = JSON.parse(body)
+
+      json.categories.forEach((elem) => {
+        if (elem.type === 'anime')
+        {
+          elem.items.forEach((item) => {
+            items.push(item)
+          })
+        }
+      })
+
+      resolve(items)
+    })
+  })
+}
+
+exports.getInfoFromURI = (item) => {
+  const uri = item.url
+
+  let result = item
+
+  return new Promise((resolve, reject) => {
+    req(uri, (err, resp) => {
+      if (err) reject(err)
+
+      const $ = cheerio.load(resp.body)
+
+      result.synopsis = $('.js-scrollfix-bottom-rel span[itemprop="description"]').text()
+
+      resolve(result)
+
+    })
+  })
+}
+
+exports.getBestMatch = (name, items) => {
+  let index = 0
+
+  const toSearch = name.replace(' ', '').toLowerCase()
+
+  items.forEach((item, i) => {
+    const looking = item.name.replace(' ', '').toLowerCase()
+    if (looking === toSearch) index = i
+  })
+
+  return items[index]
+}
