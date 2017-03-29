@@ -343,14 +343,3 @@ exports.getBestMatch = (name, items) => {
 
   return items[index]
 }
-
-const self = this
-const name = 'Youjo Senki'
-
-self.getResultsFromSearch(name).then((items) => {
-  return self.getInfoFromURI(self.getBestMatch(name, items))
-}).then((item) => {
-  console.log(item)
-}).catch((err) => {
-  console.log(`An error occured: ${err}.`)
-})
