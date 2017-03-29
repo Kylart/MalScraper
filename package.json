@@ -1,6 +1,6 @@
 {
   "name": "mal-scraper",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Module to scrap informations from MyAnimeList.net",
   "main": "main.js",
   "scripts": {

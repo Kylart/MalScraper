@@ -17,13 +17,13 @@ const loadTitles = ($, animeJSON) => {
 
   tmp.shift()     // Getting rid of an empty element at the beginning.
 
-  tmp.forEach( (elem) => {
+  tmp.forEach((elem) => {
     animeJSON.titles.push(elem.slice(0, -7))     // Loading the right name
   })
 }
 
 const loadProducer = ($, animeJSON) => {
-  $('.producer').each( function () {
+  $('.producer').each(function () {
     animeJSON.producers.push($(this).text())
   })
 }
@@ -31,7 +31,7 @@ const loadProducer = ($, animeJSON) => {
 const loadNbEpisodes = ($, animeJSON) => {
   let tmp = []
 
-  $('.eps').each( function () {
+  $('.eps').each(function () {
     tmp.push($(this).text().split(' '))
   })
 
@@ -41,7 +41,7 @@ const loadNbEpisodes = ($, animeJSON) => {
     tmp[i] = tmp[i].slice(16, 18)
   }
 
-  tmp.forEach( (elem) => {
+  tmp.forEach((elem) => {
     animeJSON.nbEps.push(elem.join(' ').slice(0, -1))
   })
 }
@@ -61,19 +61,19 @@ const loadGenres = ($, animeJSON) => {
 }
 
 const loadSynopsis = ($, animeJSON) => {
-  $('.synopsis').each( function () {
+  $('.synopsis').each(function () {
     animeJSON.synopsis.push($(this).text().slice(5, -8))
   })
 }
 
 const loadImages = ($, animeJSON) => {
-  $('.image img').each( function () {
+  $('.image img').each(function () {
     animeJSON.images.push($(this).attr('data-src'))
   })
 }
 
 const loadScores = ($, animeJSON) => {
-  $('.score').each( function () {
+  $('.score').each(function () {
     animeJSON.scores.push($(this).text().slice(9, 13))
   })
 }
@@ -206,8 +206,9 @@ exports.getSeason = (year, season, callback) => {
 /* GETTING ANIME RELATED NEWS PART */
 
 const byProperty = (prop) => {
-  return function(a, b) {
-    if (typeof a[prop] == "number") {
+  return function (a, b) {
+    if (typeof a[prop] == "number")
+    {
       return (a[prop] - b[prop])
     }
     return ((a[prop] < b[prop]) ? -1 : ((a[prop] > b[prop]) ? 1 : 0))
@@ -231,13 +232,13 @@ exports.getNewsNoDetails = (callback) => {
 
       // Pictures for each element
       let images = []
-      $('.image').each( function () {
+      $('.image').each(function () {
         images.push($(this).attr('src'))
       })
 
       // Get links for info
       let links = []
-      $('.image-link').each( function () {
+      $('.image-link').each(function () {
         links.push($(this).attr('href'))
       })
 
@@ -247,12 +248,14 @@ exports.getNewsNoDetails = (callback) => {
       let texts = pageElements.find('div.text').text().split('\n      ')
       texts.shift()
 
-      for (let i = 0; i < titles.length; ++i) {
+      for (let i = 0; i < titles.length; ++i)
+      {
         titles[i] = titles[i].slice(0, -5)
         texts[i] = texts[i].slice(0, -5)
       }
 
-      for (let j = 0; j < titles.length; ++j) {
+      for (let j = 0; j < titles.length; ++j)
+      {
         let tmp = links[j].split('/')
         result.push({
           title: titles[j],
@@ -321,9 +324,9 @@ exports.getInfoFromURI = (item) => {
       const $ = cheerio.load(resp.body)
 
       result.synopsis = $('.js-scrollfix-bottom-rel span[itemprop="description"]').text()
+      result.picture = $(`img[alt="${item.name}"]`).attr('src')
 
       resolve(result)
-
     })
   })
 }
@@ -340,3 +343,14 @@ exports.getBestMatch = (name, items) => {
 
   return items[index]
 }
+
+const self = this
+const name = 'Youjo Senki'
+
+self.getResultsFromSearch(name).then((items) => {
+  return self.getInfoFromURI(self.getBestMatch(name, items))
+}).then((item) => {
+  console.log(item)
+}).catch((err) => {
+  console.log(`An error occured: ${err}.`)
+})
