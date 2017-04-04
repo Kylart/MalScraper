@@ -68,7 +68,7 @@ const loadSynopsis = ($, animeJSON) => {
 
 const loadImages = ($, animeJSON) => {
   $('.image img').each(function () {
-    animeJSON.images.push($(this).attr('data-src'))
+    animeJSON.images.push($(this).attr('src'))
   })
 }
 
