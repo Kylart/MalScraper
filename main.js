@@ -82,6 +82,26 @@ const check = (TV, OVAs, Movies) => {
 
 exports.getSeason = (year, season) => {
   return new Promise((resolve, reject) => {
+    const possibleSeasons = {
+      'winter': 1,
+      'spring': 1,
+      'summer': 1,
+      'fall': 1
+    }
+    const maxYear = 1901 + (new Date()).getYear()
+
+    if (!possibleSeasons[season])
+    {
+      reject(new Error('Entered seasons does not match any existing season.'))
+      return
+    }
+
+    if (!(year <= maxYear) || !(year >= 2000))
+    {
+      reject(new Error(`year must be between 2000 and ${maxYear}`))
+      return
+    }
+
     const uri = `${SEASON_URI}${season}-${year}/`
     let TVs = []
     let OVAs = []
@@ -114,11 +134,6 @@ exports.getSeason = (year, season) => {
     }).catch((err) => { reject(err) })
   })
 }
-
-this.getSeason(2017, 'spring').then((result) => {
-  console.log(result.info)
-  console.log(result.stats)
-})
 
 /* END OF GETTING SEASONAL ANIMES PART */
 

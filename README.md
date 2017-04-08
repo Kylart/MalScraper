@@ -19,6 +19,10 @@ Any contribution is welcomed.
 ```javascript
 const malScraper = require('mal-scraper')
   
+const year = 2017
+// Season can only be 'spring', 'summer', 'fall' or 'winter'.
+const season = 'spring' 
+  
 // Get seasonal information 
 malScraper.getSeason(2017, 'spring').then((result) => {
   const TV = result.info.TV
@@ -26,6 +30,8 @@ malScraper.getSeason(2017, 'spring').then((result) => {
   const Movies = result.info.Movies
   
   const stats = result.stats
+}).catch((err) => {
+  console.log(err)
 })
 ```
 
