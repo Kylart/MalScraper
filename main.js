@@ -6,199 +6,119 @@ const request = require('request')
 const req = require('req-fast')
 const cheerio = require('cheerio')
 
-const SEASON_URL_URI = 'https://myanimelist.net/anime/season/'
+const SEASON_URI = 'https://www.livechart.me/' // Fu MAL :<
 const NEWS_URL_URI = 'https://myanimelist.net/news?p='
 const SEARCH_URI = 'https://myanimelist.net/search/prefix.json'
 
 /* GETTING SEASONAL ANIMES PART */
 
-const loadTitles = ($, animeJSON) => {
-  let tmp = $('.title-text').text().split('\n        ')
+const getType = (type, uri) => {
+  // Type must be something like 'tv', 'ovas' or 'movies'
+  return new Promise((resolve, reject) => {
+    let result = []
 
-  tmp.shift()     // Getting rid of an empty element at the beginning.
+    req(uri + type, (err, resp) => {
+      if (err) reject(err)
 
-  tmp.forEach((elem) => {
-    animeJSON.titles.push(elem.slice(0, -7))     // Loading the right name
-  })
-}
+      const $ = cheerio.load(resp.body)
 
-const loadProducer = ($, animeJSON) => {
-  $('.producer').each(function () {
-    animeJSON.producers.push($(this).text())
-  })
-}
+      $('.anime-card').each(function () {
+        toPush = {}
 
-const loadNbEpisodes = ($, animeJSON) => {
-  let tmp = []
+        toPush.title = $(this).find('.main-title').text()
 
-  $('.eps').each(function () {
-    tmp.push($(this).text().split(' '))
-  })
+        toPush.jpTitle = $(this).find('.jp-title').text()
 
-  // Only 16th and 17th element are interesting
-  for (let i = 0; i < tmp.length; ++i)
-  {
-    tmp[i] = tmp[i].slice(16, 18)
-  }
+        let genres = []
+        $(this).find('.anime-tags').each(function () {
+          $(this).find('li').each(function () {
+            genres.push($(this).text())
+          })
+        })
+        toPush.genres = genres
 
-  tmp.forEach((elem) => {
-    animeJSON.nbEps.push(elem.join(' ').slice(0, -1))
-  })
-}
+        toPush.picture = $(this).find('.poster-container img').attr('src')
 
-const loadGenres = ($, animeJSON) => {
-  $('.genres-inner').each(function () {
-    let tmp = $(this).text().split('\n        ')
-    tmp.shift()
+        toPush.synopsis = $(this).find('.anime-synopsis').text()
 
-    for (let i = 0; i < tmp.length; ++i)
-    {
-      tmp[i] = tmp[i].slice(0, -7)
-    }
+        let producers = []
+        $(this).find('.anime-studios').each(function () {
+          $(this).find('li').each(function () {
+            producers.push($(this).text())
+          })
+        })
+        toPush.producers = producers
 
-    animeJSON.genres.push(tmp)
-  })
-}
+        toPush.releaseDate = $(this).find('.anime-date').text()
 
-const loadSynopsis = ($, animeJSON) => {
-  $('.synopsis').each(function () {
-    animeJSON.synopsis.push($(this).text().slice(5, -8))
-  })
-}
+        toPush.nbEp = $(this).find('.anime-episodes').text().split(' ')[0]
 
-const loadImages = ($, animeJSON) => {
-  $('.image img').each(function () {
-    animeJSON.images.push($(this).attr('src'))
-  })
-}
+        toPush.fromType = $(this).find('.anime-source').text()
 
-const loadScores = ($, animeJSON) => {
-  $('.score').each(function () {
-    animeJSON.scores.push($(this).text().slice(9, 13))
-  })
-}
-
-const loadReleaseDates = ($, animeJSON) => {
-  $('.remain-time').each(function () {
-    animeJSON.releaseDates.push($(this).text().slice(19, -27))
-  })
-}
-
-const loadTypes = ($, animeJSON) => {
-  let stats = {
-    TVNumber: 0,        // js-seasonal-anime-list-key-1
-    ONANumber: 0,       // js-seasonal-anime-list-key-5
-    OVANumber: 0,       // js-seasonal-anime-list-key-2
-    MovieNumber: 0,     // js-seasonal-anime-list-key-3
-    SpecialNumber: 0    // js-seasonal-anime-list-key-4
-  }
-
-  $('.js-seasonal-anime-list-key-1').find('div.seasonal-anime').each(function () {
-    ++stats.TVNumber
-    animeJSON.types.push('TV')
-  })
-
-  $('.js-seasonal-anime-list-key-5').find('div.seasonal-anime').each(function () {
-    ++stats.ONANumber
-    animeJSON.types.push('ONA')
-  })
-
-  $('.js-seasonal-anime-list-key-2').find('div.seasonal-anime').each(function () {
-    ++stats.OVANumber
-    animeJSON.types.push('OVA')
-  })
-
-  $('.js-seasonal-anime-list-key-3').find('div.seasonal-anime').each(function () {
-    ++stats.MovieNumber
-    animeJSON.types.push('Movie')
-  })
-
-  $('.js-seasonal-anime-list-key-4').find('div.seasonal-anime').each(function () {
-    ++stats.SpecialNumber
-    animeJSON.types.push('Special')
-  })
-
-  animeJSON.stats = stats
-}
-
-const loadFromType = ($, animeJSON) => {
-  $('.source').each(function () {
-    animeJSON.fromType.push($(this).text())
-  })
-}
-
-const loadJSON = ($, animeJSON) => {
-  loadTitles($, animeJSON)
-  loadProducer($, animeJSON)
-  loadNbEpisodes($, animeJSON)
-  loadGenres($, animeJSON)
-  loadSynopsis($, animeJSON)
-  loadImages($, animeJSON)
-  loadScores($, animeJSON)
-  loadReleaseDates($, animeJSON)
-  loadTypes($, animeJSON)
-  loadFromType($, animeJSON)
-}
-
-exports.getSeason = (year, season, callback) => {
-  const url = `${SEASON_URL_URI}${year}/${season}`
-
-  // Make array to return
-  let result = {
-    info: [],
-    stats: {}
-  }
-
-  let animeJSON = {
-    titles: [],
-    genres: [],
-    images: [],
-    scores: [],
-    synopsis: [],
-    producers: [],
-    releaseDates: [],
-    types: [],
-    nbEps: [],
-    fromType: [],
-    stats: {
-      TVNumber: 0,
-      ONANumber: 0,
-      OVANumber: 0,
-      MovieNumber: 0,
-      SpecialNumber: 0
-    }
-  }
-
-  req(url, (err, response) => {
-    if (err) throw err
-
-    const html = response.body
-    const $ = cheerio.load(html)
-
-    loadJSON($, animeJSON)
-
-    result.stats = animeJSON.stats
-
-    for (let i = 0; i < animeJSON.titles.length; ++i)
-    {
-      result.info.push({
-        title: animeJSON.titles[i],
-        genres: animeJSON.genres[i],
-        image: animeJSON.images[i],
-        scores: animeJSON.scores[i],
-        synopsis: animeJSON.synopsis[i],
-        producers: animeJSON.producers[i],
-        releaseDates: animeJSON.releaseDates[i],
-        type: animeJSON.types[i],
-        nbEp: animeJSON.nbEps[i],
-        fromType: animeJSON.fromType[i]
+        result.push(toPush)
       })
-    }
-    callback()
-  })
 
-  return result
+      resolve(result)
+    })
+  })
 }
+
+const check = (TV, OVAs, Movies) => {
+  let stats = {
+    TVNumber: TV.length,
+    OVANumber: OVAs.length,
+    MovieNumber: Movies.length
+  }
+
+  return {
+    stats: stats,
+    info: {
+      TV: TV,
+      OVAs: OVAs,
+      Movies: Movies
+    }
+  }
+}
+
+exports.getSeason = (year, season) => {
+  return new Promise((resolve, reject) => {
+    const uri = `${SEASON_URI}${season}-${year}/`
+    let TVs = []
+    let OVAs = []
+    let Movies = []
+
+    let counter = 0
+
+    getType('tv', uri).then((items) => {
+      TVs = items
+
+      ++counter
+      if (counter === 3)
+        resolve(check(TVs, OVAs, Movies))
+    }).catch((err) => { reject(err) })
+
+    getType('ovas', uri).then((items) => {
+      OVAs = items
+
+      ++counter
+      if (counter === 3)
+        resolve(check(TVs, OVAs, Movies))
+    }).catch((err) => { reject(err) })
+
+    getType('movies', uri).then((items) => {
+      Movies = items
+
+      ++counter
+      if (counter === 3)
+        resolve(check(TVs, OVAs, Movies))
+    }).catch((err) => { reject(err) })
+  })
+}
+
+this.getSeason(2017, 'spring').then((result) => {
+  console.log(result.info)
+  console.log(result.stats)
+})
 
 /* END OF GETTING SEASONAL ANIMES PART */
 

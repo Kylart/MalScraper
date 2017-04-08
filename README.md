@@ -20,35 +20,33 @@ Any contribution is welcomed.
 const malScraper = require('mal-scraper')
   
 // Get seasonal information 
-let seasonalInfo = malScraper.getSeason(2016, 'fall', () => {
-    console.log("Finished gathering information.")
+malScraper.getSeason(2017, 'spring').then((result) => {
+  const TV = result.info.TV
+  const OVAs = result.info.OVAs
+  const Movies = result.info.Movies
+  
+  const stats = result.stats
 })
 ```
-```javascript
-//Want stats for this season ? 
-console.log(seasonalInfo.stats)
-/* 
-    { TVNumber: 151,
-      ONANumber: 10,
-      OVANumber: 32,
-      MovieNumber: 24,
-      SpecialNumber: 14 }
- */
-  
-// All the anime of this season along with their information are
-// in seasonalInfo.info
-console.log(seasonalInfo.info)
+
+One anime is structured this way: 
+```
+{ 
+  title: 'Boku no Hero Academia OVA',
+  jpTitle: '僕のヒーローアカデミア OVA',
+  genres: [ 'Action', 'Adventure', 'Comedy', 'Shounen', 'Supernatural' ],
+  picture: 'https://s.livechart.me/anime/poster_images/2292/bca148c0a1a65c244a62b997d16e0cb20344503d.jpg',
+  synopsis: 'OVAs bundled with the 13th and 14th compiled book volumes.',
+  producers: [ 'Bones' ],
+  releaseDate: 'April 4, 2017 JST',
+  nbEp: '',
+  fromType: '' 
+}
 ```
 
-seasonalInfo.info is ordered in this way :
-1. TV
-2. ONA
-3. OVA
-4. Movie
-5. Special
-```javascript
-// So the last TV anime type is at
-let lastTVAnime = seasonalInfo.info[seasonalInfo.stats.TVNumber - 1]
+And stats is this way: 
+```
+{ TVNumber: 64, OVANumber: 42, MovieNumber: 37 }
 ```
    
 ```javascript
