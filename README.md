@@ -69,6 +69,19 @@ console.log(news[index])    // index in 0, 300
 ```
 
 ```javascript
+// Want info about any anime ? 
+// Is a bit slower than getInfoFromURI but gives more info...
+const name = 'Sakura Trick'
+ 
+malScraper.getInfoFromName(name).then((anime) => {
+  console.log(anime)
+}).catch((err) => {
+  console.log(err)
+})
+
+```
+
+```javascript
 // Want to search for results for anime research ?
 malScraper.getResultsFromSearch('Youjo Senki').then((items) => {
   console.log(items)

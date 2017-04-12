@@ -5,6 +5,7 @@
 const request = require('request')
 const req = require('req-fast')
 const cheerio = require('cheerio')
+const mal = require('malapi').Anime
 
 const SEASON_URI = 'https://www.livechart.me/' // Fu MAL :<
 const NEWS_URL_URI = 'https://myanimelist.net/news?p='
@@ -243,6 +244,16 @@ exports.getResultsFromSearch = (keyword) => {
       })
 
       resolve(items)
+    })
+  })
+}
+
+exports.getInfoFromName = (name) => {
+  return new Promise((resolve, reject) => {
+    mal.fromName(name).then((anime) => {
+      resolve(anime)
+    }).catch((err) => {
+      reject(`[Mal-Scraper] An error occurred while looking for info about ${name}: ${err}`)
     })
   })
 }
