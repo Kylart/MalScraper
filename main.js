@@ -4,6 +4,7 @@
 
 const request = require('request')
 const req = require('req-fast')
+const axios = require('axios')
 const cheerio = require('cheerio')
 const mal = require('malapi').Anime
 
@@ -264,15 +265,15 @@ exports.getInfoFromURI = (item) => {
   let result = item
 
   return new Promise((resolve, reject) => {
-    req(uri, (err, resp) => {
-      if (err) reject(err)
-
-      const $ = cheerio.load(resp.body)
+    axios.get(uri).then((res) => {
+      const $ = cheerio.load(res.data)
 
       result.synopsis = $('.js-scrollfix-bottom-rel span[itemprop="description"]').text()
       result.picture = $(`img[alt="${item.name}"]`).attr('src')
 
       resolve(result)
+    }).catch((err) => {
+      reject(err)
     })
   })
 }
