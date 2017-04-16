@@ -157,7 +157,7 @@ exports.getNewsNoDetails = (callback) => {
   let result = []
 
   // We have a maximum of 300 news, it's enough
-  for (let i = 1; i < 16; ++i)
+  for (let i = 1; i < 11; ++i)
   {
     req(`${NEWS_URL_URI}${i}`, (err, response) => {
       if (err) throw err

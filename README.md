@@ -2,7 +2,7 @@
 
 At the moment, _MalScraper_ is able to:
 * Gather information about all the anime being releases in a season
-* Gather anime-related news (include light-novels, manga, films...). 300 news available.
+* Gather anime-related news (include light-novels, manga, films...). 200 news available.
 * Make an anime search.
 * Get different information for this anime.
 * Get only the best result for an anime search.
@@ -65,7 +65,7 @@ let news = malScraper.getNewsNoDetails( () => {
 console.log(news)
   
 // One news can be seen with 
-console.log(news[index])    // index in 0, 300 
+console.log(news[index])    // index in 0, 200 
 ```
 
 ```javascript

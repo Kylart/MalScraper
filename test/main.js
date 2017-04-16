@@ -35,3 +35,11 @@ describe('Looking for', () => {
     })
   })
 })
+
+describe('Getting news', () => {
+  it('should give 200 results', () => {
+    let news = main.getNewsNoDetails(() => {
+      assert.equal(news.length, 200)
+    })
+  })
+})
