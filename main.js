@@ -156,7 +156,7 @@ exports.getNewsNoDetails = (callback) => {
   let completedReq = 0
   let result = []
 
-  // We have a maximum of 300 news, it's enough
+  // We have a maximum of 200 news, it's enough
   for (let i = 1; i < 11; ++i)
   {
     req(`${NEWS_URL_URI}${i}`, (err, response) => {
@@ -203,7 +203,7 @@ exports.getNewsNoDetails = (callback) => {
         })
       }
       ++completedReq
-      if (completedReq === 15)
+      if (completedReq === 10)
       {
         // Getting the order right
         result.sort(byProperty('newsNumber'))

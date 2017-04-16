@@ -17,7 +17,7 @@ const type = 'anime'
 describe('Looking for', () => {
   describe('Sakura trick results', () => {
     it('should return 10 or more.', () => {
-      return main.getResultsFromSearch('Salura Trick').then((items) => {
+      return main.getResultsFromSearch('Sakura Trick').then((items) => {
         expect(items).to.have.length.above(9);
       })
     })
