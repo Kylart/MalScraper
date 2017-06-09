@@ -2,7 +2,6 @@
  * Created by Kylart on 07/12/2016.
  */
 
-const request = require('request')
 const req = require('req-fast')
 const axios = require('axios')
 const cheerio = require('cheerio')
@@ -17,15 +16,13 @@ const SEARCH_URI = 'https://myanimelist.net/search/prefix.json'
 const getType = (type, uri) => {
   // Type must be something like 'tv', 'ovas' or 'movies'
   return new Promise((resolve, reject) => {
-    let result = []
+    const result = []
 
-    req(uri + type, (err, resp) => {
-      if (err) reject(err)
-
-      const $ = cheerio.load(resp.body)
+    axios.get(uri + type).then(({data}) => {
+      const $ = cheerio.load(data)
 
       $('.anime-card').each(function () {
-        toPush = {}
+        const toPush = {}
 
         toPush.title = $(this).find('.main-title').text()
 
@@ -43,7 +40,7 @@ const getType = (type, uri) => {
 
         toPush.synopsis = $(this).find('.anime-synopsis').text()
 
-        let producers = []
+        const producers = []
         $(this).find('.anime-studios').each(function () {
           $(this).find('li').each(function () {
             producers.push($(this).text())
@@ -61,6 +58,8 @@ const getType = (type, uri) => {
       })
 
       resolve(result)
+    }).catch((err) => {
+      reject(err)
     })
   })
 }
@@ -116,7 +115,7 @@ exports.getSeason = (year, season) => {
 
       ++counter
       if (counter === 3)
-        resolve(check(TVs, OVAs, Movies))
+      { resolve(check(TVs, OVAs, Movies)) }
     }).catch((err) => { reject(err) })
 
     getType('ovas', uri).then((items) => {
@@ -124,7 +123,7 @@ exports.getSeason = (year, season) => {
 
       ++counter
       if (counter === 3)
-        resolve(check(TVs, OVAs, Movies))
+      { resolve(check(TVs, OVAs, Movies)) }
     }).catch((err) => { reject(err) })
 
     getType('movies', uri).then((items) => {
@@ -132,23 +131,24 @@ exports.getSeason = (year, season) => {
 
       ++counter
       if (counter === 3)
-        resolve(check(TVs, OVAs, Movies))
+      { resolve(check(TVs, OVAs, Movies)) }
     }).catch((err) => { reject(err) })
   })
 }
 
 /* END OF GETTING SEASONAL ANIMES PART */
 
-
 /* GETTING ANIME RELATED NEWS PART */
 
 const byProperty = (prop) => {
-  return function (a, b) {
-    if (typeof a[prop] == "number")
-    {
-      return (a[prop] - b[prop])
-    }
-    return ((a[prop] < b[prop]) ? -1 : ((a[prop] > b[prop]) ? 1 : 0))
+  return (a, b) => {
+    return typeof a[prop] === 'number'
+      ? (a[prop] - b[prop])
+      : (a[prop] < b[prop])
+        ? -1
+        : (a[prop] > b[prop])
+          ? 1
+          : 0
   }
 }
 
@@ -217,25 +217,19 @@ exports.getNewsNoDetails = (callback) => {
 
 /* END OF GETTING ANIME RELATED NEWS PART */
 
-
 /* SEARCHING FOR ANIME */
 
 exports.getResultsFromSearch = (keyword) => {
   let items = []
 
   return new Promise((resolve, reject) => {
-    request.get({
-      uri: SEARCH_URI,
-      qs: {
+    axios.get(SEARCH_URI, {
+      params: {
         type: 'anime',
         keyword: keyword
       }
-    }, (err, response, body) => {
-      if (err) return reject(err)
-
-      const json = JSON.parse(body)
-
-      json.categories.forEach((elem) => {
+    }).then(({data}) => {
+      data.categories.forEach((elem) => {
         if (elem.type === 'anime')
         {
           elem.items.forEach((item) => {
@@ -245,6 +239,8 @@ exports.getResultsFromSearch = (keyword) => {
       })
 
       resolve(items)
+    }).catch((err) => {
+      reject(err)
     })
   })
 }
@@ -254,7 +250,7 @@ exports.getInfoFromName = (name) => {
     mal.fromName(name).then((anime) => {
       resolve(anime)
     }).catch((err) => {
-      reject(`[Mal-Scraper] An error occurred while looking for info about ${name}: ${err}`)
+      reject(new Error(`[Mal-Scraper] An error occurred while looking for info about ${name}: ${err}`))
     })
   })
 }

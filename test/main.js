@@ -18,13 +18,13 @@ describe('Looking for', () => {
   describe('Sakura trick results', () => {
     it('should return 10 or more.', () => {
       return main.getResultsFromSearch('Sakura Trick').then((items) => {
-        expect(items).to.have.length.above(9);
+        expect(items).to.have.length.above(9)
       })
     })
   })
   describe('Best result for Youjo Senki', () => {
     it('should have the exact information', function () {
-      this.timeout(3000);
+      this.timeout(3000)
 
       return main.getResultsFromSearch(name).then((items) => {
         return main.getInfoFromURI(main.getBestMatch(name, items))

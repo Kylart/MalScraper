@@ -4,7 +4,8 @@
   "description": "Module to scrap informations from MyAnimeList.net",
   "main": "main.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "lint": "standard --fix"
   },
   "author": "Kylart",
   "license": "MIT",
@@ -21,12 +22,19 @@
     "axios": "^0.16.1",
     "cheerio": "latest",
     "malapi": "0.0.3",
-    "req-fast": "latest",
-    "request": "^2.81.0"
+    "req-fast": "latest"
   },
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
-    "mocha": "^3.2.0"
-  }
+    "mocha": "^3.2.0",
+    "pre-commit": "^1.2.2",
+    "standard": "^10.0.2"
+  },
+  "standard": {
+    "ignore": [
+      "test"
+    ]
+  },
+  "precommit": "lint"
 }
