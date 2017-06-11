@@ -2,7 +2,6 @@
  * Created by Kylart on 07/12/2016.
  */
 
-const req = require('req-fast')
 const axios = require('axios')
 const cheerio = require('cheerio')
 const mal = require('malapi').Anime
@@ -36,7 +35,7 @@ const getType = (type, uri) => {
         })
         toPush.genres = genres
 
-        toPush.picture = $(this).find('.poster-container img').attr('src')
+        toPush.picture = $(this).find('.anime-card-body .poster-container img').attr('src')
 
         toPush.synopsis = $(this).find('.anime-synopsis').text()
 
@@ -114,24 +113,21 @@ exports.getSeason = (year, season) => {
       TVs = items
 
       ++counter
-      if (counter === 3)
-      { resolve(check(TVs, OVAs, Movies)) }
+      if (counter === 3) resolve(check(TVs, OVAs, Movies))
     }).catch((err) => { reject(err) })
 
     getType('ovas', uri).then((items) => {
       OVAs = items
 
       ++counter
-      if (counter === 3)
-      { resolve(check(TVs, OVAs, Movies)) }
+      if (counter === 3) resolve(check(TVs, OVAs, Movies))
     }).catch((err) => { reject(err) })
 
     getType('movies', uri).then((items) => {
       Movies = items
 
       ++counter
-      if (counter === 3)
-      { resolve(check(TVs, OVAs, Movies)) }
+      if (counter === 3) resolve(check(TVs, OVAs, Movies))
     }).catch((err) => { reject(err) })
   })
 }
@@ -152,67 +148,67 @@ const byProperty = (prop) => {
   }
 }
 
-exports.getNewsNoDetails = (callback) => {
+exports.getNewsNoDetails = () => {
   let completedReq = 0
-  let result = []
+  const result = []
 
-  // We have a maximum of 200 news, it's enough
-  for (let i = 1; i < 11; ++i)
-  {
-    req(`${NEWS_URL_URI}${i}`, (err, response) => {
-      if (err) throw err
+  return new Promise((resolve, reject) => {
+    // 160 news. This is already expensive enough
+    for (let i = 1; i < 9; ++i)
+    {
+      axios.get(`${NEWS_URL_URI}${i}`).then(({data}) => {
+        const $ = cheerio.load(data)
 
-      const html = response.body
-      const $ = cheerio.load(html)
+        const pageElements = $('.news-unit-right')   // 20 elements
 
-      let pageElements = $('.news-unit-right')   // 20 elements
-
-      // Pictures for each element
-      let images = []
-      $('.image').each(function () {
-        images.push($(this).attr('src'))
-      })
-
-      // Get links for info
-      let links = []
-      $('.image-link').each(function () {
-        links.push($(this).attr('href'))
-      })
-
-      // Gathering news' Titles
-      let titles = pageElements.find('p.title').text().split('\n      ')
-      titles.shift()
-      let texts = pageElements.find('div.text').text().split('\n      ')
-      texts.shift()
-
-      for (let i = 0; i < titles.length; ++i)
-      {
-        titles[i] = titles[i].slice(0, -5)
-        texts[i] = texts[i].slice(0, -5)
-      }
-
-      for (let j = 0; j < titles.length; ++j)
-      {
-        let tmp = links[j].split('/')
-        result.push({
-          title: titles[j],
-          link: links[j],
-          image: images[j],
-          text: texts[j],
-          newsNumber: tmp[tmp.length - 1]
+        // Pictures for each element
+        const images = []
+        $('.image').each(function () {
+          images.push($(this).attr('src'))
         })
-      }
-      ++completedReq
-      if (completedReq === 10)
-      {
-        // Getting the order right
-        result.sort(byProperty('newsNumber'))
-        result.reverse()
-        callback()
-      }
-    })
-  }
-  return result
+
+        // Get links for info
+        const links = []
+        $('.image-link').each(function () {
+          links.push($(this).attr('href'))
+        })
+
+        // Gathering news' Titles
+        const titles = pageElements.find('p.title').text().split('\n      ')
+        titles.shift()
+        const texts = pageElements.find('div.text').text().split('\n      ')
+        texts.shift()
+
+        for (let i = 0, l = titles.length; i < l; ++i)
+        {
+          titles[i] = titles[i].slice(0, -5)
+          texts[i] = texts[i].slice(0, -5)
+        }
+
+        for (let i = 0, l = titles.length; i < l; ++i)
+        {
+          let tmp = links[i].split('/')
+          result.push({
+            title: titles[i],
+            link: links[i],
+            image: images[i],
+            text: texts[i],
+            newsNumber: tmp[tmp.length - 1]
+          })
+        }
+        ++completedReq
+        if (completedReq === 8)
+        {
+          // Getting the order right
+          result.sort(byProperty('newsNumber'))
+          result.reverse()
+          resolve(result)
+        }
+      }).catch((err) => {
+        reject(err)
+      })
+    }
+  })
 }
 
 /* END OF GETTING ANIME RELATED NEWS PART */

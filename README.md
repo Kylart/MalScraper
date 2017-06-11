@@ -57,8 +57,11 @@ And stats is this way:
    
 ```javascript
 // Want Anime related news ? (Include light novels, mangas, films...)
-let news = malScraper.getNewsNoDetails( () => {
-    console.log('Finished gathering the news.')
+malScraper.getNewsNoDetails.then((data) => {
+  console.log(data)
+  // => 160 elements
+}).catch((err) => {
+  console.error(err)
 })
   
 // A news object is like this: 

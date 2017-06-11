@@ -24,7 +24,7 @@ describe('Looking for', () => {
   })
   describe('Best result for Youjo Senki', () => {
     it('should have the exact information', function () {
-      this.timeout(3000)
+      this.timeout(5000)
 
       return main.getResultsFromSearch(name).then((items) => {
         return main.getInfoFromURI(main.getBestMatch(name, items))
@@ -37,9 +37,9 @@ describe('Looking for', () => {
 })
 
 describe('Getting news', () => {
-  it('should give 200 results', () => {
-    let news = main.getNewsNoDetails(() => {
-      assert.equal(news.length, 200)
+  it('should give 160 results', () => {
+    main.getNewsNoDetails().then((data) => {
+      expect(data.length).to.equal(160)
     })
   })
 })
