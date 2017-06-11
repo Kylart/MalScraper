@@ -35,7 +35,7 @@ const getType = (type, uri) => {
         })
         toPush.genres = genres
 
-        toPush.picture = $(this).find('.anime-card-body .poster-container img').attr('src')
+        toPush.picture = $(this).find('.anime-card-body .poster-container img').attr('data-src')
 
         toPush.synopsis = $(this).find('.anime-synopsis').text()
 
@@ -90,15 +90,13 @@ exports.getSeason = (year, season) => {
     }
     const maxYear = 1901 + (new Date()).getYear()
 
-    if (!possibleSeasons[season])
-    {
+    if (!possibleSeasons[season]) {
       reject(new Error('Entered seasons does not match any existing season.'))
       return
     }
 
-    if (!(year <= maxYear) || !(year >= 2000))
-    {
-      reject(new Error(`year must be between 2000 and ${maxYear}`))
+    if (!(year <= maxYear) || !(year >= 2000)) {
+      reject(new Error(`year must be between 2000 and ${maxYear}.`))
       return
     }
 
@@ -154,8 +152,7 @@ exports.getNewsNoDetails = () => {
 
   return new Promise((resolve, reject) => {
     // 160 news. This is already expensive enough
-    for (let i = 1; i < 9; ++i)
-    {
+    for (let i = 1; i < 9; ++i) {
       axios.get(`${NEWS_URL_URI}${i}`).then(({data}) => {
         const $ = cheerio.load(data)
 
@@ -179,14 +176,12 @@ exports.getNewsNoDetails = () => {
         const texts = pageElements.find('div.text').text().split('\n      ')
         texts.shift()
 
-        for (let i = 0, l = titles.length; i < l; ++i)
-        {
+        for (let i = 0, l = titles.length; i < l; ++i) {
           titles[i] = titles[i].slice(0, -5)
           texts[i] = texts[i].slice(0, -5)
         }
 
-        for (let i = 0, l = titles.length; i < l; ++i)
-        {
+        for (let i = 0, l = titles.length; i < l; ++i) {
           let tmp = links[i].split('/')
           result.push({
             title: titles[i],
@@ -197,8 +192,7 @@ exports.getNewsNoDetails = () => {
           })
         }
         ++completedReq
-        if (completedReq === 8)
-        {
+        if (completedReq === 8) {
           // Getting the order right
           result.sort(byProperty('newsNumber'))
           result.reverse()
@@ -226,8 +220,7 @@ exports.getResultsFromSearch = (keyword) => {
       }
     }).then(({data}) => {
       data.categories.forEach((elem) => {
-        if (elem.type === 'anime')
-        {
+        if (elem.type === 'anime') {
           elem.items.forEach((item) => {
             items.push(item)
           })
