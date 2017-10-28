@@ -244,6 +244,16 @@ exports.getInfoFromName = (name) => {
   })
 }
 
+exports.getInfoFromUrl = (url) => {
+  return new Promise((resolve, reject) => {
+    mal.fromUrl(url).then((anime) => {
+      resolve(anime)
+    }).catch((err) => {
+      reject(new Error(`[Mal-Scraper] An error occurred while looking for info about ${url}: ${err}`))
+    })
+  })
+}
+
 exports.getInfoFromURI = (item) => {
   const uri = item.url
 
