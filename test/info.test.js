@@ -23,7 +23,7 @@ test('getInfoFromURL returns valid information', async t => {
     t.is(data.characters.length, 10)
     t.is(data.staff.length, 4)
     t.is(data.status, 'Finished Airing')
-    t.is(data.studios, 'Studio Deen')
+    t.is(data.studios[0], 'Studio Deen')
   } catch (e) {
     t.fail()
   }
@@ -48,7 +48,7 @@ test('getInfoFromName returns valid information', async t => {
     t.is(data.characters.length, 10)
     t.is(data.staff.length, 4)
     t.is(data.status, 'Finished Airing')
-    t.is(data.studios, 'Studio Deen')
+    t.is(data.studios[0], 'Studio Deen')
   } catch (e) {
     t.fail()
   }
