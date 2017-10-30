@@ -8,6 +8,7 @@ install:
 
 script:
   - npm run test
+  - npm run cloc
 after_success: npm run coverage
 
 cache:

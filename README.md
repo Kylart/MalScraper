@@ -68,6 +68,18 @@ malScraper.getResultsFromSearch(name)
   .catch((err) => console.log(err))
 ```
 
+### Get a user watch list
+```javascript
+const malScraper = require('mal-scraper')
+
+const username = 'Kylart'
+
+// Get you an object containing all the entries with status, score... from this user's watch list
+malScraper.getWatchListFromUser(username)
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err))
+```
+
 ### Get seasonal information
 ```javascript
 const malScraper = require('mal-scraper')
