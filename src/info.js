@@ -86,7 +86,7 @@ const parsePage = (data) => {
   result.premiered = getFromBorder($, 'Premiered:')
   result.broadcast = getFromBorder($, 'Broadcast:')
   result.producers = getFromBorder($, 'Producers:').split(',       ')
-  result.studios = getFromBorder($, 'Studios:')
+  result.studios = getFromBorder($, 'Studios:').split(',       ')
   result.source = getFromBorder($, 'Source:')
   result.genres = getFromBorder($, 'Genres:').split(', ')
   result.duration = getFromBorder($, 'Duration:')
@@ -112,6 +112,9 @@ const getInfoFromURL = (url) => {
       .catch(/* istanbul ignore next */(err) => reject(err))
   })
 }
+
+getInfoFromURL('https://myanimelist.net/anime/820/Ginga_Eiyuu_Densetsu')
+  .then((data) => console.log(data))
 
 const getResultsFromSearch = (keyword) => {
   return new Promise((resolve, reject) => {
