@@ -3,6 +3,7 @@ const cheerio = require('cheerio')
 
 const NEWS_URL_URI = 'https://myanimelist.net/news?p='
 
+/* istanbul ignore next */
 const byProperty = (prop) => {
   return (a, b) => {
     return typeof a[prop] === 'number'
@@ -67,7 +68,7 @@ module.exports = () => {
           result.reverse()
           resolve(result)
         }
-      }).catch((err) => {
+      }).catch(/* istanbul ignore next */(err) => {
         reject(err)
       })
     }

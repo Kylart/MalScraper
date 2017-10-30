@@ -63,9 +63,13 @@ const getCharactersAndStaff = ($) => {
 
 const getInfoFromURL = (url) => {
   return new Promise((resolve, reject) => {
-    const result = {}
+    if (!url || typeof url !== 'string' || !url.toLocaleLowerCase().includes('myanimelist')) {
+      reject(new Error('[Mal-Scraper]: Invalid Url.'))
+    }
+
     axios.get(url).then((res) => {
       const $ = cheerio.load(res.data)
+      const result = {}
 
       result.title = $('span[itemprop="name"]').first().text()
       result.synopsis = $('.js-scrollfix-bottom-rel span[itemprop="description"]').text()
@@ -78,54 +82,55 @@ const getInfoFromURL = (url) => {
       result.trailer = $('a.iframe.js-fancybox-video.video-unit.promotion').attr('href')
 
       // Parsing left border.
-      result.englishTitle = getFromBorder($, 'English:') || ''
-      result.japaneseTitle = getFromBorder($, 'Japanese:') || ''
-      result.synonyms = getFromBorder($, 'Synonyms:') || ''
-      result.type = getFromBorder($, 'Type:') || ''
-      result.episodes = getFromBorder($, 'Episodes:') || ''
-      result.status = getFromBorder($, 'Status:') || ''
-      result.aired = getFromBorder($, 'Aired:') || ''
-      result.premiered = getFromBorder($, 'Premiered:') || ''
-      result.broadcast = getFromBorder($, 'Broadcast:') || ''
-      result.producers = getFromBorder($, 'Producers:').split(',       ') || ''
-      result.source = getFromBorder($, 'Source:') || ''
-      result.genres = getFromBorder($, 'Genres:').split(', ') || ''
-      result.duration = getFromBorder($, 'Duration:') || ''
-      result.rating = getFromBorder($, 'Rating:') || ''
-      result.score = getFromBorder($, 'Score:').split('\n')[0].split(' ')[0].slice(0, -1) || ''
-      result.scoreStats = getFromBorder($, 'Score:').split('\n')[0].split(' ').slice(1).join(' ').slice(1, -1) || ''
-      result.ranked = getFromBorder($, 'Ranked:').split('\n')[0].slice(0, -1) || ''
-      result.popularity = getFromBorder($, 'Popularity:') || ''
-      result.members = getFromBorder($, 'Members:') || ''
-      result.favorites = getFromBorder($, 'Favorites:') || ''
+      result.englishTitle = getFromBorder($, 'English:')
+      result.japaneseTitle = getFromBorder($, 'Japanese:')
+      result.synonyms = getFromBorder($, 'Synonyms:')
+      result.type = getFromBorder($, 'Type:')
+      result.episodes = getFromBorder($, 'Episodes:')
+      result.status = getFromBorder($, 'Status:')
+      result.aired = getFromBorder($, 'Aired:')
+      result.premiered = getFromBorder($, 'Premiered:')
+      result.broadcast = getFromBorder($, 'Broadcast:')
+      result.producers = getFromBorder($, 'Producers:').split(',       ')
+      result.studios = getFromBorder($, 'Studios:')
+      result.source = getFromBorder($, 'Source:')
+      result.genres = getFromBorder($, 'Genres:').split(', ')
+      result.duration = getFromBorder($, 'Duration:')
+      result.rating = getFromBorder($, 'Rating:')
+      result.score = getFromBorder($, 'Score:').split('\n')[0].split(' ')[0].slice(0, -1)
+      result.scoreStats = getFromBorder($, 'Score:').split('\n')[0].split(' ').slice(1).join(' ').slice(1, -1)
+      result.ranked = getFromBorder($, 'Ranked:').split('\n')[0].slice(0, -1)
+      result.popularity = getFromBorder($, 'Popularity:')
+      result.members = getFromBorder($, 'Members:')
+      result.favorites = getFromBorder($, 'Favorites:')
 
       resolve(result)
-    }).catch((err) => {
+    }).catch(/* istanbul ignore next */(err) => {
       reject(err)
     })
   })
 }
 
 const getResultsFromSearch = (keyword) => {
-  let items = []
-
   return new Promise((resolve, reject) => {
+    if (!keyword) reject(new Error('[Mal-Scraper]: Received no keyword to search.'))
+
     axios.get(SEARCH_URI, {
       params: {
         type: 'anime',
         keyword
       }
     }).then(({data}) => {
+      const items = []
+
       data.categories.forEach((elem) => {
-        if (elem.type === 'anime') {
-          elem.items.forEach((item) => {
-            items.push(item)
-          })
-        }
+        elem.items.forEach((item) => {
+          items.push(item)
+        })
       })
 
       resolve(items)
-    }).catch((err) => {
+    }).catch(/* istanbul ignore next */(err) => {
       reject(err)
     })
   })

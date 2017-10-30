@@ -55,7 +55,7 @@ const getType = (type, uri) => {
       })
 
       resolve(result)
-    }).catch((err) => {
+    }).catch(/* istanbul ignore next */(err) => {
       reject(err)
     })
   })
@@ -68,7 +68,7 @@ const getType = (type, uri) => {
  */
 const getSeasons = (year, season) => {
   return new Promise((resolve, reject) => {
-    if (!possibleSeasons[season]) reject(new Error('[Mal-Scraper]: Entered seasons does not match any existing season.'))
+    if (!possibleSeasons[season]) reject(new Error('[Mal-Scraper]: Entered season does not match any existing season.'))
     if (!(year <= maxYear) || !(year >= 2000)) reject(new Error(`[Mal-Scraper]: Year must be between 2000 and ${maxYear}.`))
 
     const uri = `${SEASON_URI}${season}-${year}/`
@@ -87,7 +87,7 @@ const getSeasons = (year, season) => {
           Movies: results[2]
         })
       })
-      .catch((err) => reject(err))
+      .catch(/* istanbul ignore next */(err) => reject(err))
   })
 }
 

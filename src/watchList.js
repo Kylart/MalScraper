@@ -10,7 +10,7 @@ const getWatchListFromUser = (user) => {
 
         resolve(JSON.parse($('table.list-table').attr('data-items')))
       })
-      .catch((err) => reject(err))
+      .catch(/* istanbul ignore next */(err) => reject(err))
   })
 }
 
