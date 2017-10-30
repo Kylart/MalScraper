@@ -1,5 +1,6 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
+const match = require('match-sorter')
 
 const SEARCH_URI = 'https://myanimelist.net/search/prefix.json'
 
@@ -131,16 +132,7 @@ const getResultsFromSearch = (keyword) => {
 }
 
 const getBestMatch = (name, items) => {
-  let index = 0
-
-  const toSearch = name.replace(' ', '').toLowerCase()
-
-  items.forEach((item, i) => {
-    const looking = item.name.replace(' ', '').toLowerCase()
-    if (looking === toSearch) index = i
-  })
-
-  return items[index]
+  return match(items, name, {keys: ['name']})[0]
 }
 
 module.exports = {
