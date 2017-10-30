@@ -61,53 +61,55 @@ const getCharactersAndStaff = ($) => {
   return results
 }
 
+const parsePage = (data) => {
+  const $ = cheerio.load(data)
+  const result = {}
+
+  result.title = $('span[itemprop="name"]').first().text()
+  result.synopsis = $('.js-scrollfix-bottom-rel span[itemprop="description"]').text()
+  result.picture = $('img.ac').attr('src')
+
+  const staffAndCharacters = getCharactersAndStaff($)
+  result.characters = staffAndCharacters.characters
+  result.staff = staffAndCharacters.staff
+
+  result.trailer = $('a.iframe.js-fancybox-video.video-unit.promotion').attr('href')
+
+  // Parsing left border.
+  result.englishTitle = getFromBorder($, 'English:')
+  result.japaneseTitle = getFromBorder($, 'Japanese:')
+  result.synonyms = getFromBorder($, 'Synonyms:')
+  result.type = getFromBorder($, 'Type:')
+  result.episodes = getFromBorder($, 'Episodes:')
+  result.status = getFromBorder($, 'Status:')
+  result.aired = getFromBorder($, 'Aired:')
+  result.premiered = getFromBorder($, 'Premiered:')
+  result.broadcast = getFromBorder($, 'Broadcast:')
+  result.producers = getFromBorder($, 'Producers:').split(',       ')
+  result.studios = getFromBorder($, 'Studios:')
+  result.source = getFromBorder($, 'Source:')
+  result.genres = getFromBorder($, 'Genres:').split(', ')
+  result.duration = getFromBorder($, 'Duration:')
+  result.rating = getFromBorder($, 'Rating:')
+  result.score = getFromBorder($, 'Score:').split('\n')[0].split(' ')[0].slice(0, -1)
+  result.scoreStats = getFromBorder($, 'Score:').split('\n')[0].split(' ').slice(1).join(' ').slice(1, -1)
+  result.ranked = getFromBorder($, 'Ranked:').split('\n')[0].slice(0, -1)
+  result.popularity = getFromBorder($, 'Popularity:')
+  result.members = getFromBorder($, 'Members:')
+  result.favorites = getFromBorder($, 'Favorites:')
+
+  return result
+}
+
 const getInfoFromURL = (url) => {
   return new Promise((resolve, reject) => {
     if (!url || typeof url !== 'string' || !url.toLocaleLowerCase().includes('myanimelist')) {
       reject(new Error('[Mal-Scraper]: Invalid Url.'))
     }
 
-    axios.get(url).then((res) => {
-      const $ = cheerio.load(res.data)
-      const result = {}
-
-      result.title = $('span[itemprop="name"]').first().text()
-      result.synopsis = $('.js-scrollfix-bottom-rel span[itemprop="description"]').text()
-      result.picture = $('img.ac').attr('src')
-
-      const staffAndCharacters = getCharactersAndStaff($)
-      result.characters = staffAndCharacters.characters
-      result.staff = staffAndCharacters.staff
-
-      result.trailer = $('a.iframe.js-fancybox-video.video-unit.promotion').attr('href')
-
-      // Parsing left border.
-      result.englishTitle = getFromBorder($, 'English:')
-      result.japaneseTitle = getFromBorder($, 'Japanese:')
-      result.synonyms = getFromBorder($, 'Synonyms:')
-      result.type = getFromBorder($, 'Type:')
-      result.episodes = getFromBorder($, 'Episodes:')
-      result.status = getFromBorder($, 'Status:')
-      result.aired = getFromBorder($, 'Aired:')
-      result.premiered = getFromBorder($, 'Premiered:')
-      result.broadcast = getFromBorder($, 'Broadcast:')
-      result.producers = getFromBorder($, 'Producers:').split(',       ')
-      result.studios = getFromBorder($, 'Studios:')
-      result.source = getFromBorder($, 'Source:')
-      result.genres = getFromBorder($, 'Genres:').split(', ')
-      result.duration = getFromBorder($, 'Duration:')
-      result.rating = getFromBorder($, 'Rating:')
-      result.score = getFromBorder($, 'Score:').split('\n')[0].split(' ')[0].slice(0, -1)
-      result.scoreStats = getFromBorder($, 'Score:').split('\n')[0].split(' ').slice(1).join(' ').slice(1, -1)
-      result.ranked = getFromBorder($, 'Ranked:').split('\n')[0].slice(0, -1)
-      result.popularity = getFromBorder($, 'Popularity:')
-      result.members = getFromBorder($, 'Members:')
-      result.favorites = getFromBorder($, 'Favorites:')
-
-      resolve(result)
-    }).catch(/* istanbul ignore next */(err) => {
-      reject(err)
-    })
+    axios.get(url)
+      .then(({data}) => resolve(parsePage(data)))
+      .catch(/* istanbul ignore next */(err) => reject(err))
   })
 }
 
@@ -140,8 +142,29 @@ const getBestMatch = (name, items) => {
   return match(items, name, {keys: ['name']})[0]
 }
 
+const getInfoFromName = (name) => {
+  return new Promise((resolve, reject) => {
+    if (!name || typeof name !== 'string') {
+      reject(new Error('[Mal-Scraper]: Invalid name.'))
+    }
+
+    getResultsFromSearch(name)
+      .then(async (items) => {
+        try {
+          const data = await getInfoFromURL(getBestMatch(name, items).url)
+
+          resolve(data)
+        } catch (e) {
+          /* istanbul ignore next */
+          reject(e)
+        }
+      })
+      .catch(/* istanbul ignore next */(err) => reject(err))
+  })
+}
+
 module.exports = {
   getInfoFromURL,
   getResultsFromSearch,
-  getBestMatch
+  getInfoFromName
 }
