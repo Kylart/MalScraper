@@ -21,9 +21,12 @@
     "news"
   ],
   "dependencies": {
-    "axios": "^0.16.1",
+    "axios": "^0.17.0",
     "cheerio": "^1.0.0-rc.2",
-    "lodash": "^4.17.4"
+    "js2xmlparser": "^3.0.0",
+    "lodash": "^4.17.4",
+    "request": "^2.83.0",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
     "ava": "^0.23.0",
@@ -32,11 +35,6 @@
     "pre-commit": "^1.2.2",
     "snazzy": "^7.0.0",
     "standard": "^10.0.2"
-  },
-  "standard": {
-    "ignore": [
-      "test"
-    ]
   },
   "precommit": "lint"
 }
