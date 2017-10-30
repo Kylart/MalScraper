@@ -151,8 +151,9 @@ const getInfoFromName = (name) => {
     getResultsFromSearch(name)
       .then(async (items) => {
         try {
-          const url = getBestMatch(name, items).url
-          const data = await getInfoFromURL(getBestMatch(name, items).url)
+          const bestMacth = getBestMatch(name, items)
+          const url = bestMacth ? bestMacth.url : items[0].url
+          const data = await getInfoFromURL(url)
 
           data.url = url
 
