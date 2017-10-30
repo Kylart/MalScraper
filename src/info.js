@@ -113,9 +113,6 @@ const getInfoFromURL = (url) => {
   })
 }
 
-getInfoFromURL('https://myanimelist.net/anime/820/Ginga_Eiyuu_Densetsu')
-  .then((data) => console.log(data))
-
 const getResultsFromSearch = (keyword) => {
   return new Promise((resolve, reject) => {
     if (!keyword) reject(new Error('[Mal-Scraper]: Received no keyword to search.'))
