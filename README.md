@@ -129,7 +129,7 @@ api.search(type = 'anime', name)
 
 api.actOnList({
   support: 'anime', // Can be either 'anime' or 'manga'
-  acton: 'add' // Can be either 'add', 'update' or 'delete'
+  action: 'add' // Can be either 'add', 'update' or 'delete'
 }, id, {
   // All the opts are as described at this link: https://myanimelist.net/modules.php?go=api#animevalues
   status: 1,
