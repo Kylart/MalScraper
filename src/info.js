@@ -5,7 +5,7 @@ const match = require('match-sorter')
 const SEARCH_URI = 'https://myanimelist.net/search/prefix.json'
 
 const getFromBorder = ($, t) => {
-  return $(`span:contains("${t}")`).parent().text().trim().split(' ').slice(1).join(' ').trim()
+  return $(`span:contains("${t}")`).parent().text().trim().split(' ').slice(1).join(' ').split('\n')[0].trim()
 }
 
 const parseCharacterOrStaff = (tr, isStaff = false) => {
@@ -91,9 +91,9 @@ const parsePage = (data) => {
   result.genres = getFromBorder($, 'Genres:').split(', ')
   result.duration = getFromBorder($, 'Duration:')
   result.rating = getFromBorder($, 'Rating:')
-  result.score = getFromBorder($, 'Score:').split('\n')[0].split(' ')[0].slice(0, -1)
-  result.scoreStats = getFromBorder($, 'Score:').split('\n')[0].split(' ').slice(1).join(' ').slice(1, -1)
-  result.ranked = getFromBorder($, 'Ranked:').split('\n')[0].slice(0, -1)
+  result.score = getFromBorder($, 'Score:').split(' ')[0].slice(0, -1)
+  result.scoreStats = getFromBorder($, 'Score:').split(' ').slice(1).join(' ').slice(1, -1)
+  result.ranked = getFromBorder($, 'Ranked:').slice(0, -1)
   result.popularity = getFromBorder($, 'Popularity:')
   result.members = getFromBorder($, 'Members:')
   result.favorites = getFromBorder($, 'Favorites:')
