@@ -68,8 +68,14 @@ const getType = (type, uri) => {
  */
 const getSeasons = (year, season) => {
   return new Promise((resolve, reject) => {
-    if (!possibleSeasons[season]) reject(new Error('[Mal-Scraper]: Entered season does not match any existing season.'))
-    if (!(year <= maxYear) || !(year >= 2000)) reject(new Error(`[Mal-Scraper]: Year must be between 2000 and ${maxYear}.`))
+    if (!possibleSeasons[season]) {
+      reject(new Error('[Mal-Scraper]: Entered season does not match any existing season.'))
+      return
+    }
+    if (!(year <= maxYear) || !(year >= 2000)) {
+      reject(new Error(`[Mal-Scraper]: Year must be between 2000 and ${maxYear}.`))
+      return
+    }
 
     const uri = `${SEASON_URI}${season}-${year}/`
 

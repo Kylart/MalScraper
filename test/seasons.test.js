@@ -33,7 +33,7 @@ test('getSeasons returns the right season', async t => {
     t.is(typeof data.OVAs, 'object')
     t.is(typeof data.Movies, 'object')
     t.is(data.TV.length, 65)
-    t.is(data.OVAs.length, 42)
+    t.is(data.OVAs.length, 44)
     t.is(data.Movies.length, 41)
     t.is(data.TV[0].title, 'Mahou Tsukai no Yome')
   } catch (e) {
