@@ -25,7 +25,7 @@
 </p>
 
 At the moment, _MalScraper_ allows one to:
-* Gather information about all the anime being releases in a season
+* Gather information about all the anime being releases in a season.
 * Gather anime-related news (include light-novels, manga, films...). 160 news available.
 * Make an anime search.
 * Get different information for this anime.

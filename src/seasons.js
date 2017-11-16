@@ -1,7 +1,7 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
 
-const SEASON_URI = 'https://www.livechart.me/'
+const SEASON_URI = 'https://myanimelist.net/anime/season/'
 const maxYear = 1901 + (new Date()).getYear()
 const possibleSeasons = {
   'winter': 1,
@@ -10,55 +10,42 @@ const possibleSeasons = {
   'fall': 1
 }
 
-const getType = (type, uri) => {
-  // Type must be something like 'tv', 'ovas' or 'movies'
-  return new Promise((resolve, reject) => {
-    const result = []
+const type2Class = {
+  TV: 1,
+  OVAs: 2,
+  Movies: 3,
+  Specials: 4,
+  ONAs: 5
+}
 
-    axios.get(uri + type).then(({data}) => {
-      const $ = cheerio.load(data)
+const getType = (type, $) => {
+  const result = []
+  const classToSearch = `.js-seasonal-anime-list-key-${type2Class[type]} .seasonal-anime.js-seasonal-anime`
 
-      $('.anime-card').each(function () {
-        const toPush = {}
-        const genres = []
-        const producers = []
+  $(classToSearch).each(function () {
+    if (!$(this).hasClass('kids') && !$(this).hasClass('r18')) {
+      const general = $(this).find('div:nth-child(1)')
+      const picture = $(this).find('.image').find('img')
+      const prod = $(this).find('.prodsrc')
+      const info = $(this).find('.information')
 
-        toPush.title = $(this).find('.main-title').text()
-
-        toPush.jpTitle = $(this).find('.jp-title').text()
-
-        $(this).find('.anime-tags').each(function () {
-          $(this).find('li').each(function () {
-            genres.push($(this).text())
-          })
-        })
-        toPush.genres = genres
-
-        toPush.picture = $(this).find('.anime-card-body .poster-container img').attr('data-src')
-
-        toPush.synopsis = $(this).find('.anime-synopsis').text()
-
-        $(this).find('.anime-studios').each(function () {
-          $(this).find('li').each(function () {
-            producers.push($(this).text())
-          })
-        })
-        toPush.producers = producers
-
-        toPush.releaseDate = $(this).find('.anime-date').text()
-
-        toPush.nbEp = $(this).find('.anime-episodes').text().split(' ')[0]
-
-        toPush.fromType = $(this).find('.anime-source').text()
-
-        result.push(toPush)
+      result.push({
+        picture: picture.attr(picture.hasClass('lazyload') ? 'data-src' : 'src'),
+        synopsis: $(this).find('.synopsis').find('span').text().trim(),
+        licensor: $(this).find('.synopsis').find('p').attr('data-licensors').slice(0, -1),
+        title: general.find('.title').find('p').text().trim(),
+        link: general.find('.title').find('a').attr('href').replace('/video', ''),
+        genres: general.find('.genres').find('.genres-inner').text().trim().split('\n      \n        '),
+        producers: prod.find('.producer').text().trim().split(', '),
+        fromType: prod.find('.source').text().trim(),
+        nbEp: prod.find('.eps').find('a').text().trim().replace(' eps', ''),
+        releaseDate: info.find('.info').find('span').text().trim(),
+        score: info.find('.scormem').find('.score').text().trim()
       })
-
-      resolve(result)
-    }).catch(/* istanbul ignore next */(err) => {
-      reject(err)
-    })
+    }
   })
+
+  return result
 }
 
 /**
@@ -77,23 +64,23 @@ const getSeasons = (year, season) => {
       return
     }
 
-    const uri = `${SEASON_URI}${season}-${year}/`
+    const uri = `${SEASON_URI}${year}/${season}`
 
-    const promises = [
-      getType('tv', uri),
-      getType('ovas', uri),
-      getType('movies', uri)
-    ]
+    axios.get(uri)
+      .then(({data}) => {
+        const $ = cheerio.load(data)
 
-    Promise.all(promises)
-      .then((results) => {
         resolve({
-          TV: results[0],
-          OVAs: results[1],
-          Movies: results[2]
+          TV: getType('TV', $),
+          OVAs: getType('OVAs', $),
+          ONAs: getType('ONAs', $),
+          Movies: getType('Movies', $),
+          Specials: getType('Specials', $)
         })
       })
-      .catch(/* istanbul ignore next */(err) => reject(err))
+      .catch(/* istanbul ignore next */ (err) => {
+        reject(err)
+      })
   })
 }
 
