@@ -108,10 +108,17 @@ const getInfoFromURL = (url) => {
     }
 
     axios.get(url)
-      .then(({data}) => resolve(parsePage(data)))
+      .then(({data}) => {
+        const res = parsePage(data)
+        res.id = +url.split('/').splice(-2, 1)[0]
+        resolve(res)
+      })
       .catch(/* istanbul ignore next */(err) => reject(err))
   })
 }
+
+getInfoFromURL('https://myanimelist.net/anime/35241/Konohana_Kitan')
+  .then((data) => console.log(data))
 
 const getResultsFromSearch = (keyword) => {
   return new Promise((resolve, reject) => {
