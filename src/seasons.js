@@ -59,8 +59,8 @@ const getSeasons = (year, season) => {
       reject(new Error('[Mal-Scraper]: Entered season does not match any existing season.'))
       return
     }
-    if (!(year <= maxYear) || !(year >= 2000)) {
-      reject(new Error(`[Mal-Scraper]: Year must be between 2000 and ${maxYear}.`))
+    if (!(year <= maxYear) || !(year >= 1917)) {
+      reject(new Error(`[Mal-Scraper]: Year must be between 1917 and ${maxYear}.`))
       return
     }
 
