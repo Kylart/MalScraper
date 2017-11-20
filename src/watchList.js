@@ -4,7 +4,7 @@ const {parseString} = require('xml2js')
 
 const malToNormal = {
   // Anime values
-  series_animedb_id: 'animedbID',
+  series_animedb_id: 'id',
   series_title: 'title',
   series_synonyms: 'synonyms',
   series_type: 'type',
