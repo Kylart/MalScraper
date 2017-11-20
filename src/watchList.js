@@ -67,6 +67,7 @@ const getWatchListFromUser = (user) => {
     })
       .then(({data}) => {
         parseString(data, (err, res) => {
+          /* istanbul ignore next */
           if (err) reject(err)
 
           const mal = res.myanimelist

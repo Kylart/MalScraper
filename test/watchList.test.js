@@ -18,7 +18,8 @@ test('getWatchListFromUser returns a valid array with enttries', async t => {
     const data = await getWatchListFromUser('Kylart')
 
     t.is(typeof data, 'object')
-    t.not(data.length, 0)
+    t.not(data.lists.length, 0)
+    t.not(data.stats, undefined)
   } catch (e) {
     console.log(e.message)
     t.fail()
