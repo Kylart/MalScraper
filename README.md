@@ -58,7 +58,7 @@ malScraper.getInfoFromName(name)
   .catch((err) => console.log(err))
 
 // This method is faster than getInfoFromName since it makes only one http call
-malScraper.getInfoFromName(url)
+malScraper.getInfoFromURL(url)
   .then((data) => console.log(data))
   .catch((err) => console.log(err))
 
