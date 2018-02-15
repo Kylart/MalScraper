@@ -25,6 +25,7 @@ const malToNormal = {
   my_tags: 'tags',
   // MyAnimeList values
   user_id: 'userID',
+  user_name: 'username',
   user_watching: 'nbWatching',
   user_completed: 'nbCompleted',
   user_onhold: 'nbOnHold',
