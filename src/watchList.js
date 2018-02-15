@@ -72,6 +72,10 @@ const getWatchListFromUser = (user) => {
 
           const mal = res.myanimelist
 
+          if (!mal) {
+            reject(new Error('[Mal-Scraper]: It seems this user does not exist.'))
+          }
+
           resolve({
             stats: flatten(mal.myinfo[0]),
             lists: _.map(mal.anime, obj => flatten(obj))
