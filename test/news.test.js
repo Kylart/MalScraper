@@ -11,3 +11,25 @@ test('getNewsNoDetails returns 160 news entries', async t => {
     t.fail()
   }
 })
+
+test('getNewsNoDetails returns 24 news entries', async t => {
+  try {
+    const data = await getNewsNoDetails(24)
+
+    t.is(data.length, 24)
+  } catch (e) {
+    console.log(e.message)
+    t.fail()
+  }
+})
+
+test('getNewsNoDetails returns 18 news entries', async t => {
+  try {
+    const data = await getNewsNoDetails(18)
+
+    t.is(data.length, 18)
+  } catch (e) {
+    console.log(e.message)
+    t.fail()
+  }
+})

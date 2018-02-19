@@ -97,8 +97,11 @@ malScraper.getSeason(year, season)
 ```javascript
 const malScraper = require('mal-scraper')
 
-malScraper.getNewsNoDetails()
-  // `data` is an array containing 160 entries
+// Careful to 429, this method makes one request every 20 news
+// So, 200 news means 10 requests made to MAL
+// nbNews defaults to 160
+malScraper.getNewsNoDetails(nbNews)
+  // `data` is an array containing `nbNews` entries
   .then((data) => console.log(data))
   .catch((err) => console.log(err))
 ```
