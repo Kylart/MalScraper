@@ -13,7 +13,7 @@ test('getWachListFromUser returns an error if no user given', async t => {
   }
 })
 
-test('getWatchListFromUser returns a valid array with enttries', async t => {
+test('getWatchListFromUser returns a valid array with entries', async t => {
   try {
     const data = await getWatchListFromUser('Kylart')
 
@@ -23,5 +23,15 @@ test('getWatchListFromUser returns a valid array with enttries', async t => {
   } catch (e) {
     console.log(e.message)
     t.fail()
+  }
+})
+
+test('getWatchListFromUser returns an error if invalid user', async t => {
+  try {
+    await getWatchListFromUser('thisuserprollyDoesNotExist')
+
+    t.fail()
+  } catch (e) {
+    t.true(e.message.includes('user does not exist'))
   }
 })
