@@ -1,8 +1,9 @@
 const officialApi = require('./officialApi')
 const getSeason = require('./seasons.js')
-const getNewsNoDetails = require('./news')
-const {getInfoFromName, getInfoFromURL, getResultsFromSearch} = require('./info')
-const {getWatchListFromUser} = require('./watchList')
+const getNewsNoDetails = require('./news.js')
+const {getInfoFromName, getInfoFromURL, getResultsFromSearch} = require('./info.js')
+const {getWatchListFromUser} = require('./watchList.js')
+const {getEpisodesList} = require('./episodes.js')
 
 module.exports = {
   officialApi,
@@ -11,5 +12,6 @@ module.exports = {
   getInfoFromName,
   getInfoFromURL,
   getResultsFromSearch,
-  getWatchListFromUser
+  getWatchListFromUser,
+  getEpisodesList
 }

@@ -41,12 +41,12 @@ const searchPage = (url, offset = 0, res = []) => {
         if (tmpRes.length) {
           searchPage(url, offset + 100, res)
             .then((data) => resolve(data))
-            .catch((err) => reject(err))
+            .catch(/* istanbul ignore next */(err) => reject(err))
         } else {
           resolve(res)
         }
       })
-      .catch((err) => reject(err))
+      .catch(/* istanbul ignore next */(err) => reject(err))
   })
 }
 
@@ -58,9 +58,9 @@ const getEpisodesFromName = (name) => {
 
         searchPage(`${encodeURI(url)}/episode`)
           .then((data) => resolve(data))
-          .catch((err) => reject(err))
+          .catch(/* istanbul ignore next */(err) => reject(err))
       })
-      .catch((err) => reject(err))
+      .catch(/* istanbul ignore next */(err) => reject(err))
   })
 }
 
@@ -68,7 +68,7 @@ const getEpisodesFromNameAndId = (id, name) => {
   return new Promise((resolve, reject) => {
     searchPage(`${BASE_URI}${id}/${encodeURI(name)}/episode`)
       .then((data) => resolve(data))
-      .catch((err) => reject(err))
+      .catch(/* istanbul ignore next */(err) => reject(err))
   })
 }
 
@@ -89,11 +89,11 @@ const getEpisodesList = (obj) => {
 
       getEpisodesFromNameAndId(id, name)
         .then((data) => resolve(data))
-        .catch((err) => reject(err))
+        .catch(/* istanbul ignore next */(err) => reject(err))
     } else {
       getEpisodesFromName(obj)
         .then((data) => resolve(data))
-        .catch((err) => reject(err))
+        .catch(/* istanbul ignore next */(err) => reject(err))
     }
   })
 }
