@@ -82,8 +82,8 @@ const getEpisodesList = (obj) => {
     if (typeof obj === 'object' && !obj[0]) {
       const {id, name} = obj
 
-      if (!id || !name) {
-        reject(new Error('[Mal-Scraper]: Malformed input. ID or name is missing.'))
+      if (!id || !name || isNaN(+id) || typeof name !== 'string') {
+        reject(new Error('[Mal-Scraper]: Malformed input. ID or name is malformed or missing.'))
         return
       }
 

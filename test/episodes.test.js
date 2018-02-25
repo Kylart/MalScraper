@@ -23,7 +23,7 @@ test('getEpisodesList returns an error if called with malformed object', async t
   try {
     await getEpisodesList({name: drifers})
   } catch (e) {
-    t.true(e.message === '[Mal-Scraper]: Malformed input. ID or name is missing.')
+    t.true(e.message === '[Mal-Scraper]: Malformed input. ID or name is malformed or missing.')
   }
 })
 
