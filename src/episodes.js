@@ -1,5 +1,6 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
+const _ = require('lodash')
 const {getResultsFromSearch} = require('./info.js')
 
 const BASE_URI = 'https://myanimelist.net/anime/'
@@ -24,18 +25,39 @@ const parsePage = ($) => {
   return result
 }
 
+const searchPage = (url, offset = 0, res = []) => {
+  return new Promise((resolve, reject) => {
+    axios.get(url, {
+      params: {
+        offset
+      }
+    })
+      .then(({data}) => {
+        const $ = cheerio.load(data)
+
+        const tmpRes = parsePage($)
+        res = _.concat(res, tmpRes)
+
+        if (tmpRes.length) {
+          searchPage(url, offset + 100, res)
+            .then((data) => resolve(data))
+            .catch((err) => reject(err))
+        } else {
+          resolve(res)
+        }
+      })
+      .catch((err) => reject(err))
+  })
+}
+
 const getEpisodesFromName = (name) => {
   return new Promise((resolve, reject) => {
     getResultsFromSearch(name)
       .then((items) => {
         const {url} = items[0]
 
-        axios.get(`${encodeURI(url)}/episode`)
-          .then(({data}) => {
-            const $ = cheerio.load(data)
-
-            resolve(parsePage($))
-          })
+        searchPage(`${encodeURI(url)}/episode`)
+          .then((data) => resolve(data))
           .catch((err) => reject(err))
       })
       .catch((err) => reject(err))
@@ -44,12 +66,8 @@ const getEpisodesFromName = (name) => {
 
 const getEpisodesFromNameAndId = (id, name) => {
   return new Promise((resolve, reject) => {
-    axios.get(`${BASE_URI}${id}/${encodeURI(name)}/episode`)
-      .then(({data}) => {
-        const $ = cheerio.load(data)
-
-        resolve(parsePage($))
-      })
+    searchPage(`${BASE_URI}${id}/${encodeURI(name)}/episode`)
+      .then((data) => resolve(data))
       .catch((err) => reject(err))
   })
 }
@@ -57,7 +75,7 @@ const getEpisodesFromNameAndId = (id, name) => {
 const getEpisodesList = (obj) => {
   return new Promise((resolve, reject) => {
     if (!obj) {
-      reject(new Error('[Mal-Scraper]: No id nor name given.'))
+      reject(new Error('[Mal-Scraper]: No id nor name received.'))
       return
     }
 
