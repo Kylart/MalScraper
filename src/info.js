@@ -1,6 +1,5 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
-const match = require('match-sorter')
 
 const SEARCH_URI = 'https://myanimelist.net/search/prefix.json'
 
@@ -142,10 +141,6 @@ const getResultsFromSearch = (keyword) => {
   })
 }
 
-const getBestMatch = (name, items) => {
-  return match(items, name, {keys: ['name']})[0]
-}
-
 const getInfoFromName = (name) => {
   return new Promise((resolve, reject) => {
     if (!name || typeof name !== 'string') {
@@ -155,7 +150,7 @@ const getInfoFromName = (name) => {
     getResultsFromSearch(name)
       .then(async (items) => {
         try {
-          const bestMacth = getBestMatch(name, items)
+          const bestMacth = items[0] // MAL Actually already sorts the results by best match.
           const url = bestMacth ? bestMacth.url : items[0].url
           const data = await getInfoFromURL(url)
 

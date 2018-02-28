@@ -30,6 +30,7 @@ At the moment, _MalScraper_ allows one to:
 * Make an anime search.
 * Get different information for this anime.
 * Get only the best result for an anime search.
+* Get a list of an anime's episodes.
 * Access the full official MyAnimeList API (includes search, add, update and delete from your user watch lists).
 
 _MalScraper_ is being developed mainly for [_KawAnime_](https://github.com/Kylart/KawAnime) but anyone can use it for

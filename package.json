@@ -1,6 +1,6 @@
 {
   "name": "mal-scraper",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "Scrap everything you can from MyAnimeList.net",
   "main": "src/index.js",
   "scripts": {
@@ -29,7 +29,6 @@
     "cheerio": "^1.0.0-rc.2",
     "js2xmlparser": "^3.0.0",
     "lodash": "^4.17.4",
-    "match-sorter": "^2.0.2",
     "request": "^2.83.0",
     "xml2js": "^0.4.19"
   },
