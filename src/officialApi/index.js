@@ -1,11 +1,11 @@
 const request = require('request')
-const {xml2JSON, JSON2Xml} = require('./utils')
+const {xml2JSON, JSON2Xml, flatten} = require('./utils')
 
 const routes = {
   verify: 'account/verify_credentials.xml',
   search: {
     anime: 'anime/search.xml',
-    mange: 'manga/search.xml'
+    manga: 'manga/search.xml'
   },
   lists: {
     anime: {
@@ -81,7 +81,7 @@ module.exports = class {
         }
       }, (err, res, body) => {
         if (err) reject(err)
-        resolve(xml2JSON(body)[type].entry)
+        resolve(flatten(xml2JSON(body)[type].entry[0]))
       })
     })
   }
