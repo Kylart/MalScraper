@@ -16,7 +16,7 @@ const parsePage = ($) => {
     result.push({
       epNumber: +$(this).find('td.episode-number').text().trim(),
       aired: $(this).find('td.episode-aired').text().trim(),
-      discussionLink: $(this).find('td.episode-forum').text().trim(),
+      discussionLink: $(this).find('td.episode-forum > a').attr('href'),
       title: $(this).find('td.episode-title > a').text().trim(),
       japaneseTitle: $(this).find('td.episode-title > span').text().trim()
     })
