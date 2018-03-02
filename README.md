@@ -83,9 +83,9 @@ const malScraper = require('mal-scraper')
 Usage example:
 
 ```js
-const malScraper = require('mal-scraper');
+const malScraper = require('mal-scraper')
 
-const name = 'Sakura Trick';
+const name = 'Sakura Trick'
 
 malScraper.getInfoFromName(name)
   .then((data) => console.log(data))
@@ -105,9 +105,9 @@ This method is faster than `getInfoFromName()` as it only make one HTTP request
 Usage example:
 
 ```js
-const malScraper = require('mal-scraper');
+const malScraper = require('mal-scraper')
 
-const url = 'https://myanimelist.net/anime/20047/Sakura_Trick';
+const url = 'https://myanimelist.net/anime/20047/Sakura_Trick'
 
 malScraper.getInfoFromURL(url)
   .then((data) => console.log(data))
@@ -125,9 +125,9 @@ Returns: A [Anime data model](https://github.com/Kylart/MalScraper/blob/master/R
 Usage example:
 
 ```js
-const malScraper = require('mal-scraper');
+const malScraper = require('mal-scraper')
 
-const query = 'sakura';
+const query = 'sakura'
 
 malScraper.getResultsFromSearch(query)
   .then((data) => console.log(data))
@@ -194,7 +194,7 @@ Usage example:
 ```javascript
 const malScraper = require('mal-scraper')
 
-const nbNews = 120;
+const nbNews = 120
 
 malScraper.getNewsNoDetails(nbNews)
   .then((data) => console.log(data))
@@ -223,10 +223,9 @@ malScraper.getEpisodesList({
   .then((data) => console.log(data))
   .catch((err) => console.log(err))
 
-//Alternatively, if you only have the name and not the id, 
-//you can let the method fetch the id on the way at the cost of being slower
+//Alternatively, if you only have the name and not the id, you can let the method fetch the id on the way at the cost of being slower
 
-const name = "Sakura Trick";
+const name = "Sakura Trick"
 
 malScraper.getEpisodesList(name)
   .then((data) => console.log(data))
@@ -254,7 +253,7 @@ const malScraper = require('mal-scraper')
 const api = new malScraper.officialApi({
   username: 'my_super_username',
   password: 'my_super_secret_password'
-});
+})
 ```
 
 #### checkCredentials()
@@ -269,7 +268,7 @@ const malScraper = require('mal-scraper')
 const api = new malScraper.officialApi({
   username: 'my_super_username',
   password: 'my_super_secret_password'
-});
+})
 
 api.checkCredentials()
   .then((data) => console.log(data))
@@ -291,10 +290,10 @@ const malScraper = require('mal-scraper')
 const api = new malScraper.officialApi({
   username: 'my_super_username',
   password: 'my_super_secret_password'
-});
+})
 
-const name = 'Sakura Trick';
-const type = 'manga';
+const name = 'Sakura Trick'
+const type = 'manga'
 
 // type can be either 'anime' or 'manga'
 api.search(type, name)
@@ -334,7 +333,7 @@ const api = new malScraper.officialApi({
   password: 'my_super_secret_password'
 })
 
-const id = 20047;
+const id = 20047
 
 api.actOnList({
   support: 'anime',
@@ -620,3 +619,4 @@ The types, statuses and series statuses aren't explicitly given by MyAnimeList, 
 MIT License
 
 Copyright (c) Kylart
+
