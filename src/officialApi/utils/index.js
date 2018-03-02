@@ -20,15 +20,21 @@ const JSON2Xml = (json) => {
 }
 
 /**
- * Flatten the FIRST level of an object with array values.
+ * Flatten values of arrays in an object of arrays.
  * @param {object} obj The object to flatten.
  */
 const flatten = (obj) => {
-  each(obj, (value, key) => {
-    obj[key] = value[0]
+  const result = []
+
+  each(obj, (entry) => {
+    each(entry, (value, key) => {
+      entry[key] = value[0]
+    })
+
+    result.push(entry)
   })
 
-  return obj
+  return result
 }
 
 module.exports = {

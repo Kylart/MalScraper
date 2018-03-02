@@ -81,7 +81,7 @@ module.exports = class {
         }
       }, (err, res, body) => {
         if (err) reject(err)
-        resolve(flatten(xml2JSON(body)[type].entry[0]))
+        resolve(flatten(xml2JSON(body)[type].entry))
       })
     })
   }
