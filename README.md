@@ -54,7 +54,7 @@ Tables of content:
 - - * [search()](https://github.com/Kylart/MalScraper/blob/master/README.md#search)
 - - * [actOnList()](https://github.com/Kylart/MalScraper/blob/master/README.md#actonlist)
 * [Data models](https://github.com/Kylart/MalScraper/blob/master/README.md#data-models)
-- * [Anime data model](https://github.com/Kylart/MalScraper/blob/master/README.md##anime-data-model)
+- * [Anime data model](https://github.com/Kylart/MalScraper/blob/master/README.md#anime-data-model)
 - * [Character data model](https://github.com/Kylart/MalScraper/blob/master/README.md#character-data-model)
 - * [Staff data model](https://github.com/Kylart/MalScraper/blob/master/README.md#staff-data-model)
 - * [Search result data model](https://github.com/Kylart/MalScraper/blob/master/README.md#search-result-data-model)
@@ -89,7 +89,7 @@ const name = 'Sakura Trick';
 
 malScraper.getInfoFromName(name)
   .then((data) => console.log(data))
-  .catch((err) => console.log(err));
+  .catch((err) => console.log(err))
 ```
 
 Returns: A [Anime data model](https://github.com/Kylart/MalScraper/blob/master/README.md#anime-data-model) object
@@ -111,7 +111,7 @@ const url = 'https://myanimelist.net/anime/20047/Sakura_Trick';
 
 malScraper.getInfoFromURL(url)
   .then((data) => console.log(data))
-  .catch((err) => console.log(err));
+  .catch((err) => console.log(err))
 ```
 
 Returns: A [Anime data model](https://github.com/Kylart/MalScraper/blob/master/README.md#anime-data-model) object (same as `getInfoFromName()`)
@@ -131,7 +131,7 @@ const query = 'sakura';
 
 malScraper.getResultsFromSearch(query)
   .then((data) => console.log(data))
-  .catch((err) => console.log(err));
+  .catch((err) => console.log(err))
 ```
 
 Returns: An array of a maximum length of 10 containing [Search result data model](https://github.com/Kylart/MalScraper/blob/master/README.md#search-result-data-model) objects
@@ -207,7 +207,7 @@ Returns: An array of [News data model](https://github.com/Kylart/MalScraper/blob
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| anime | object | Details about the anime to get the episodes list from |
+| anime | object OR string | If an object, it must have the `name` and `id` property. If you only have the name and not the id, you may call the method with the name as a string, this will be slower but the id will be automatically fetched on the way |
 | anime.name | string | The name of the anime |
 | anime.id | number | The unique identifier of this anime |
 
@@ -220,6 +220,15 @@ malScraper.getEpisodesList({
   name: 'Sakura Trick',
   id: 20047
 })
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err))
+
+//Alternatively, if you only have the name and not the id, 
+//you can let the method fetch the id on the way at the cost of being slower
+
+const name = "Sakura Trick";
+
+malScraper.getEpisodesList(name)
   .then((data) => console.log(data))
   .catch((err) => console.log(err))
 ```
@@ -323,7 +332,7 @@ const malScraper = require('mal-scraper')
 const api = new malScraper.officialApi({
   username: 'my_super_username',
   password: 'my_super_secret_password'
-});
+})
 
 const id = 20047;
 
