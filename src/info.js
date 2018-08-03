@@ -107,6 +107,8 @@ const getInfoFromURL = (url) => {
       reject(new Error('[Mal-Scraper]: Invalid Url.'))
     }
 
+    url = encodeURI(url)
+
     axios.get(url)
       .then(({data}) => {
         const res = parsePage(data)
