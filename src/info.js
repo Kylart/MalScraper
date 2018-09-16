@@ -8,13 +8,24 @@ const getFromBorder = ($, t) => {
   return $(`span:contains("${t}")`).parent().text().trim().split(' ').slice(1).join(' ').split('\n')[0].trim()
 }
 
+const getPictureUrl = (url) => {
+  const sizeRegex = /\/r\/\d*x\d*/
+  const parts = url.split('.')
+
+  const completeUrl = parts.slice(0, -1).join('.').replace(sizeRegex, '') + '.jpg'
+
+  return completeUrl
+}
+
 const parseCharacterOrStaff = (tr, isStaff = false) => {
   return JSON.parse(JSON.stringify({
     link: tr.find('td:nth-child(1)').find('a').attr('href'),
+    picture: getPictureUrl(tr.find('td:nth-child(1)').find('img').attr('data-srcset').split('1x, ')[1].replace(' 2x', '')),
     name: tr.find('td:nth-child(2)').text().trim().split('\n')[0],
     role: tr.find('td:nth-child(2)').text().trim().split('\n')[2].trim(),
     seiyuu: !isStaff ? {
       link: tr.find('td:nth-child(3)').find('a').attr('href'),
+      picture: getPictureUrl(tr.find('td:nth-child(3)').find('img').attr('data-srcset').split('1x, ')[1].replace(' 2x', '')),
       name: tr.find('td:nth-child(3)').find('a').text().trim()
     } : undefined
   }))

@@ -397,6 +397,7 @@ Anime ratings can be either:
 | Property | Type | Description |
 | --- | --- | --- |
 | link | string | Link to the MAL profile of this person |
+| picture | string | Link to a picture of the person at the best possible size |
 | name | string | Their name and surname, like `Surname, Name` |
 | role | string | The role this person has/had in this anime (Director, Sound Director...) |
 
@@ -405,10 +406,12 @@ Anime ratings can be either:
 | Property | Type | Description |
 | --- | --- | --- |
 | link | string | Link to the MAL profile of this character |
+| picture | string | Link to a picture of the character at the best possible size |
 | name | string | Their name and surname, like `Surname, Name` |
 | role | string | The role this person has/had in this anime (Main, Supporting...) |
 | seiyuu | object | An object containing additional data about who dubbed this character |
 | seiyuu.link | string | Link to the MAL profile of who dubbed this character |
+| seiyuu.picture | string | Link to a picture of the seiyuu at the best possible size |
 | seiyuu.name | string | Their name and surname, like `Surname, Name` | 
 
 ### Search result data model
