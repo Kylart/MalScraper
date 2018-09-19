@@ -18,14 +18,25 @@ const getPictureUrl = (url) => {
 }
 
 const parseCharacterOrStaff = (tr, isStaff = false) => {
+  const getPicture = (nbChild) => {
+    const src = tr.find(`td:nth-child(${nbChild})`).find('img').attr('data-srcset')
+
+    if (src && src.includes('1x') && src.includes('2x')) {
+      return getPictureUrl(src.split('1x, ')[1].replace(' 2x', ''))
+    } else {
+      // This most likely means that the seiyuu is not here.
+      return undefined
+    }
+  }
+
   return JSON.parse(JSON.stringify({
     link: tr.find('td:nth-child(1)').find('a').attr('href'),
-    picture: getPictureUrl(tr.find('td:nth-child(1)').find('img').attr('data-srcset').split('1x, ')[1].replace(' 2x', '')),
+    picture: getPicture(1),
     name: tr.find('td:nth-child(2)').text().trim().split('\n')[0],
     role: tr.find('td:nth-child(2)').text().trim().split('\n')[2].trim(),
     seiyuu: !isStaff ? {
       link: tr.find('td:nth-child(3)').find('a').attr('href'),
-      picture: getPictureUrl(tr.find('td:nth-child(3)').find('img').attr('data-srcset').split('1x, ')[1].replace(' 2x', '')),
+      picture: getPicture(3),
       name: tr.find('td:nth-child(3)').find('a').text().trim()
     } : undefined
   }))
