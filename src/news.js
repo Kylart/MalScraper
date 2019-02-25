@@ -32,10 +32,10 @@ module.exports = (nbNews = 160) => {
         const result = []
 
         for (let i = 0; i < maxPage - 1; ++i) {
-          const {data} = arguments[`${i}`]
+          const { data } = arguments[`${i}`]
           const $ = cheerio.load(data)
 
-          const pageElements = $('.news-unit-right')   // 20 elements
+          const pageElements = $('.news-unit-right') // 20 elements
 
           // Pictures for each element
           const images = []

@@ -1,5 +1,9 @@
 const test = require('ava')
-const {getWatchListFromUser} = require('../src')
+const { getWatchListFromUser } = require('../src')
+
+test.beforeEach(async t => {
+  await new Promise(resolve => setTimeout(resolve, 1500))
+})
 
 test('getWachListFromUser returns an error if no user given', async t => {
   try {
@@ -26,12 +30,12 @@ test('getWatchListFromUser returns a valid array with entries', async t => {
   }
 })
 
-test('getWatchListFromUser returns an error if invalid user', async t => {
+test.only('getWatchListFromUser returns an error if invalid user', async t => {
   try {
     await getWatchListFromUser('thisuserprollyDoesNotExist')
 
     t.fail()
   } catch (e) {
-    t.true(e.message.includes('user does not exist'))
+    t.is(e.response.status, 404)
   }
 })

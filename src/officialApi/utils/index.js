@@ -1,6 +1,5 @@
-const {parseString} = require('xml2js')
-const {parse} = require('js2xmlparser')
-const {each} = require('lodash')
+const { parseString } = require('xml2js')
+const { parse } = require('js2xmlparser')
 
 const xml2JSON = (string) => {
   let json
@@ -26,9 +25,9 @@ const JSON2Xml = (json) => {
 const flatten = (obj) => {
   const result = []
 
-  each(obj, (entry) => {
-    each(entry, (value, key) => {
-      entry[key] = value[0]
+  obj.forEach((entry) => {
+    Object.keys(entry).forEach((key) => {
+      entry[key] = entry[key][0]
     })
 
     result.push(entry)

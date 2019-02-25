@@ -67,7 +67,7 @@ const getSeasons = (year, season) => {
     const uri = `${SEASON_URI}${year}/${season}`
 
     axios.get(uri)
-      .then(({data}) => {
+      .then(({ data }) => {
         const $ = cheerio.load(data)
 
         resolve({

@@ -1,5 +1,9 @@
 const test = require('ava')
-const {getNewsNoDetails} = require('../src')
+const { getNewsNoDetails } = require('../src')
+
+test.beforeEach(async t => {
+  await new Promise(resolve => setTimeout(resolve, 1500))
+})
 
 test('getNewsNoDetails returns 160 news entries', async t => {
   try {

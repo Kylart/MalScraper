@@ -1,7 +1,6 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
-const _ = require('lodash')
-const {getResultsFromSearch} = require('./info.js')
+const { getResultsFromSearch } = require('./info.js')
 
 const BASE_URI = 'https://myanimelist.net/anime/'
 
@@ -32,11 +31,11 @@ const searchPage = (url, offset = 0, res = []) => {
         offset
       }
     })
-      .then(({data}) => {
+      .then(({ data }) => {
         const $ = cheerio.load(data)
 
         const tmpRes = parsePage($)
-        res = _.concat(res, tmpRes)
+        res = res.concat(tmpRes)
 
         if (tmpRes.length) {
           searchPage(url, offset + 100, res)
@@ -54,7 +53,7 @@ const getEpisodesFromName = (name) => {
   return new Promise((resolve, reject) => {
     getResultsFromSearch(name)
       .then((items) => {
-        const {url} = items[0]
+        const { url } = items[0]
 
         searchPage(`${encodeURI(url)}/episode`)
           .then((data) => resolve(data))
@@ -80,7 +79,7 @@ const getEpisodesList = (obj) => {
     }
 
     if (typeof obj === 'object' && !obj[0]) {
-      const {id, name} = obj
+      const { id, name } = obj
 
       if (!id || !name || isNaN(+id) || typeof name !== 'string') {
         reject(new Error('[Mal-Scraper]: Malformed input. ID or name is malformed or missing.'))

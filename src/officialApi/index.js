@@ -1,5 +1,5 @@
 const request = require('request')
-const {xml2JSON, JSON2Xml, flatten} = require('./utils')
+const { xml2JSON, JSON2Xml, flatten } = require('./utils')
 
 const routes = {
   verify: 'account/verify_credentials.xml',
@@ -115,7 +115,7 @@ module.exports = class {
    *
    * @returns {promise}
    */
-  actOnList (type = {support: 'anime', action: 'update'}, id, opts) {
+  actOnList (type = { support: 'anime', action: 'update' }, id, opts) {
     return new Promise((resolve, reject) => {
       if (!routes.lists[type.support]) reject(new Error('[Mal-Scraper]: Wrong support type received.'))
       if (!routes.lists[type.support][type.action]) reject(new Error('[Mal-Scraper]: Wrong action type received.'))

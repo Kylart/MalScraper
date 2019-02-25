@@ -1,47 +1,35 @@
-const _ = require('lodash')
 const axios = require('axios')
-const {parseString} = require('xml2js')
+const cheerio = require('cheerio')
 
-const malToNormal = {
-  // Anime values
-  series_animedb_id: 'id',
-  series_title: 'title',
-  series_synonyms: 'synonyms',
-  series_type: 'type',
-  series_episodes: 'nbEpisodes',
-  series_status: 'seriesStatus',
-  series_start: 'seriesStart',
-  series_end: 'seriesEnd',
-  series_image: 'picture',
-  my_id: 'myID',
-  my_watched_episodes: 'nbWatchedEpisode',
-  my_start_date: 'myStartDate',
-  my_finish_date: 'myEndDate',
-  my_score: 'score',
-  my_status: 'status',
-  my_rewatching: 'rewatching',
-  my_rewatching_ep: 'rewatchingEp',
-  my_last_updated: 'lastUpdate',
-  my_tags: 'tags',
-  // MyAnimeList values
-  user_id: 'userID',
-  user_name: 'username',
-  user_watching: 'nbWatching',
-  user_completed: 'nbCompleted',
-  user_onhold: 'nbOnHold',
-  user_dropped: 'nbDropped',
-  user_plantowatch: 'nbPlanToWatch',
-  user_days_spent_watching: 'nbDaysSpentWatching'
+const toCamelCase = (string) => {
+  return string
+    .split('_')
+    .map((chunk, index) => index ? chunk.charAt(0).toUpperCase() + chunk.slice(1) : chunk)
+    .join('')
 }
 
 const flatten = (obj) => {
-  const res = {}
+  return Object.keys(obj)
+    .reduce((acc, key) => {
+      acc[toCamelCase(key)] = obj[key]
 
-  _.each(obj, (value, key) => {
-    res[malToNormal[key]] = value[0]
-  })
+      return acc
+    }, {})
+}
 
-  return res
+const parseStats = (stats) => {
+  return stats.split('\n')
+    .reduce((acc, stat) => {
+      const _stat = stat.replace(/(\s|,)/g, '')
+      const parts = _stat.split(_stat.includes('.:') ? '.:' : ':')
+
+      const key = parts[0]
+      const value = parts[1]
+
+      acc[key] = +value
+
+      return acc
+    }, {})
 }
 
 /**
@@ -52,38 +40,29 @@ const flatten = (obj) => {
  * @returns {promise}
  */
 
-const getWatchListFromUser = (user) => {
+const getWatchListFromUser = (user, type = 'anime') => {
   return new Promise((resolve, reject) => {
     if (!user) {
       reject(new Error('[Mal-Scraper]: No user received.'))
       return
     }
 
-    axios.get(`https://myanimelist.net/malappinfo.php`, {
-      params: {
-        u: user,
-        status: 'all',
-        type: 'anime' // This can be changed to 'manga' too to retrieve manga lists.
-      }
-    })
-      .then(({data}) => {
-        parseString(data, (err, res) => {
-          /* istanbul ignore next */
-          if (err) reject(err)
+    axios.get(`https://myanimelist.net/${type}list/${user}`)
+      .then(({ data }) => {
+        const $ = cheerio.load(data)
+        const table = $('div.list-block table')
 
-          const mal = res.myanimelist
+        if (!table) throw new Error('User does not seem to exist.')
 
-          if (!mal) {
-            reject(new Error('[Mal-Scraper]: It seems this user does not exist.'))
-          }
+        const jsonData = JSON.parse(table.attr('data-items'))
+        const stats = $('div.list-block div.list-stats').text().trim()
 
-          resolve({
-            stats: flatten(mal.myinfo[0]),
-            lists: _.map(mal.anime, obj => flatten(obj))
-          })
+        resolve({
+          stats: parseStats(stats),
+          lists: jsonData.map(flatten)
         })
       })
-      .catch(/* istanbul ignore next */(err) => reject(err))
+      .catch((err) => reject(err))
   })
 }
 

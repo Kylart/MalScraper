@@ -1,8 +1,12 @@
 const test = require('ava')
-const {getInfoFromName, getInfoFromURL, getResultsFromSearch} = require('../src')
+const { getInfoFromName, getInfoFromURL, getResultsFromSearch } = require('../src')
 
 const name = 'Sakura Trick'
 const url = 'https://myanimelist.net/anime/20047/Sakura_Trick'
+
+test.beforeEach(async t => {
+  await new Promise(resolve => setTimeout(resolve, 1500))
+})
 
 test('getInfoFromURL returns an error if invalid url', async t => {
   try {

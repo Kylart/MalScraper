@@ -132,7 +132,7 @@ const getInfoFromURL = (url) => {
     url = encodeURI(url)
 
     axios.get(url)
-      .then(({data}) => {
+      .then(({ data }) => {
         const res = parsePage(data)
         res.id = +url.split('/').splice(-2, 1)[0]
         resolve(res)
@@ -150,7 +150,7 @@ const getResultsFromSearch = (keyword) => {
         type: 'anime',
         keyword
       }
-    }).then(({data}) => {
+    }).then(({ data }) => {
       const items = []
 
       data.categories.forEach((elem) => {
