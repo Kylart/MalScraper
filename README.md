@@ -174,9 +174,10 @@ Usage example:
 const malScraper = require('mal-scraper')
 
 const username = 'Kylart'
+const type = 'anime' // can be either `anime` or `manga`
 
 // Get you an object containing all the entries with status, score... from this user's watch list
-malScraper.getWatchListFromUser(username)
+malScraper.getWatchListFromUser(username, type)
   .then((data) => console.log(data))
   .catch((err) => console.log(err))
 ```
@@ -471,64 +472,76 @@ Anime ratings can be either:
 
 | Property | Type | Description |
 | --- | --- | --- |
-| userID | string | The unique identifier of this user |
-| username | string | The username of the user |
-| nbWatching | string | Count of animes this user is watching |
-| nbCompleted | string | Count of animes this user has completed |
-| nbOnHold | string | Count of animes this user has marked as `On hold` |
-| nbDropped | string | Count of animes this user dropped |
-| nbPlanToWatch | string | Count of animes this user plan to watch | 
-| nbDaysSpentWatching | string | Estimated count of days this user spent to watch animes |
+| TV | string | Number of TV anime this user watched |
+| OVA | string | Number of OVA anime this user watched |
+| Movies | string | Number of Movies anime this user watched |
+| Spcl | string | Number of special anime this user watched |
+| ONA | string | Number of ONA anime this user watched |
+| Days | string | Number of days spent in front of anime for this user |
+| Eps | string | Number of eps watched by this user |
+| MeanScore | string | Mean score given by this user |
+| ScoreDev | string | Score deviation for this user |
 
 #### User anime entry data model
 
 | Property | Type | Description |
 | --- | --- | --- |
-| id | string | The unique identifier of this anime |
-| title | string | The title of the anime |
-| synonyms | string | Synonyms to the anime title |
-| type | string | The type of the anime, see the [Types references](https://github.com/Kylart/MalScraper/blob/master/README.md#types-references) |
-| nbEpisodes | string | Count of episodes this anime has |
-| seriesStatus | string | The status of the anime, see the [Series statuses references](https://github.com/Kylart/MalScraper/blob/master/README.md#series-statuses-references) |
-| seriesStart | string | A `yyyy-mm-dd` format date of when the anime started | 
-| seriesEnd | string | A `yyyy-mm-dd` format date of when the anime ended |
-| picture | string | Link to the cover picture of the anime |
-| myID | string | Deprecated |
-| nbWatchedEpisode | string | Count of how many episodes the user watched of this anime |
-| myStartDate | string | A `yyyy-mm-dd` format date of when the user started watching this anime |
-| myEndDate | string | A `yyyy-mm-dd` format date of when the user finished watching this anime |
-| score | string | The score the user has given to this anime |
-| status | string | Status of the anime in the user's watch list (completed, on-hold...), see the [Statuses references](https://github.com/Kylart/MalScraper/blob/master/README.md#statuses-references) |
-| rewatching | string | Whether the user is re-watching this anime or not, where `0` means not |
-| rewatchingEp | string | The episode the user is currently re-watching, `0` if the user isn't re-watching the anime |
-| lastUpdate | string | [UNIX timestamp](https://en.wikipedia.org/wiki/Unix_time) (in seconds) of when the user last updated something about this anime |
-| tags | string | The tags the user has given to this anime |
+| status | integer | Status of the anime in the user's watch list (completed, on-hold...), see the [Statuses references](https://github.com/Kylart/MalScraper/blob/master/README.md#statuses-references) |
+| score | integer | Score given by the user |
+| tags | string | anime tags for this anime. Tags are separated by a comma |
+| isRewatching | integer | Whther this user is rewatching this anime |
+| numWatchedEpisodes: | integer | Number of episodes this user watched for this anime |
+| animeTitle | string | The title of the anime |
+| animeNumEpisodes | integer | How many episodes this anime has |
+| animeAiringStatus | string | The status of the anime, see the [Series statuses references](https://github.com/Kylart/MalScraper/blob/master/README.md#series-statuses-references) |
+| animeId | string | The unique identifier of this anime |
+| animeStudios | string | Studios of this anime |
+| animeLicensors | string | Who licensed this anime |
+| animeSeason | string | ??? |
+| hasEpisodeVideo | boolean | Whether episode information are available on MAL |
+| hasPromotionVideo | boolean | Whether anime trailer is available on MAL |
+| videoUrl | string | path to video url on MAL | 
+| animeUrl | string | path to anime url on MAL | 
+| animeImagePath | string | path to anime thumbnail url on MAL |
+| isAddedToList | boolean | ??? |
+| animeMediaTypeString | string | Type of this anime |
+| animeMpaaRatingString | string | Rating of this anime |
+| startDateString | string | When did this user start watching it |
+| finishDateString | string | When did this user finish it |
+| animeStartDateString | string | Start date of the anime following the format (MM-DD-YYYY) |
+| animeEndDateString | string | End date of the anime following the format (MM-DD-YYYY) |
+| daysString | string | ??? |
+| storageString | string | Storage type for this anime (set by the user) |
+| priorityString | string | Priority of this anime for the user |
 
 #### User manga entry data model
 
 | Property | Type | Description |
 | --- | --- | --- |
-| id | string | The unique identifier of this manga |
-| title | string | The title of the manga |
-| synonyms | string | Synonyms to the anime manga |
-| type | string | The type of the manga, see the [Types references](https://github.com/Kylart/MalScraper/blob/master/README.md#types-references) |
-| nbChapters | string | Total count of chapters this manga has |
-| nbVolumes | string | Count of volumes this manga has |
-| seriesStatus | string | The status of the manga, see the [Series statuses references](https://github.com/Kylart/MalScraper/blob/master/README.md#series-statuses-references) |
-| seriesStart | string | A `yyyy-mm-dd` format date of when the manga started | 
-| seriesEnd | string | A `yyyy-mm-dd` format date of when the manga ended |
-| picture | string | Link to the cover picture of the manga |
 | myID | string | Deprecated |
+| status | string | Status of the manga in the user's watch list (completed, on-hold...), see the [Statuses references](https://github.com/Kylart/MalScraper/blob/master/README.md#statuses-references) |
+| score | string | The score the user has given to this manga |
+| tags | string | The tags the user has given to this manga |
+| isRereading | string | Whether the user is re-reading this manga or not, where `0` means not |
 | nbReadChapters | string | Count of how many chapters of this manga the user has read |
 | nbReadVolumes | string | Count of how many volumes of this manga the user has read |
-| myStartDate | string | A `yyyy-mm-dd` format date of when the user started watching this anime |
-| myEndDate | string | A `yyyy-mm-dd` format date of when the user finished watching this anime |
-| score | string | The score the user has given to this manga |
-| status | string | Status of the manga in the user's watch list (completed, on-hold...), see the [Statuses references](https://github.com/Kylart/MalScraper/blob/master/README.md#statuses-references) |
-| rereading | string | Whether the user is re-reading this manga or not, where `0` means not |
-| rereadinggg | string | ?? |
-| lastUpdate | string | [UNIX timestamp](https://en.wikipedia.org/wiki/Unix_time) (in seconds) of when the user last updated something about this manga |
-| tags | string | The tags the user has given to this manga |
+| mangaTitle | string | The title of the manga |
+| mangaNumChapters | string | Total count of chapters this manga has |
+| mangaNumVolumes | string | Count of volumes this manga has |
+| mangaPublishingStatus | string | The status of the manga, see the [Series statuses references](https://github.com/Kylart/MalScraper/blob/master/README.md#series-statuses-references) |
+| mangaId | string | The unique identifier of this manga |
+| mangaMagazines | string | Magazines where this manga airs |
+| mangaUrl | string | Path to manga page |
+| mangaImagePath | string | path to manga thumbnail |
+| isAddedToList | boolean | ??? |
+| mangaMediaTypeString | string | The type of the manga, see the [Types references](https://github.com/Kylart/MalScraper/blob/master/README.md#types-references) |
+| startDateString | string | A `mm-dd-yyyy` format date of when the user started watching this manga |
+| finishDateString | string | A `mm-dd-yyyy` format date of when the user finished watching this manga |
+| mangaStartDateString | string | A `mm-dd-yyyy` format date of when the manga started | 
+| mangaEndDateString | string | A `mm-dd-yyyy` format date of when the manga ended |
+| daysString | string | ??? |
+| retailString | string | ??? |
+| priorityString | string | Priority of this manga for the user |
 
 The types, statuses and series statuses aren't explicitly given by MyAnimeList, a number is given instead, here's the corresponding statuses/types according to their numbers
 
