@@ -27,7 +27,7 @@
 At the moment, _MalScraper_ allows one to:
 * Gather information about all the anime being released in a season.
 * Gather anime-related news (include light-novels, manga, films...). 160 news available.
-* Make an anime search.
+* Make an anime search (in 2 different ways!).
 * Get different information for this anime.
 * Get only the best result for an anime search.
 * Get a list of an anime's episodes.
@@ -42,6 +42,7 @@ Tables of content:
 * [Installation](https://github.com/Kylart/MalScraper/blob/master/README.md#installation)
 * [Use](https://github.com/Kylart/MalScraper/blob/master/README.md#use)
 * [Methods](https://github.com/Kylart/MalScraper/blob/master/README.md#methods)
+- * [search.search()](https://github.com/Kylart/MalScraper/blob/master/README.md#search.search)
 - * [getInfoFromName()](https://github.com/Kylart/MalScraper/blob/master/README.md#getinfofromname)
 - * [getInfoFromURL()](https://github.com/Kylart/MalScraper/blob/master/README.md#getinfofromurl)
 - * [getResultsFromSearch()](https://github.com/Kylart/MalScraper/blob/master/README.md#getresultsfromsearch)
@@ -73,6 +74,52 @@ const malScraper = require('mal-scraper')
 ```
 
 ## Methods
+
+### search.search()
+| Parameter | Type | Description |
+| --- | --- | --- |
+| type | string | type of search (manga or anime) |
+| opts | object | options for search (all keys are optional) |
+
+Usage example:
+```js
+const malScraper = require('mal-scraper')
+const search = malScraper.search
+
+const type = 'anime'
+
+// Helpers for types, genres and list you might need for your research
+console.log(search.helpers)
+
+search.search(type, {
+  // All optionnals, but all values must be in their relative search.helpers.availableValues.
+  maxResults: 100, // how many results at most (default: 50)
+  has: 250, // If you already have results and just want what follows it, you can say it here. Allows pagination!
+
+  term: 'Sakura', // search term
+  type: 0, // 0-> none, else go check search.helpers.availableValues.type
+  status: 0, // 0 -> none, else go check https://github.com/Kylart/MalScraper/blob/master/README.md#series-statuses-references or search.helpers.availableValues.status
+  score: 0, // 0-> none, else go check search.helpers.availableValues.score
+  producer: 0, // go check search.helpers.availableValue.p.<type>.value
+  rating: 0, // 0-> none, else go check search.helpers.availableValues.r
+  startDate: {
+    day: 12,
+    month: 2,
+    year: 1990
+  },
+  endDate: {
+    day: 12,
+    month: 2,
+    year: 2015
+  },
+  genreType: 0, // 0 for include genre list, 1 for exclude genre list
+  genres: [1] // go check search.helpers.availableValues.genres.<type>.value
+})
+  .then(console.log)
+  .catch(console.error)
+```
+
+Returns: A [Anime search model](https://github.com/Kylart/MalScraper/blob/master/README.md#anime-search-model) object
 
 ### getInfoFromName()
 
@@ -392,6 +439,22 @@ Anime ratings can be either:
 * `R - 17+ (violence & profanity)`
 * `R+ - Mild Nudity`
 * `Rx - Hentai`
+
+#### Anime search model
+| Property | Type | Description |
+| --- | --- | --- |
+| thumbnail | string | Full url for anime thumbnail |
+| url | string | Full url for anime page |
+| video | string | full url of anime trailer video if any |
+| shortDescription | string | Short description of the anime (or manga) |
+| title | string | Anime title |
+| type | string | Anime type |
+| nbEps | string | Anime number of episodes |
+| score | string | Anime score |
+| startDate | string | Anime start date |
+| endDate | string | Anime end date |
+| members | string | Anime number of members |
+| rating | string | Anime rating |
 
 #### Staff data model
 

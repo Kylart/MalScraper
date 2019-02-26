@@ -171,6 +171,7 @@ const search = (type, opts) => {
 module.exports = {
   search,
   helpers: {
+    availableValues,
     producersList: lists.producers,
     genresList: lists.genres,
     orderTypes: Object.keys(orderMap.keys)
