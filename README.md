@@ -42,7 +42,7 @@ Tables of content:
 * [Installation](https://github.com/Kylart/MalScraper/blob/master/README.md#installation)
 * [Use](https://github.com/Kylart/MalScraper/blob/master/README.md#use)
 * [Methods](https://github.com/Kylart/MalScraper/blob/master/README.md#methods)
-- * [search.search()](https://github.com/Kylart/MalScraper/blob/master/README.md#search.search)
+- * [search.search()](https://github.com/Kylart/MalScraper/blob/master/README.md#searchsearch)
 - * [getInfoFromName()](https://github.com/Kylart/MalScraper/blob/master/README.md#getinfofromname)
 - * [getInfoFromURL()](https://github.com/Kylart/MalScraper/blob/master/README.md#getinfofromurl)
 - * [getResultsFromSearch()](https://github.com/Kylart/MalScraper/blob/master/README.md#getresultsfromsearch)
