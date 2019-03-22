@@ -1,4 +1,3 @@
-const path = require('path')
 const axios = require('axios')
 const cheerio = require('cheerio')
 
@@ -48,11 +47,11 @@ module.exports = {
   getProducers,
   getGenres,
   producers: {
-    anime: require(path.join(__dirname, 'anime', 'producersList.json')),
-    manga: require(path.join(__dirname, 'manga', 'producersList.json'))
+    anime: require('./anime/producersList.json'),
+    manga: require('./manga/producersList.json')
   },
   genres: {
-    anime: require(path.join(__dirname, 'anime', 'genresList.json')),
-    manga: require(path.join(__dirname, 'manga', 'genresList.json'))
+    anime: require('./anime/genresList.json'),
+    manga: require('./manga/genresList.json')
   }
 }
