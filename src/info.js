@@ -166,7 +166,7 @@ const getResultsFromSearch = (keyword) => {
   })
 }
 
-const getInfoFromName = (name) => {
+const getInfoFromName = (name, getBestMatch = true) => {
   return new Promise((resolve, reject) => {
     if (!name || typeof name !== 'string') {
       reject(new Error('[Mal-Scraper]: Invalid name.'))
@@ -175,7 +175,9 @@ const getInfoFromName = (name) => {
     getResultsFromSearch(name)
       .then(async (items) => {
         try {
-          const bestMacth = match(items, name, { keys: ['name'] })[0]
+          const bestMacth = getBestMatch
+            ? match(items, name, { keys: ['name'] })[0]
+            : items[0]
           const url = bestMacth ? bestMacth.url : items[0].url
           const data = await getInfoFromURL(url)
 
