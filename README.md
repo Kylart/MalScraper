@@ -210,6 +210,32 @@ Returns: A [Seasonal release data model](https://github.com/Kylart/MalScraper/bl
 
 ### getWatchListFromUser()
 
+#### From v2.6.0
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| username | string | The name of the user |
+| after | number | Useful to paginate. Is the number of results you want to start from. By default, MAL returns 300 entries only. |
+| type | string | Optional, can be either `anime` or `manga` |
+
+Usage example: 
+
+```javascript
+const malScraper = require('mal-scraper')
+
+const username = 'Kylart'
+const after = 25
+const type = 'anime' // can be either `anime` or `manga`
+
+// Get you an object containing all the entries with status, score... from this user's watch list
+malScraper.getWatchListFromUser(username, after, type)
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err))
+```
+
+Returns: A [User watch list data model](https://github.com/Kylart/MalScraper/blob/master/README.md#user-watch-list-data-model) object
+
+#### v2.5.2 and before
 | Parameter | Type | Description |
 | --- | --- | --- |
 | username | string | The name of the user |
@@ -526,6 +552,10 @@ Anime ratings can be either:
 
 ### User watch list data model
 
+#### v2.6.0
+An array of [User anime entry data model](https://github.com/Kylart/MalScraper/blob/master/README.md#user-anime-entry-data-model) objects or [User manga entry data model](https://github.com/Kylart/MalScraper/blob/master/README.md#user-manga-entry-data-model)
+
+#### v2.5.2 and before
 | Property | Type | Description |
 | --- | --- | --- |
 | stats | object | A [User stats data model](https://github.com/Kylart/MalScraper/blob/master/README.md#user-stats-data-model) object |
