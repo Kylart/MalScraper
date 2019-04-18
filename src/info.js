@@ -134,7 +134,7 @@ const getInfoFromURL = (url) => {
     axios.get(url)
       .then(({ data }) => {
         const res = parsePage(data)
-        res.id = +url.split('/').splice(-2, 1)[0]
+        res.id = +url.split(/\/+/)[3]
         resolve(res)
       })
       .catch(/* istanbul ignore next */(err) => reject(err))
