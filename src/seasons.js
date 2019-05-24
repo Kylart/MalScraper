@@ -40,7 +40,8 @@ const getType = (type, $) => {
         fromType: prod.find('.source').text().trim(),
         nbEp: prod.find('.eps').find('a').text().trim().replace(' eps', ''),
         releaseDate: info.find('.info').find('span').text().trim(),
-        score: info.find('.scormem').find('.score').text().trim()
+        score: info.find('.scormem').find('.score').text().trim(),
+        members: info.find('.scormem').find('.member.fl-r').text().trim().replace(',', '')
       })
     }
   })
