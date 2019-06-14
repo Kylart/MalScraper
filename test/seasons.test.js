@@ -29,14 +29,14 @@ test('getSeasons returns an error if not valid year', async t => {
   }
 })
 
-test('getSeasons returns the right season', async t => {
+test.only('getSeasons returns the right season', async t => {
   try {
     const data = await getSeason(2017, 'fall')
 
     t.is(typeof data.TV, 'object')
     t.is(typeof data.OVAs, 'object')
     t.is(typeof data.Movies, 'object')
-    t.is(data.TV.length, 98)
+    t.is(data.TV.length, 97)
     t.is(data.OVAs.length, 11)
     t.is(data.Movies.length, 20)
     t.is(data.TV[0].title, 'Mahoutsukai no Yome')

@@ -36,6 +36,6 @@ test.only('getWatchListFromUser returns an error if invalid user', async t => {
 
     t.fail()
   } catch (e) {
-    t.is(e.response.status, 404)
+    t.is(e.response.status, 400)
   }
 })
