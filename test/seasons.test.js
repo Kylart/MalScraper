@@ -29,7 +29,91 @@ test('getSeasons returns an error if not valid year', async t => {
   }
 })
 
-test.only('getSeasons returns the right season', async t => {
+test('getSeasons with type TV returns the correct season', async t => {
+  try {
+    const data = await getSeason(2017, 'fall', 'TV')
+
+    t.is(data.length, 97)
+    t.is(data[0].title, 'Mahoutsukai no Yome')
+  } catch (e) {
+    console.log(e.message)
+    t.fail()
+  }
+})
+
+test('getSeasons with type TVNew returns the correct season', async t => {
+  try {
+    const data = await getSeason(2017, 'fall', 'TVNew')
+
+    t.is(data.length, 58)
+    t.is(data[0].title, 'Mahoutsukai no Yome')
+  } catch (e) {
+    console.log(e.message)
+    t.fail()
+  }
+})
+
+test('getSeasons with type TVCon returns the correct season', async t => {
+  try {
+    const data = await getSeason(2017, 'fall', 'TVCon')
+
+    t.is(data.length, 41)
+    t.is(data[0].title, 'One Piece')
+  } catch (e) {
+    console.log(e.message)
+    t.fail()
+  }
+})
+
+test('getSeasons with type ONAs returns the correct season', async t => {
+  try {
+    const data = await getSeason(2017, 'fall', 'ONAs')
+
+    t.is(data.length, 56)
+    t.is(data[0].title, 'Hitori no Shita: The Outcast 2nd Season')
+  } catch (e) {
+    console.log(e.message)
+    t.fail()
+  }
+})
+
+test('getSeasons with type OVAs returns the correct season', async t => {
+  try {
+    const data = await getSeason(2017, 'fall', 'OVAs')
+
+    t.is(data.length, 11)
+    t.is(data[0].title, 'Shingeki no Kyojin: Lost Girls')
+  } catch (e) {
+    console.log(e.message)
+    t.fail()
+  }
+})
+
+test('getSeasons with type returns the correct season', async t => {
+  try {
+    const data = await getSeason(2017, 'fall', 'Specials')
+
+    t.is(data.length, 25)
+    t.is(data[0].title, 'Net-juu no Susume Special')
+  } catch (e) {
+    console.log(e.message)
+    t.fail()
+  }
+})
+
+test('getSeasons with type Movies returns the correct season', async t => {
+  try {
+    const data = await getSeason(2017, 'fall', 'Movies')
+
+    t.is(data.length, 20)
+    t.is(data[0].title, 'Fate/stay night Movie: Heaven\'s Feel - I. Presage Flower')
+  } catch (e) {
+    console.log(e.message)
+    t.fail()
+  }
+})
+
+test('getSeasons returns the right season', async t => {
   try {
     const data = await getSeason(2017, 'fall')
 
