@@ -187,10 +187,11 @@ Returns: An array of a maximum length of 10 containing [Search result data model
 
 This method get the list of anime, OVAs, movies and ONAs released (or planned to be released) during the season of the specified year
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| year | number | The year |
-| season | string | The season, must be either `spring`, `summer`, `fall` or `winter` |
+| Parameter | Optional | Type | Description |
+| --- | --- |--- | --- |
+| year | No | number | The year |
+| season | No | string | The season, must be either `spring`, `summer`, `fall` or `winter` |
+| type | Yes | string | The type, must be either `TV`, `TVNew`, `TVCon`, `ONAs`, `OVAs`, `Specials` or `Movies` |
 
 Usage example: 
 
@@ -201,12 +202,28 @@ const year = 2017
 const season = 'fall'
 
 malScraper.getSeason(year, season)
-  // `data` is an object containing the following keys: 'TV', 'OVAs', 'ONAs', 'Movies' and 'Specials'
+  // `data` is an object containing the following keys: 'TV', 'TVNew', 'TVCon', 'OVAs', 'ONAs', 'Movies' and 'Specials'
   .then((data) => console.log(data))
   .catch((err) => console.log(err))
 ```
 
 Returns: A [Seasonal release data model](https://github.com/Kylart/MalScraper/blob/master/README.md#seasonal-release-data-model) object
+
+With type parameter:
+```javascript
+const malScraper = require('mal-scraper')
+
+const year = 2017
+const season = 'fall'
+const type = 'TV' // Optional type parameter, if not specificed will default to returning an object with all of possible type keys
+
+malScraper.getSeason(year, season, type)
+  // `data` is an array containing all the 'Seasonal anime release data objects' for the given type
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err))
+```
+
+Returns: A [Seasonal anime release data model](https://github.com/Kylart/MalScraper/blob/master/README.md#seasonal-anime-release-data-model) object
 
 ### getWatchListFromUser()
 
@@ -529,6 +546,8 @@ Anime ratings can be either:
 | Property | Type | Description |
 | --- | --- | --- |
 | TV | array | An array of [Seasonal anime release data model](https://github.com/Kylart/MalScraper/blob/master/README.md#seasonal-anime-release-data-model) objects |
+| TVNew | array | An array of [Seasonal anime release data model](https://github.com/Kylart/MalScraper/blob/master/README.md#seasonal-anime-release-data-model) objects |
+| TVCon | array | An array of [Seasonal anime release data model](https://github.com/Kylart/MalScraper/blob/master/README.md#seasonal-anime-release-data-model) objects |
 | OVAs | array | An array of [Seasonal anime release data model](https://github.com/Kylart/MalScraper/blob/master/README.md#seasonal-anime-release-data-model) objects |
 | ONAs | array | An array of [Seasonal anime release data model](https://github.com/Kylart/MalScraper/blob/master/README.md#seasonal-anime-release-data-model) objects |
 | Movies | array | An array of [Seasonal anime release data model](https://github.com/Kylart/MalScraper/blob/master/README.md#seasonal-anime-release-data-model) objects |

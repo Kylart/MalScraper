@@ -100,6 +100,8 @@ const getSeasons = (year, season, type) => {
         if (typeof type === 'undefined') {
           resolve({
             TV: getType('TV', $),
+            TVNew: getType('TVNew', $),
+            TVCon: getType('TVCon', $),
             OVAs: getType('OVAs', $),
             ONAs: getType('ONAs', $),
             Movies: getType('Movies', $),
