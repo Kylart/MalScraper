@@ -44,7 +44,7 @@ const getType = (type, $) => {
   }
 
   $(classToSearch).each(function () {
-    if (!$(this).hasClass('kids') && !$(this).hasClass('r18') && $(this)) {
+    if (!$(this).hasClass('kids') && !$(this).hasClass('r18')) {
       const general = $(this).find('div:nth-child(1)')
       const picture = $(this).find('.image').find('img')
       const prod = $(this).find('.prodsrc')
