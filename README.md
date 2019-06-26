@@ -210,12 +210,14 @@ malScraper.getSeason(year, season)
 Returns: A [Seasonal release data model](https://github.com/Kylart/MalScraper/blob/master/README.md#seasonal-release-data-model) object
 
 With type parameter:
+
+<b>Please note:</b> 'TVNew' represents the 'New' anime for this season, whilst 'TVCon' represents the 'Continuing' anime in this season. 'TV' is simply an aggregate for both of these.
 ```javascript
 const malScraper = require('mal-scraper')
 
 const year = 2017
 const season = 'fall'
-const type = 'TV' // Optional type parameter, if not specificed will default to returning an object with all of possible type keys
+const type = 'TV' // Optional type parameter, if not specified will default to returning an object with all of possible type keys
 
 malScraper.getSeason(year, season, type)
   // `data` is an array containing all the 'Seasonal anime release data objects' for the given type
