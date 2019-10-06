@@ -174,6 +174,10 @@ const getInfoFromName = (name, getBestMatch = true) => {
 
     getResultsFromSearch(name)
       .then(async (items) => {
+        if (!items.length) {
+          resolve(null)
+          return
+        }
         try {
           const bestMacth = getBestMatch
             ? match(items, name, { keys: ['name'] })[0]
