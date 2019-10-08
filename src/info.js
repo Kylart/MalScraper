@@ -127,6 +127,7 @@ const getInfoFromURL = (url) => {
   return new Promise((resolve, reject) => {
     if (!url || typeof url !== 'string' || !url.toLocaleLowerCase().includes('myanimelist')) {
       reject(new Error('[Mal-Scraper]: Invalid Url.'))
+      return
     }
 
     url = encodeURI(url)
@@ -143,7 +144,10 @@ const getInfoFromURL = (url) => {
 
 const getResultsFromSearch = (keyword) => {
   return new Promise((resolve, reject) => {
-    if (!keyword) reject(new Error('[Mal-Scraper]: Received no keyword to search.'))
+    if (!keyword) {
+      reject(new Error('[Mal-Scraper]: Received no keyword to search.'))
+      return
+    }
 
     axios.get(SEARCH_URI, {
       params: {
@@ -170,6 +174,7 @@ const getInfoFromName = (name, getBestMatch = true) => {
   return new Promise((resolve, reject) => {
     if (!name || typeof name !== 'string') {
       reject(new Error('[Mal-Scraper]: Invalid name.'))
+      return
     }
 
     getResultsFromSearch(name)

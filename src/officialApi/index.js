@@ -22,7 +22,7 @@ const routes = {
 }
 
 module.exports = class {
-  constructor (credentials) {
+  constructor(credentials) {
     if (!credentials || !credentials.username || !credentials.password) {
       throw new Error('[Mal-Scraper]: Received no credentials or malformed ones.')
     }
@@ -36,7 +36,7 @@ module.exports = class {
    * @param {string} credentials.username - The username you want to use.
    * @param {string} credentials.password - The password you want to use.
    */
-  setCredentials (credentials) {
+  setCredentials(credentials) {
     if (!credentials || !credentials.username || !credentials.password) {
       throw new Error('[Mal-Scraper]: Received no credentials or malformed ones.')
     } else {
@@ -54,10 +54,13 @@ module.exports = class {
    *
    * @returns {promise}
    */
-  checkCredentials () {
+  checkCredentials() {
     return new Promise((resolve, reject) => {
       this.req.get(routes.verify, (err, res, body) => {
-        if (err) reject(err)
+        if (err) {
+          reject(err)
+          return
+        }
         resolve(body)
       })
     })
@@ -70,17 +73,26 @@ module.exports = class {
    *
    * @returns {promise}
    */
-  search (type = 'anime', name) {
+  search(type = 'anime', name) {
     return new Promise((resolve, reject) => {
-      if (!name) reject(new Error('[Mal-Scraper]: No name to search.'))
-      if (!routes.search[type]) reject(new Error('[Mal-Scraper]: Wrong type for research.'))
+      if (!name) {
+        reject(new Error('[Mal-Scraper]: No name to search.'))
+        return
+      }
+      if (!routes.search[type]) {
+        reject(new Error('[Mal-Scraper]: Wrong type for research.'))
+        return
+      }
 
       this.req.get(routes.search[type], {
         qs: {
           q: name
         }
       }, (err, res, body) => {
-        if (err) reject(err)
+        if (err) {
+          reject(err)
+          return
+        }
         resolve(flatten(xml2JSON(body)[type].entry))
       })
     })
@@ -115,11 +127,20 @@ module.exports = class {
    *
    * @returns {promise}
    */
-  actOnList (type = { support: 'anime', action: 'update' }, id, opts) {
+  actOnList(type = { support: 'anime', action: 'update' }, id, opts) {
     return new Promise((resolve, reject) => {
-      if (!routes.lists[type.support]) reject(new Error('[Mal-Scraper]: Wrong support type received.'))
-      if (!routes.lists[type.support][type.action]) reject(new Error('[Mal-Scraper]: Wrong action type received.'))
-      if (!id) reject(new Error('[Mal-Scraper]: No id to for anime|manga add.'))
+      if (!routes.lists[type.support]) {
+        reject(new Error('[Mal-Scraper]: Wrong support type received.'))
+        return
+      }
+      if (!routes.lists[type.support][type.action]) {
+        reject(new Error('[Mal-Scraper]: Wrong action type received.'))
+        return
+      }
+      if (!id) {
+        reject(new Error('[Mal-Scraper]: No id to for anime|manga add.'))
+        return
+      }
 
       this.req.post({
         url: routes.lists[type.support][type.action](id),
@@ -127,7 +148,10 @@ module.exports = class {
           data: JSON2Xml(opts)
         } : {}
       }, (err, res, body) => {
-        if (err) reject(err)
+        if (err) {
+          reject(err)
+          return
+        }
 
         resolve(body)
       })
