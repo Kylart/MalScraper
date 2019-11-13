@@ -1,6 +1,6 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
-const match = require('match-sorter')
+const match = require('match-sorter').default
 
 const SEARCH_URI = 'https://myanimelist.net/search/prefix.json'
 

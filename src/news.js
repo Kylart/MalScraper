@@ -61,7 +61,7 @@ module.exports = (nbNews = 160) => {
           }
 
           for (let i = 0, l = titles.length; i < l; ++i) {
-            let tmp = links[i].split('/')
+            const tmp = links[i].split('/')
             result.push({
               title: titles[i],
               link: links[i],

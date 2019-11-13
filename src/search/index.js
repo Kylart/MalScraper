@@ -26,15 +26,15 @@ const orderMap = {
     rated: 8
   },
   order: {
-    'DESC': 2,
-    'ASC': 1
+    DESC: 2,
+    ASC: 1
   }
 }
 
 const columns = ['thumbnail', 'title', 'type', 'nbEps', 'score', 'startDate', 'endDate', 'members', 'rating']
 
 const getOrderParams = (opts) => {
-  const { keys, order = [ 'DESC', 'DESC' ] } = opts
+  const { keys, order = ['DESC', 'DESC'] } = opts
 
   if (!Array.isArray(keys) || !Array.isArray(order)) throw new Error('Invalid order parameters.')
   if (!keys.length) throw new Error('Imvalid order keys.')

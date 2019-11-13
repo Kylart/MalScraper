@@ -22,7 +22,7 @@ const routes = {
 }
 
 module.exports = class {
-  constructor(credentials) {
+  constructor (credentials) {
     if (!credentials || !credentials.username || !credentials.password) {
       throw new Error('[Mal-Scraper]: Received no credentials or malformed ones.')
     }
@@ -36,7 +36,7 @@ module.exports = class {
    * @param {string} credentials.username - The username you want to use.
    * @param {string} credentials.password - The password you want to use.
    */
-  setCredentials(credentials) {
+  setCredentials (credentials) {
     if (!credentials || !credentials.username || !credentials.password) {
       throw new Error('[Mal-Scraper]: Received no credentials or malformed ones.')
     } else {
@@ -54,7 +54,7 @@ module.exports = class {
    *
    * @returns {promise}
    */
-  checkCredentials() {
+  checkCredentials () {
     return new Promise((resolve, reject) => {
       this.req.get(routes.verify, (err, res, body) => {
         if (err) {
@@ -73,7 +73,7 @@ module.exports = class {
    *
    * @returns {promise}
    */
-  search(type = 'anime', name) {
+  search (type = 'anime', name) {
     return new Promise((resolve, reject) => {
       if (!name) {
         reject(new Error('[Mal-Scraper]: No name to search.'))
@@ -127,7 +127,7 @@ module.exports = class {
    *
    * @returns {promise}
    */
-  actOnList(type = { support: 'anime', action: 'update' }, id, opts) {
+  actOnList (type = { support: 'anime', action: 'update' }, id, opts) {
     return new Promise((resolve, reject) => {
       if (!routes.lists[type.support]) {
         reject(new Error('[Mal-Scraper]: Wrong support type received.'))

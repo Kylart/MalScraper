@@ -1,14 +1,14 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
-const matchSorter = require('match-sorter')
+const matchSorter = require('match-sorter').default
 
 const SEASON_URI = 'https://myanimelist.net/anime/season/'
 const maxYear = 1901 + (new Date()).getYear()
 const possibleSeasons = {
-  'winter': 1,
-  'spring': 1,
-  'summer': 1,
-  'fall': 1
+  winter: 1,
+  spring: 1,
+  summer: 1,
+  fall: 1
 }
 
 const possibleTypes = ['TV', 'TVNew', 'TVCon', 'OVAs', 'ONAs', 'Movies', 'Specials']
@@ -31,11 +31,11 @@ const getType = (type, $) => {
   const typeString = matchSorter(possibleTypes, type)[0]
 
   let classToSearch = `.js-seasonal-anime-list-key-${type2Class[typeString]} .seasonal-anime.js-seasonal-anime`
-  let typeClass = `.js-seasonal-anime-list-key-${type2Class[typeString]}`
+  const typeClass = `.js-seasonal-anime-list-key-${type2Class[typeString]}`
 
   // If TVNew or TVCon are selected, filter them out to the specific elements on page
   if (typeString.substr(0, 2) === 'TV' && typeString !== 'TV') {
-    let tvType = matchSorter(possibleTV, typeString)[0]
+    const tvType = matchSorter(possibleTV, typeString)[0]
     $(typeClass).children('.anime-header').each(function () {
       if ($(this).text() === tvType) {
         classToSearch = $(this).parent().children()
