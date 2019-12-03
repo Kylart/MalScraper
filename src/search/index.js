@@ -2,7 +2,8 @@ const axios = require('axios')
 const cheerio = require('cheerio')
 
 const trace = '####'
-const BASE_URL = `https://myanimelist.net/${trace}.php`
+const ROOT_URL = 'https://myanimelist.net'
+const BASE_URL = `${ROOT_URL}/${trace}.php`
 
 const lists = require('./getLists.js')
 
@@ -129,13 +130,28 @@ const parsePage = ($) => {
 }
 
 const hasNext = ($) => {
-  const anchor = $('#content > div.normal_header > div').find('a')
-  const hasNext = anchor.last().text().trim().toLowerCase().includes('next')
+  // This should be like
+  // [1] <a href="...">2</a> <a href="...">3</a> ... <a href="...">20</a>
+  const anchor = $('#content > div.normal_header > div').find('span')
 
-  return {
-    hasNext,
-    nextUrl: hasNext ? anchor.last().attr('href') : null
+  // If last character is a closing bracket, it means that the current page is at the end.
+  const hasNext = anchor.text().slice(-1) !== ']'
+  let nextUrl = null
+
+  if (hasNext) {
+    // Looking for the current page which is between brackets
+    const currentPageNumber = anchor.text().match(/\[\d+\]/)
+
+    if (currentPageNumber.length) {
+      // Removing brackets and adding one to find next page
+      const nextPageNumber = +currentPageNumber[0].slice(1, -1) + 1
+
+      // href is a patial URI missing the website URL.
+      nextUrl = ROOT_URL + anchor.find(`a:contains(${nextPageNumber})`).attr('href')
+    }
   }
+
+  return { hasNext, nextUrl }
 }
 
 const getResults = (url, params = {}, maxResult = 50, result = []) => {
@@ -162,7 +178,7 @@ const search = (type, opts) => {
     const params = getParams(type, opts)
     const order = opts.order && getOrderParams(opts.order)
 
-    getResults(BASE_URL.replace(trace, type) + (order || ''), params, opts.maxResult)
+    getResults(BASE_URL.replace(trace, type) + (order || ''), params, opts.maxResults)
       .then(resolve)
       .catch(reject)
   })
