@@ -89,7 +89,7 @@ const parsePage = (data) => {
 
   result.title = $('span[itemprop="name"]').first().text()
   result.synopsis = $('.js-scrollfix-bottom-rel span[itemprop="description"]').text()
-  result.picture = $('img.ac').attr('src')
+  result.picture = $(`img[itemprop="image"][alt="${result.title}"]`).attr('data-src')
 
   const staffAndCharacters = getCharactersAndStaff($)
   result.characters = staffAndCharacters.characters
@@ -110,7 +110,7 @@ const parsePage = (data) => {
   result.producers = getFromBorder($, 'Producers:').split(',       ')
   result.studios = getFromBorder($, 'Studios:').split(',       ')
   result.source = getFromBorder($, 'Source:')
-  result.genres = getFromBorder($, 'Genres:').split(', ')
+  result.genres = getFromBorder($, 'Genres:').split(', ').map((elem) => elem.trim().slice(0, elem.trim().length / 2))
   result.duration = getFromBorder($, 'Duration:')
   result.rating = getFromBorder($, 'Rating:')
   result.score = getFromBorder($, 'Score:').split(' ')[0].slice(0, -1)
