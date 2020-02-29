@@ -87,6 +87,13 @@ const parsePage = (data) => {
   const $ = cheerio.load(data)
   const result = {}
 
+  // We have to do this because MAL sometimes set the english title just below the japanese one
+  // Example:
+  //    - with: https://myanimelist.net/anime/30654/Ansatsu_Kyoushitsu_2nd_Season
+  //    - without: https://myanimelist.net/anime/20047/Sakura_Trick
+  $('span[itemprop="name"] br').remove()
+  $('span[itemprop="name"] span').remove()
+
   result.title = $('span[itemprop="name"]').first().text()
   result.synopsis = $('.js-scrollfix-bottom-rel span[itemprop="description"]').text()
   result.picture = $(`img[itemprop="image"][alt="${result.title}"]`).attr('data-src')
