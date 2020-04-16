@@ -192,11 +192,10 @@ const parseCharacters = (data) => {
   var char = {}
 
   $('.js-scrollfix-bottom-rel .borderClass').each(function (index) {
-    if (index % 2 == 0) {
+    if (index % 2 === 0) {
       char = {}
       char.picture = getPicture($(this))
-    }
-    else {
+    } else {
       char.name = $(this).find('a').text().trim()
       char.link = $(this).find('a').attr('href')
       char.role = $(this).find('small').text().trim()
@@ -226,7 +225,7 @@ const getInfoFromURL = (url) => {
         const reviewLoop = page =>
           axios.get(url + '/reviews?p=' + page.toString())
             .then(({ data }) => {
-              reviews = parseReviews(data)
+              var reviews = parseReviews(data)
               if (Object.keys(reviews).length > 0) {
                 res.reviews = res.reviews.concat(reviews)
                 return reviewLoop(page + 1)
@@ -251,7 +250,7 @@ const getInfoFromURL = (url) => {
   })
 }
 
-const getResultsFromSearch = (keyword, type= 'anime') => {
+const getResultsFromSearch = (keyword, type = 'anime') => {
   return new Promise((resolve, reject) => {
     if (!keyword) {
       reject(new Error('[Mal-Scraper]: Received no keyword to search.'))
@@ -279,7 +278,7 @@ const getResultsFromSearch = (keyword, type= 'anime') => {
   })
 }
 
-const getInfoFromName = (name, getBestMatch = true, type= 'anime') => {
+const getInfoFromName = (name, getBestMatch = true, type = 'anime') => {
   return new Promise((resolve, reject) => {
     if (!name || typeof name !== 'string') {
       reject(new Error('[Mal-Scraper]: Invalid name.'))
