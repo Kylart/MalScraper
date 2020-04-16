@@ -252,7 +252,7 @@ const getInfoFromURL = (url) => {
   })
 }
 
-const getResultsFromSearch = (keyword, type) => {
+const getResultsFromSearch = (keyword, type='anime') => {
   return new Promise((resolve, reject) => {
     if (!keyword) {
       reject(new Error('[Mal-Scraper]: Received no keyword to search.'))
