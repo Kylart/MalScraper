@@ -130,6 +130,83 @@ const parsePage = (data) => {
   return result
 }
 
+const parseReviews = (data) => {
+  const $ = cheerio.load(data)
+  var reviews = []
+
+  $('.borderDark').each(function( index ) {
+    const review = {}
+    review.user = $(this).find('td > a').text().trim()
+    review.date = $(this).find('.mb8 div:nth-child(1)').text().trim()
+    review.read = $(this).find('.mb8 .spaceit').text().trim().replace("read", "")
+    var r = $(this).find('.borderClass').text().trim().split(" ").map(x => x.trim()).filter(x => x).map(x => isNaN(x) ? x : Number(x))
+    var rating = {}
+    rating[r[0]] = r[1]; rating[r[2]] = r[3]; rating[r[4]] = r[5]; rating[r[6]] = r[7]; rating[r[8]] = r[9];
+    review.rating = rating
+    review.helpful_for = Number($(this).find('.spaceit td .spaceit').text().trim().split(" ")[0])
+    review.text = $(this).find('.pt8').text().split("\n        \n      \n    \n\n                          \n    ")[1].split("Helpful\n  \n      \n      read more")[0].trim().replace("\n\n          \n        ", " ")
+    reviews.push(review)
+  })
+
+  return reviews
+}
+
+const parseRecommendations = (data) => {
+  const $ = cheerio.load(data)
+  var recs = []
+  var manga = {}
+
+  $('.js-scrollfix-bottom-rel .borderClass').each(function( index ) {
+    rec = {}
+    if ($(this).find('div:nth-child(2) strong').length) {
+      if (index > 0) {
+        recs.push(manga)
+      }
+      manga = {}
+      manga.name = $(this).find('div:nth-child(2) strong').text().trim()
+      manga.link = $(this).find('a').attr('href')
+      manga.recs = []
+    }
+    else {
+      rec.text = $(this).find('.detail-user-recs-text').text().trim().replace("read more","")
+      rec.user = $(this).find('.spaceit_pad a').text().trim().replace("report","").replace("read more","")
+      manga.recs.push(rec)     
+    }
+  })
+  recs.push(manga)
+  return recs
+}
+
+const parseCharacters = (data) => {
+  const getPicture = (tr) => {
+    const src = tr.find('img').attr('data-srcset')
+
+    if (src && src.includes('1x') && src.includes('2x')) {
+      return getPictureUrl(src.split('1x, ')[1].replace(' 2x', ''))
+    } else {
+      return undefined
+    }
+  }
+
+  const $ = cheerio.load(data)
+  var characters = []
+  var char = {}
+
+  $('.js-scrollfix-bottom-rel .borderClass').each(function( index ) {
+    if (index % 2 == 0) {
+      char = {}
+      char.picture = getPicture($(this))
+    }
+    else {
+      char.name = $(this).find('a').text().trim()
+      char.link = $(this).find('a').attr('href')
+      char.role = $(this).find('small').text().trim()
+      characters.push(char)
+    }
+  })
+  return characters
+}
+
 const getInfoFromURL = (url) => {
   return new Promise((resolve, reject) => {
     if (!url || typeof url !== 'string' || !url.toLocaleLowerCase().includes('myanimelist')) {
@@ -139,17 +216,43 @@ const getInfoFromURL = (url) => {
 
     url = encodeURI(url)
 
+    var res = {}
+
     axios.get(url)
       .then(({ data }) => {
-        const res = parsePage(data)
+        res = parsePage(data)
         res.id = +url.split(/\/+/)[3]
+
+        res.reviews = []
+        const reviewLoop = page =>
+          axios.get(url + '/reviews?p=' + page.toString())
+          .then(({ data }) => {
+            reviews = parseReviews(data)
+            if (Object.keys(reviews).length > 0) {
+              res.reviews = res.reviews.concat(reviews)
+              return reviewLoop(page + 1)
+            }
+          })
+          .catch(/* istanbul ignore next */(err) => reject(err))
+
+        return reviewLoop(1)
+      })
+      .then(() => {
+        return axios.get(url + '/userrecs')
+      })
+      .then(({ data }) => {
+        res.recommendations = parseRecommendations(data)
+        return axios.get(url + '/characters')
+      })
+      .then(({ data }) => {
+        res.full_character_list = parseCharacters(data)
         resolve(res)
       })
       .catch(/* istanbul ignore next */(err) => reject(err))
   })
 }
 
-const getResultsFromSearch = (keyword) => {
+const getResultsFromSearch = (keyword, type) => {
   return new Promise((resolve, reject) => {
     if (!keyword) {
       reject(new Error('[Mal-Scraper]: Received no keyword to search.'))
@@ -158,7 +261,7 @@ const getResultsFromSearch = (keyword) => {
 
     axios.get(SEARCH_URI, {
       params: {
-        type: 'anime',
+        type: type,
         keyword
       }
     }).then(({ data }) => {
@@ -177,14 +280,14 @@ const getResultsFromSearch = (keyword) => {
   })
 }
 
-const getInfoFromName = (name, getBestMatch = true) => {
+const getInfoFromName = (name, getBestMatch = true, type='anime') => {
   return new Promise((resolve, reject) => {
     if (!name || typeof name !== 'string') {
       reject(new Error('[Mal-Scraper]: Invalid name.'))
       return
     }
 
-    getResultsFromSearch(name)
+    getResultsFromSearch(name, type)
       .then(async (items) => {
         if (!items.length) {
           resolve(null)
