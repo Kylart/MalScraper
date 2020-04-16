@@ -134,17 +134,17 @@ const parseReviews = (data) => {
   const $ = cheerio.load(data)
   var reviews = []
 
-  $('.borderDark').each(function( index ) {
+  $('.borderDark').each(function (index) {
     const review = {}
     review.user = $(this).find('td > a').text().trim()
     review.date = $(this).find('.mb8 div:nth-child(1)').text().trim()
-    review.read = $(this).find('.mb8 .spaceit').text().trim().replace("read", "")
-    var r = $(this).find('.borderClass').text().trim().split(" ").map(x => x.trim()).filter(x => x).map(x => isNaN(x) ? x : Number(x))
+    review.read = $(this).find('.mb8 .spaceit').text().trim().replace('read', '')
+    var r = $(this).find('.borderClass').text().trim().split(' ').map(x => x.trim()).filter(x => x).map(x => isNaN(x) ? x : Number(x))
     var rating = {}
-    rating[r[0]] = r[1]; rating[r[2]] = r[3]; rating[r[4]] = r[5]; rating[r[6]] = r[7]; rating[r[8]] = r[9];
+    rating[r[0]] = r[1]; rating[r[2]] = r[3]; rating[r[4]] = r[5]; rating[r[6]] = r[7]; rating[r[8]] = r[9]
     review.rating = rating
-    review.helpful_for = Number($(this).find('.spaceit td .spaceit').text().trim().split(" ")[0])
-    review.text = $(this).find('.pt8').text().split("\n        \n      \n    \n\n                          \n    ")[1].split("Helpful\n  \n      \n      read more")[0].trim().replace("\n\n          \n        ", " ")
+    review.helpful_for = Number($(this).find('.spaceit td .spaceit').text().trim().split(' ')[0])
+    review.text = $(this).find('.pt8').text().split('\n        \n      \n    \n\n                          \n    ')[1].split('Helpful\n  \n      \n      read more')[0].trim().replace('\n\n          \n        ', ' ')
     reviews.push(review)
   })
 
@@ -156,8 +156,8 @@ const parseRecommendations = (data) => {
   var recs = []
   var manga = {}
 
-  $('.js-scrollfix-bottom-rel .borderClass').each(function( index ) {
-    rec = {}
+  $('.js-scrollfix-bottom-rel .borderClass').each(function (index) {
+    var rec = {}
     if ($(this).find('div:nth-child(2) strong').length) {
       if (index > 0) {
         recs.push(manga)
@@ -166,11 +166,10 @@ const parseRecommendations = (data) => {
       manga.name = $(this).find('div:nth-child(2) strong').text().trim()
       manga.link = $(this).find('a').attr('href')
       manga.recs = []
-    }
-    else {
-      rec.text = $(this).find('.detail-user-recs-text').text().trim().replace("read more","")
-      rec.user = $(this).find('.spaceit_pad a').text().trim().replace("report","").replace("read more","")
-      manga.recs.push(rec)     
+    } else {
+      rec.text = $(this).find('.detail-user-recs-text').text().trim().replace('read more', '')
+      rec.user = $(this).find('.spaceit_pad a').text().trim().replace('report', '').replace('read more', '')
+      manga.recs.push(rec)
     }
   })
   recs.push(manga)
@@ -192,7 +191,7 @@ const parseCharacters = (data) => {
   var characters = []
   var char = {}
 
-  $('.js-scrollfix-bottom-rel .borderClass').each(function( index ) {
+  $('.js-scrollfix-bottom-rel .borderClass').each(function (index) {
     if (index % 2 == 0) {
       char = {}
       char.picture = getPicture($(this))
@@ -226,14 +225,14 @@ const getInfoFromURL = (url) => {
         res.reviews = []
         const reviewLoop = page =>
           axios.get(url + '/reviews?p=' + page.toString())
-          .then(({ data }) => {
-            reviews = parseReviews(data)
-            if (Object.keys(reviews).length > 0) {
-              res.reviews = res.reviews.concat(reviews)
-              return reviewLoop(page + 1)
-            }
-          })
-          .catch(/* istanbul ignore next */(err) => reject(err))
+            .then(({ data }) => {
+              reviews = parseReviews(data)
+              if (Object.keys(reviews).length > 0) {
+                res.reviews = res.reviews.concat(reviews)
+                return reviewLoop(page + 1)
+              }
+            })
+            .catch(/* istanbul ignore next */(err) => reject(err))
 
         return reviewLoop(1)
       })
@@ -252,7 +251,7 @@ const getInfoFromURL = (url) => {
   })
 }
 
-const getResultsFromSearch = (keyword, type='anime') => {
+const getResultsFromSearch = (keyword, type= 'anime') => {
   return new Promise((resolve, reject) => {
     if (!keyword) {
       reject(new Error('[Mal-Scraper]: Received no keyword to search.'))
@@ -280,7 +279,7 @@ const getResultsFromSearch = (keyword, type='anime') => {
   })
 }
 
-const getInfoFromName = (name, getBestMatch = true, type='anime') => {
+const getInfoFromName = (name, getBestMatch = true, type= 'anime') => {
   return new Promise((resolve, reject) => {
     if (!name || typeof name !== 'string') {
       reject(new Error('[Mal-Scraper]: Invalid name.'))
