@@ -8,6 +8,12 @@ const getFromBorder = ($, t) => {
   return $(`span:contains("${t}")`).parent().text().trim().split(' ').slice(1).join(' ').split('\n')[0].trim()
 }
 
+const getScoreStats = ($) => {
+  const stats = Number($('span[itemprop="ratingCount"]').first().text()).toLocaleString('en-US')
+
+  return `scored by ${stats} users`
+}
+
 const getPictureUrl = (url) => {
   const sizeRegex = /\/r\/\d*x\d*/
   const parts = url.split('.')
@@ -121,7 +127,7 @@ const parsePage = (data) => {
   result.duration = getFromBorder($, 'Duration:')
   result.rating = getFromBorder($, 'Rating:')
   result.score = getFromBorder($, 'Score:').split(' ')[0].slice(0, -1)
-  result.scoreStats = getFromBorder($, 'Score:').split(' ').slice(1).join(' ').slice(1, -1)
+  result.scoreStats = getScoreStats($)
   result.ranked = getFromBorder($, 'Ranked:').slice(0, -1)
   result.popularity = getFromBorder($, 'Popularity:')
   result.members = getFromBorder($, 'Members:')
