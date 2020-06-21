@@ -1,45 +1,52 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
 
-const trace = '####'
-const ROOT_URL = 'https://myanimelist.net'
-const BASE_URL = `${ROOT_URL}/${trace}.php`
+const {
+  trace,
+  ROOT_URL,
+  BASE_URL,
+  availableValues,
+  columns,
+  lists,
+  orderMap
+} = require('./constants.js')
 
-const lists = require('./getLists.js')
-
-const availableValues = {
-  type: [{ name: 'none', value: 0 }, { name: 'tv', value: 1 }, { name: 'ova', value: 2 }, { name: 'movie', value: 3 }, { name: 'special', value: 4 }, { name: 'ona', value: 5 }, { name: 'music', value: 6 }],
-  status: [{ name: 'none', value: 0 }, { name: 'finished', value: 1 }, { name: 'currently', value: 2 }, { name: 'not-aired', value: 3 }],
-  r: [{ name: 'none', value: 0 }, { name: 'G', value: 1 }, { name: 'PG', value: 2 }, { name: 'PG-13', value: 3 }, { name: 'R', value: 4 }, { name: 'R+', value: 5 }, { name: 'Rx', value: 6 }],
-  score: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-  p: lists.producers,
-  genre: lists.genres
-}
-
-const orderMap = {
-  keys: {
-    startDate: 2,
-    score: 3,
-    eps: 4,
-    endDate: 5,
-    type: 6,
-    members: 7,
-    rated: 8
-  },
-  order: {
-    DESC: 2,
-    ASC: 1
-  }
-}
-
-const columns = ['thumbnail', 'title', 'type', 'nbEps', 'score', 'startDate', 'endDate', 'members', 'rating']
+/**
+ * @typedef {{value: String, name: String}} Genre
+ *
+ * @typedef {{
+ *   sd: Number,
+ *   sm: Number,
+ *   sy: Number,
+ * }} StartDate
+ *
+ * @typedef {{
+ *   ed: Number,
+ *   em: Number,
+ *   ey: Number,
+ * }} EndDate
+ *
+ * @typedef {{
+ *    term: String,
+ *    type: Number,
+ *    status: Number,
+ *    score: Number,
+ *    producer: Number,
+ *    rating: Number,
+ *    startDate: StartDate,
+ *    endDate: EndDate,
+ *    genreType: Number,
+ *    genres: Genre[],
+ *    has: Number
+ * }} SearchOpts
+ */
 
 const getOrderParams = (opts) => {
   const { keys, order = ['DESC', 'DESC'] } = opts
 
   if (!Array.isArray(keys) || !Array.isArray(order)) throw new Error('Invalid order parameters.')
-  if (!keys.length) throw new Error('Imvalid order keys.')
-  if (order && order.length !== keys.length) throw new Error('Imvalid order.')
+  if (!keys.length) throw new Error('Invalid order keys.')
+  if (order && order.length !== keys.length) throw new Error('Invalid order.')
 
   return keys.reduce((acc, key, index) => {
     const _order = order[index]
@@ -51,7 +58,19 @@ const getOrderParams = (opts) => {
 }
 
 const getParams = (_type, opts) => {
-  const { term = '', type = 0, status = 0, score = 0, producer = 0, rating = 0, startDate = {}, endDate = {}, genreType = 0, genres = [], has: after } = opts
+  const {
+    term = '',
+    type = 0,
+    status = 0,
+    score = 0,
+    producer = 0,
+    rating = 0,
+    startDate = {},
+    endDate = {},
+    genreType = 0,
+    genres = [],
+    has: after
+  } = opts
 
   if (!availableValues.type.map(({ value }) => +value).includes(type)) throw new Error('Invalid Type.')
   if (!availableValues.status.map(({ value }) => +value).includes(status)) throw new Error('Invalid status.')
@@ -90,7 +109,7 @@ const getParams = (_type, opts) => {
   }))
 }
 
-const parsePage = ($) => {
+const parsePage = (type, $) => {
   const result = []
   const table = $('#content div.list table tbody tr')
 
@@ -120,7 +139,7 @@ const parsePage = ($) => {
         return
       }
 
-      entry[columns[subIndex]] = $(this).text().trim()
+      entry[columns[type][subIndex]] = $(this).text().trim()
     })
 
     result.push(entry)
@@ -154,14 +173,14 @@ const hasNext = ($) => {
   return { hasNext, nextUrl }
 }
 
-const getResults = (url, params = {}, maxResult = 50, result = []) => {
+const getResults = (type, url, params = {}, maxResult = 50, result = []) => {
   return new Promise((resolve, reject) => {
     axios.get(url, { params })
       .then((res) => {
         const { data } = res
         const $ = cheerio.load(data)
         const next = hasNext($)
-        const _result = [...result, ...parsePage($)]
+        const _result = [...result, ...parsePage(type, $)]
 
         resolve(
           _result.length < maxResult && next.hasNext
@@ -173,15 +192,23 @@ const getResults = (url, params = {}, maxResult = 50, result = []) => {
   })
 }
 
+/**
+ * Makes a search request based on:
+ *  -- https://myanimelist.net/anime.php
+ *  -- https://myanimelist.net/manga.php
+ *
+ * @param {String} type anime | manga
+ * @param {SearchOpts} opts
+ */
 const search = (type, opts) => {
-  return new Promise((resolve, reject) => {
-    const params = getParams(type, opts)
-    const order = opts.order && getOrderParams(opts.order)
+  const params = getParams(type, opts)
+  const order = opts.order && getOrderParams(opts.order)
 
-    getResults(BASE_URL.replace(trace, type) + (order || ''), params, opts.maxResults)
-      .then(resolve)
-      .catch(reject)
-  })
+  return getResults(
+    type,
+    BASE_URL.replace(trace, type) + (order || ''),
+    params, opts.maxResults
+  )
 }
 
 module.exports = {
