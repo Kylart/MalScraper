@@ -119,7 +119,8 @@ search.search(type, {
   .catch(console.error)
 ```
 
-Returns: A [Anime search model](https://github.com/Kylart/MalScraper/blob/master/README.md#anime-search-model) object
+Returns: A [Anime search model](https://github.com/Kylart/MalScraper/blob/master/README.md#anime-search-model)
+or [Manga search model](https://github.com/Kylart/MalScraper/blob/master/README.md#manga-search-model) object
 
 ### getInfoFromName()
 
@@ -500,6 +501,22 @@ Anime ratings can be either:
 | endDate | string | Anime end date |
 | members | string | Anime number of members |
 | rating | string | Anime rating |
+
+#### Manga search model
+| Property | Type | Description |
+| --- | --- | --- |
+| thumbnail | string | Full url for anime thumbnail |
+| url | string | Full url for anime page |
+| video | string | full url of anime trailer video if any |
+| shortDescription | string | Short description of the anime (or manga) |
+| title | string | Anime title |
+| type | string | Anime type |
+| score | string | Anime score |
+| nbChapters | string | Number of chapters released so far |
+| vols | string | Number of volumes released so far |
+| startDate | string | Anime start date |
+| endDate | string | Anime end date |
+| members | string | Anime number of members |
 
 #### Staff data model
 
