@@ -69,7 +69,7 @@ test('getSeasons with type ONAs returns the correct season', async t => {
   try {
     const data = await getSeason(2017, 'fall', 'ONAs')
 
-    t.is(data.length, 59)
+    t.is(data.length, 60)
     t.is(data[0].title, 'Net-juu no Susume')
   } catch (e) {
     console.log(e.message)
