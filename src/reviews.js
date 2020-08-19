@@ -1,5 +1,7 @@
 const axios = require('axios');
 
+const BASE_URI = 'https://myanimelist.net/anime/'
+
 const searchPage = (url, offset = 0, res = []) => {
   return new Promise((resolve, reject) => {
     axios.get(url, {
