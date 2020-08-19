@@ -1,5 +1,23 @@
 const axios = require('axios');
 
+const searchPage = (url, offset = 0, res = []) => {
+  return new Promise((resolve, reject) => {
+    axios.get(url, {
+      params: {
+        offset
+      }
+    })
+      .then(({ data }) => {
+        const $ = cheerio.load(data)
+
+        const tmpRes = parsePage($)
+        res = res.concat(tmpRes)
+        resolve(res)
+      })
+      .catch(/* istanbul ignore next */(err) => reject(err))
+  })
+}
+
 const getReviewsFromName = (name) => {
   return new Promise((resolve, reject) => {
     getResultsFromSearch(name)
