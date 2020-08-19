@@ -1,4 +1,5 @@
 const axios = require('axios');
+const cheerio = require('cheerio');
 
 const BASE_URI = 'https://myanimelist.net/anime/'
 
@@ -10,11 +11,11 @@ const searchPage = (url, offset = 0, res = []) => {
       }
     })
       .then(({ data }) => {
-        const $ = cheerio.load(data)
+        //const $ = cheerio.load(data)
 
-        const tmpRes = parsePage($)
-        res = res.concat(tmpRes)
-        resolve(res)
+        //const tmpRes = parsePage($)
+        //res = res.concat(tmpRes)
+        resolve(data)
       })
       .catch(/* istanbul ignore next */(err) => reject(err))
   })
