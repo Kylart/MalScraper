@@ -3,6 +3,23 @@ const cheerio = require('cheerio');
 
 const BASE_URI = 'https://myanimelist.net/anime/'
 
+const parsePage = ($) => {
+  const allItems = $('.borderDark')
+  const result = []
+
+  // Because MAL shows twice the number of elements for the order
+  const items = allItems.slice(0, allItems.length / 2)
+
+  items.each(function (elem) {
+    result.push({
+      author: +$(this).find('.spaceit div table tr td:nth-child(2) a').text().trim(),
+      text: $(this).find('.spaceit.pt8').text().trim()
+    })
+  })
+
+  return result
+}
+
 const searchPage = (url, offset = 0, res = []) => {
   return new Promise((resolve, reject) => {
     axios.get(url, {
@@ -11,11 +28,11 @@ const searchPage = (url, offset = 0, res = []) => {
       }
     })
       .then(({ data }) => {
-        //const $ = cheerio.load(data)
+        const $ = cheerio.load(data)
 
-        //const tmpRes = parsePage($)
-        //res = res.concat(tmpRes)
-        resolve(data)
+        const tmpRes = parsePage($)
+        res = res.concat(tmpRes)
+        resolve(res)
       })
       .catch(/* istanbul ignore next */(err) => reject(err))
   })
