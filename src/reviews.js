@@ -3,30 +3,37 @@ const cheerio = require('cheerio');
 
 const BASE_URI = 'https://myanimelist.net/anime/'
 
+const malDateToJsDate = (malDate) => {
+	return new Date(malDate);
+}
+
+const malNumberToJsNumber = (malNumber) => {
+	return malNumber ? Number(malNumber) : 0;
+}
+
 const parsePage = ($) => {
-  const allItems = $('.borderDark')
+  const items = $('.borderDark')
   const result = []
-
-  // Because MAL shows twice the number of elements for the order
-  const items = allItems.slice(0, allItems.length / 2)
-
 
   items.each(function (elem) {
     const notes = $(this).find('.spaceit.pt8 div');
+    const review_more = $(this).find('.spaceit.pt8 span');
     // For presenting the review only without the notes
     $(this).find('.spaceit.pt8 div').remove();
+    $(this).find('.spaceit.pt8 span').remove();
+    $(this).find('.spaceit.pt8 a.js-toggle-review-button').remove();
 
     result.push({
       author: $($(this).find('.spaceit td:nth-child(2) a')["0"]).text().trim(),
-      date: $($(this).find('.spaceit .mb8 div')["0"]).text().trim(),
+      date: malDateToJsDate($($(this).find('.spaceit .mb8 div')["0"]).text().trim()),
       seen: $(this).find('.spaceit .mb8 .lightLink').text().trim(),
-      note_overall: $(notes).find('tr:nth-child(1) td:nth-child(2)').text().trim(),
-      note_story: $(notes).find('tr:nth-child(2) td:nth-child(2)').text().trim(),
-      note_animation: $(notes).find('tr:nth-child(3) td:nth-child(2)').text().trim(),
-      note_sound: $(notes).find('tr:nth-child(4) td:nth-child(2)').text().trim(),
-      note_character: $(notes).find('tr:nth-child(5) td:nth-child(2)').text().trim(),
-      note_enjoyment: $(notes).find('tr:nth-child(6) td:nth-child(2)').text().trim(),
-      review: $(this).find('.spaceit.pt8').text().trim()
+      note_overall: malNumberToJsNumber($(notes).find('tr:nth-child(1) td:nth-child(2)').text().trim()),
+      note_story: malNumberToJsNumber($(notes).find('tr:nth-child(2) td:nth-child(2)').text().trim()),
+      note_animation: malNumberToJsNumber($(notes).find('tr:nth-child(3) td:nth-child(2)').text().trim()),
+      note_sound: malNumberToJsNumber($(notes).find('tr:nth-child(4) td:nth-child(2)').text().trim()),
+      note_character: malNumberToJsNumber($(notes).find('tr:nth-child(5) td:nth-child(2)').text().trim()),
+      note_enjoyment: malNumberToJsNumber($(notes).find('tr:nth-child(6) td:nth-child(2)').text().trim()),
+      review: $(this).find('.spaceit.pt8').text().trim() + $(review_more).text().trim()
     })
   })
 
