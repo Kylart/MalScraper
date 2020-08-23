@@ -14,10 +14,12 @@ test('getReviewsList returns the first review for Naruto Shippuuden with ID and 
   try {
     const data = await getReviewsList({
       name: NS.name,
-      id: NS.id
+      id: NS.id,
+	  limit: 40
     })
 
-    console.log(data);
+	console.log(data);
+
 	t.is(typeof data, 'object')
     t.is(data[0].author, 'Xyik')
     t.is(data[0].note_overall, 6)
