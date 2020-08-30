@@ -2,6 +2,8 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 const BASE_URI = 'https://myanimelist.net/anime/'
+const NUMBER_REVIEWS_BY_PAGE = 20;
+const INITIAL_FIRST_PAGE_REVIEW = 1;
 
 const malDateToJsDate = (malDate) => {
 	return new Date(malDate);
@@ -40,7 +42,7 @@ const parsePage = ($) => {
   return result
 }
 
-const searchPage = (url, limit, p = 0, res = []) => {
+const searchPage = (url, limit, skip, p, res = []) => {
   return new Promise((resolve, reject) => {
     axios.get(url, {
       params: {
@@ -55,7 +57,7 @@ const searchPage = (url, limit, p = 0, res = []) => {
 
 		if (res.length <= limit) {
 			p++;
-			searchPage(url, limit, p, res)
+			searchPage(url, limit, skip, p, res)
 			  .then((data) => resolve(data))
 			  .catch(/* istanbul ignore next */(err) => reject(err))
 		} else {
@@ -72,7 +74,7 @@ const getReviewsFromName = (name) => {
       .then((items) => {
         const { url } = items[0]
 
-        searchPage(`${encodeURI(url)}/reviews`, limit)
+        searchPage(`${encodeURI(url)}/reviews`, limit, skip)
           .then((data) => resolve(data))
           .catch(/* istanbul ignore next */(err) => reject(err))
       })
@@ -80,9 +82,16 @@ const getReviewsFromName = (name) => {
   })
 }
 
-const getReviewsFromNameAndId = (id, name, limit) => {
+const getReviewsFromNameAndId = (id, name, limit, skip) => {
   return new Promise((resolve, reject) => {
-    searchPage(`${BASE_URI}${id}/${encodeURI(name)}/reviews`, limit)
+  	if (skip !== 0) {
+	  p = Math.floor(skip / NUMBER_REVIEWS_BY_PAGE) + 1;
+	  skip = Math.max(0, skip - (p * NUMBER_REVIEWS_BY_PAGE));
+    } else {
+	  p = INITIAL_FIRST_PAGE_REVIEW;
+    }
+
+    searchPage(`${BASE_URI}${id}/${encodeURI(name)}/reviews`, limit, skip, p)
       .then((data) => resolve(data))
       .catch(/* istanbul ignore next */(err) => reject(err))
   })
@@ -97,17 +106,18 @@ const getReviewsList = (obj) => {
 
     if (typeof obj === 'object' && !obj[0]) {
       const { id, name, limit } = obj
+	  const skip = obj.skip ? obj.skip : 0
 
       if (!id || !name || isNaN(+id) || typeof name !== 'string') {
         reject(new Error('[Mal-Scraper]: Malformed input. ID or name is malformed or missing.'))
         return
       }
 
-      getReviewsFromNameAndId(id, name, limit)
+      getReviewsFromNameAndId(id, name, limit, skip)
         .then((data) => resolve(data))
         .catch(/* istanbul ignore next */(err) => reject(err))
     } else {
-      getReviewsFromName(obj, limit)
+      getReviewsFromName(obj, limit, skip)
         .then((data) => resolve(data))
         .catch(/* istanbul ignore next */(err) => reject(err))
     }
