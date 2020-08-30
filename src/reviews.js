@@ -55,6 +55,12 @@ const searchPage = (url, limit, skip, p, res = []) => {
         const tmpRes = parsePage($)
         res = res.concat(tmpRes)
 
+		if (skip !== 0) {
+			res.splice(0, skip)
+			skip = 0
+			console.log(res);
+		}
+
 		if (res.length <= limit) {
 			p++;
 			searchPage(url, limit, skip, p, res)
@@ -86,10 +92,11 @@ const getReviewsFromNameAndId = (id, name, limit, skip) => {
   return new Promise((resolve, reject) => {
   	if (skip !== 0) {
 	  p = Math.floor(skip / NUMBER_REVIEWS_BY_PAGE) + 1;
-	  skip = Math.max(0, skip - (p * NUMBER_REVIEWS_BY_PAGE));
+	  skip = Math.max(0, skip - ((p - 1) * NUMBER_REVIEWS_BY_PAGE));
     } else {
 	  p = INITIAL_FIRST_PAGE_REVIEW;
     }
+
 
     searchPage(`${BASE_URI}${id}/${encodeURI(name)}/reviews`, limit, skip, p)
       .then((data) => resolve(data))

@@ -45,14 +45,14 @@ test('getReviewsList returns the first reviews after the first page for Naruto S
       name: NS.name,
       id: NS.id,
 	  limit: 1,
-	  skip: 20
+	  skip: 21
     })
 
 	t.is(typeof data, 'object')
-    t.is(data[0].author, 'husa2004')
-    t.is(data[0].note_overall, 10)
-    t.is(data[0].note_story, 10)
-    t.is(data[0].note_animation, 9)
+    t.is(data[0].author, 'Bluthut')
+    t.is(data[0].note_overall, 9)
+    t.is(data[0].note_story, 9)
+    t.is(data[0].note_animation, 8)
     t.is(data[0].note_sound, 9)
     t.is(data[0].note_character, 9)
     t.is(data[0].note_enjoyment, 10)
