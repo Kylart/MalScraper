@@ -97,11 +97,11 @@ const parsePage = (data) => {
   // Example:
   //    - with: https://myanimelist.net/anime/30654/Ansatsu_Kyoushitsu_2nd_Season
   //    - without: https://myanimelist.net/anime/20047/Sakura_Trick
-  $('span[itemprop="name"] br').remove()
-  $('span[itemprop="name"] span').remove()
+  $('h1.title-name br').remove()
+  $('h1.title-name span').remove()
 
-  result.title = $('span[itemprop="name"]').first().text()
-  result.synopsis = $('.js-scrollfix-bottom-rel span[itemprop="description"]').text()
+  result.title = $('h1.title-name').text()
+  result.synopsis = $('.js-scrollfix-bottom-rel p[itemprop="description"]').text()
   result.picture = $(`img[itemprop="image"][alt="${result.title}"]`).attr('data-src')
 
   const staffAndCharacters = getCharactersAndStaff($)
