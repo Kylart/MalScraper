@@ -1,5 +1,6 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
+const { getResultsFromSearch } = require('./info.js')
 
 const BASE_URI = 'https://myanimelist.net/anime/'
 const NUMBER_REVIEWS_BY_PAGE = 20;
@@ -58,7 +59,6 @@ const searchPage = (url, limit, skip, p, res = []) => {
 		if (skip !== 0) {
 			res.splice(0, skip)
 			skip = 0
-			console.log(res);
 		}
 
 		if (res.length <= limit) {
@@ -67,6 +67,10 @@ const searchPage = (url, limit, skip, p, res = []) => {
 			  .then((data) => resolve(data))
 			  .catch(/* istanbul ignore next */(err) => reject(err))
 		} else {
+            if (res.length !== limit) {
+                const nbrElementToRemove = res.length - limit;
+    			res.splice(-nbrElementToRemove, nbrElementToRemove)
+            }
 		  resolve(res)
 		}
       })
@@ -74,13 +78,13 @@ const searchPage = (url, limit, skip, p, res = []) => {
   })
 }
 
-const getReviewsFromName = (name) => {
+const getReviewsFromName = (name, limit, skip, p) => {
   return new Promise((resolve, reject) => {
     getResultsFromSearch(name)
       .then((items) => {
         const { url } = items[0]
 
-        searchPage(`${encodeURI(url)}/reviews`, limit, skip)
+        searchPage(`${encodeURI(url)}/reviews`, limit, skip, p)
           .then((data) => resolve(data))
           .catch(/* istanbul ignore next */(err) => reject(err))
       })
@@ -88,16 +92,8 @@ const getReviewsFromName = (name) => {
   })
 }
 
-const getReviewsFromNameAndId = (id, name, limit, skip) => {
+const getReviewsFromNameAndId = (id, name, limit, skip, p) => {
   return new Promise((resolve, reject) => {
-  	if (skip !== 0) {
-	  p = Math.floor(skip / NUMBER_REVIEWS_BY_PAGE) + 1;
-	  skip = Math.max(0, skip - ((p - 1) * NUMBER_REVIEWS_BY_PAGE));
-    } else {
-	  p = INITIAL_FIRST_PAGE_REVIEW;
-    }
-
-
     searchPage(`${BASE_URI}${id}/${encodeURI(name)}/reviews`, limit, skip, p)
       .then((data) => resolve(data))
       .catch(/* istanbul ignore next */(err) => reject(err))
@@ -106,25 +102,32 @@ const getReviewsFromNameAndId = (id, name, limit, skip) => {
 
 const getReviewsList = (obj) => {
   return new Promise((resolve, reject) => {
-    if (!obj) {
+    if (!obj || typeof obj !== 'object') {
       reject(new Error('[Mal-Scraper]: No id nor name received.'))
       return
     }
+    const { id, name, limit } = obj
+    let skip = obj.skip ? obj.skip : 0
 
-    if (typeof obj === 'object' && !obj[0]) {
-      const { id, name, limit } = obj
-	  const skip = obj.skip ? obj.skip : 0
+    if ((obj.id && (!name || isNaN(+id))) || typeof name !== 'string') {
+      reject(new Error('[Mal-Scraper]: Malformed input. ID or name is malformed or missing.'))
+      return
+    }
 
-      if (!id || !name || isNaN(+id) || typeof name !== 'string') {
-        reject(new Error('[Mal-Scraper]: Malformed input. ID or name is malformed or missing.'))
-        return
-      }
 
-      getReviewsFromNameAndId(id, name, limit, skip)
+    if (skip !== 0) {
+	  p = Math.floor(skip / NUMBER_REVIEWS_BY_PAGE) + 1;
+	  skip = Math.max(0, skip - ((p - 1) * NUMBER_REVIEWS_BY_PAGE));
+    } else {
+	  p = INITIAL_FIRST_PAGE_REVIEW;
+    }
+
+    if (obj.id) {
+      getReviewsFromNameAndId(id, name, limit, skip, p)
         .then((data) => resolve(data))
         .catch(/* istanbul ignore next */(err) => reject(err))
     } else {
-      getReviewsFromName(obj, limit, skip)
+      getReviewsFromName(name, limit, skip, p)
         .then((data) => resolve(data))
         .catch(/* istanbul ignore next */(err) => reject(err))
     }
