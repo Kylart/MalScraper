@@ -6,10 +6,20 @@ const BASE_URI = 'https://myanimelist.net/anime/'
 const NUMBER_REVIEWS_BY_PAGE = 20
 const INITIAL_FIRST_PAGE_REVIEW = 1
 
+/**
+* Return a formatter javascript date
+* @params malDate string a date in a string object
+* @return date The string parse to a date
+**/
 const malDateToJsDate = (malDate) => {
   return new Date(malDate)
 }
 
+/**
+* Return a formatted javascript number
+* @params malNumber string a number in a string object
+* @return number The string parse to a number
+**/
 const malNumberToJsNumber = (malNumber) => {
   return malNumber ? Number(malNumber) : 0
 }
@@ -55,6 +65,7 @@ const searchPage = (url, limit, skip, p, res = []) => {
       const tmpRes = parsePage($)
       res = res.concat(tmpRes)
 
+      // If there is some skip to do, we splice the first result of the first page
       if (skip !== 0) {
         res.splice(0, skip)
         skip = 0
@@ -66,6 +77,7 @@ const searchPage = (url, limit, skip, p, res = []) => {
           .then((data) => resolve(data))
           .catch(/* istanbul ignore next */(err) => reject(err))
       } else {
+        // If our limit is under the number of result in the page, we remove the excess
         if (res.length !== limit) {
           const nbrElementToRemove = res.length - limit
           res.splice(-nbrElementToRemove, nbrElementToRemove)
@@ -96,6 +108,25 @@ const getReviewsFromNameAndId = (id, name, limit, skip, p) => {
   })
 }
 
+/**
+* Return the starting page of the query depending of the number of element to skip
+* @params skip number The number of element to skip
+* @return number page to start the query
+**/
+const startingPage = (skip) => {
+  return skip !== 0 ? Math.floor(skip / NUMBER_REVIEWS_BY_PAGE) + 1 : INITIAL_FIRST_PAGE_REVIEW
+}
+
+/**
+* Return the number of skip remaining after skipping x page
+* @params skip number Total number of skip of the call
+* @params p number Number of page to skip
+* @return number Number of skip remaining in the first page
+**/
+const skipByPage = (skip, p) => {
+  return skip !== 0 ? Math.max(0, skip - ((p - 1) * NUMBER_REVIEWS_BY_PAGE)) : 0
+}
+
 const getReviewsList = (obj) => {
   return new Promise((resolve, reject) => {
     if (!obj || typeof obj !== 'object') {
@@ -110,11 +141,8 @@ const getReviewsList = (obj) => {
       return
     }
 
-    let p = INITIAL_FIRST_PAGE_REVIEW
-    if (skip !== 0) {
-      p = Math.floor(skip / NUMBER_REVIEWS_BY_PAGE) + 1
-      skip = Math.max(0, skip - ((p - 1) * NUMBER_REVIEWS_BY_PAGE))
-    }
+    const p = startingPage(skip)
+    skip = skipByPage(skip, p)
 
     if (obj.id) {
       getReviewsFromNameAndId(id, name, limit, skip, p)
