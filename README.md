@@ -757,12 +757,12 @@ The types, statuses and series statuses aren't explicitly given by MyAnimeList, 
 | author | string | The name of the author |
 | date | date | The date of the comment |
 | seen | string | The number of episode seen |
-| note_overall | number | The overall note of the anime |
-| note_story | number | The story note of the anime |
-| note_animation | number | The animation note of the anime|
-| note_sound | number | The sound note of the anime |
-| note_character | number | The character note of the anime |
-| note_enjoyment | number | The enjoyment note of the anime |
+| overall | number | The overall note of the anime |
+| story | number | The story note of the anime |
+| animation | number | The animation note of the anime|
+| sound | number | The sound note of the anime |
+| character | number | The character note of the anime |
+| enjoyment | number | The enjoyment note of the anime |
 | review | string | The complete review |
 
 #### Anime reviews data model
