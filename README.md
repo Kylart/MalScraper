@@ -50,6 +50,7 @@ Tables of content:
 - * [getSeason()](https://github.com/Kylart/MalScraper/blob/master/README.md#getseason)
 - * [getNewsNoDetails()](https://github.com/Kylart/MalScraper/blob/master/README.md#getnewsnodetails)
 - * [getEpisodesList()](https://github.com/Kylart/MalScraper/blob/master/README.md#getepisodeslist)
+- * [getReviewsList()](https://github.com/Kylart/MalScraper/blob/master/README.md#getreviewslist)
 - * [Official API Constructor](https://github.com/Kylart/MalScraper/blob/master/README.md#official-api-constructor)
 - - * [checkCredentials()](https://github.com/Kylart/MalScraper/blob/master/README.md#checkcredentials)
 - - * [search()](https://github.com/Kylart/MalScraper/blob/master/README.md#search)
@@ -194,7 +195,7 @@ This method get the list of anime, OVAs, movies and ONAs released (or planned to
 | season | No | string | The season, must be either `spring`, `summer`, `fall` or `winter` |
 | type | Yes | string | The type, must be either `TV`, `TVNew`, `TVCon`, `ONAs`, `OVAs`, `Specials` or `Movies` |
 
-Usage example: 
+Usage example:
 
 ```javascript
 const malScraper = require('mal-scraper')
@@ -238,7 +239,7 @@ Returns: A [Seasonal anime release data model](https://github.com/Kylart/MalScra
 | after | number | Useful to paginate. Is the number of results you want to start from. By default, MAL returns 300 entries only. |
 | type | string | Optional, can be either `anime` or `manga` |
 
-Usage example: 
+Usage example:
 
 ```javascript
 const malScraper = require('mal-scraper')
@@ -261,7 +262,7 @@ Returns: A [User watch list data model](https://github.com/Kylart/MalScraper/blo
 | username | string | The name of the user |
 | type | string | Optional, can be either `anime` or `manga` |
 
-Usage example: 
+Usage example:
 
 ```javascript
 const malScraper = require('mal-scraper')
@@ -283,7 +284,7 @@ Returns: A [User watch list data model](https://github.com/Kylart/MalScraper/blo
 | --- | --- | --- |
 | nbNews | number | The count of news you want to get, default is 160. Note that there is 20 news per page, so if you set it to 60 for example, it will result in 3 requests. You should be aware of that, as MyAnimeList will most likely rate-limit you if more than 35-40~ requests are done in a few seconds |
 
-Usage example: 
+Usage example:
 
 ```javascript
 const malScraper = require('mal-scraper')
@@ -305,7 +306,7 @@ Returns: An array of [News data model](https://github.com/Kylart/MalScraper/blob
 | anime.name | string | The name of the anime |
 | anime.id | number | The unique identifier of this anime |
 
-Usage example: 
+Usage example:
 
 ```javascript
 const malScraper = require('mal-scraper')
@@ -328,6 +329,45 @@ malScraper.getEpisodesList(name)
 
 Returns: An array of [Anime episodes data model](https://github.com/Kylart/MalScraper/blob/master/README.md#anime-episodes-data-model) objects
 
+### getReviewsList()
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| anime | object | An object that must have the `name` and `id` property or just the `name` alone. If you only have the name and not the id, you may call the method with the name as a string, this will be slower but the id will be automatically fetched on the way |
+| anime.name | string | The name of the anime |
+| anime.id | number | The unique identifier of this anime |
+| anime.limit | number | [optionnal] The number max of reviews to fetch - can be really long if omit |
+| anime.skip | number | [optionnal] The number of reviews to skip |
+
+Usage example:
+
+```javascript
+const malScraper = require('mal-scraper')
+
+malScraper.getReviewsList({
+  name: 'Sakura Trick',
+  id: 20047,
+  limit: 1,
+  skip: 20
+})
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err))
+
+//Alternatively, if you only have the name and not the id, you can let the method fetch the id on the way at the cost of being slower
+
+const name = "Sakura Trick"
+
+malScraper.getReviewsList({
+  name: 'Sakura Trick',
+  limit: 1,
+  skip: 20
+})
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err))
+```
+
+Returns: An array of [Anime reviews data model](https://github.com/Kylart/MalScraper/blob/master/README.md#anime-reviews-data-model) objects
+
 ### Official API constructor
 > This requires a valid MyAnimeList account
 
@@ -335,7 +375,7 @@ _MalScraper_ also provide a full coverage of MyAnimeList's official API. The off
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| credentials | object | Object of a MAL account credentials | 
+| credentials | object | Object of a MAL account credentials |
 | credentials.username | string | The username of the account to use for the official API |
 | credentials.password | string | The password of the account to use for the official API |
 
@@ -431,7 +471,7 @@ const id = 20047
 
 api.actOnList({
   support: 'anime',
-  action: 'add' 
+  action: 'add'
 }, id, {
   status: 1,
   score: 10
@@ -457,7 +497,7 @@ api.actOnList({
 | type | string | The type of the anime, can be either `TV`, `OVA`, `Movie` or `Special` |
 | episodes | string | The number of aired episodes |
 | status | string | The status of the anime (whether it is airing, finished...) |
-| aired | string | The date from which the airing started to the one from which it ended, this property will be empty if one of the two dates is unknown | 
+| aired | string | The date from which the airing started to the one from which it ended, this property will be empty if one of the two dates is unknown |
 | premiered | string | The date of when the anime has been premiered |
 | broadcast | string | When the anime is broadcasted |
 | producers | array | An array of the anime producers |
@@ -538,7 +578,7 @@ Anime ratings can be either:
 | seiyuu | object | An object containing additional data about who dubbed this character |
 | seiyuu.link | string | Link to the MAL profile of who dubbed this character |
 | seiyuu.picture | string | Link to a picture of the seiyuu at the best possible size |
-| seiyuu.name | string | Their name and surname, like `Surname, Name` | 
+| seiyuu.name | string | Their name and surname, like `Surname, Name` |
 
 ### Search result data model
 
@@ -550,7 +590,7 @@ Anime ratings can be either:
 | url | string | The URL to the anime |
 | image_url | string | URL of the image |
 | thumbnail_url | string | URL of the thumbnail image |
-| es_score | number | A number representing the accuracy of the result, where 1 is a perfect match and 0 a totally irrelevant one | 
+| es_score | number | A number representing the accuracy of the result, where 1 is a perfect match and 0 a totally irrelevant one |
 | payload | object | An object containing additional data about the anime |
 | payload.media_type | string | The type of the anime, can be either `TV`, `Movie`, `OVA` or `Special` |
 | payload.start_year | number | The year the airing of the anime started |
@@ -582,7 +622,7 @@ Anime ratings can be either:
 | title | string | The name of the anime |
 | link | string | The direct link to the anime page |
 | genres | array | An array of strings which are the genres of this anime |
-| producers | array | An array of strings which are the producers of this anime | 
+| producers | array | An array of strings which are the producers of this anime |
 | fromType | string | From what this anime is based on/an adaptation of (Light novel, manga...) |
 | nbEp | string | The number of aired episodes this anime has |
 | releaseDate | string | When this anime has been released |
@@ -631,8 +671,8 @@ An array of [User anime entry data model](https://github.com/Kylart/MalScraper/b
 | animeSeason | string | ??? |
 | hasEpisodeVideo | boolean | Whether episode information are available on MAL |
 | hasPromotionVideo | boolean | Whether anime trailer is available on MAL |
-| videoUrl | string | path to video url on MAL | 
-| animeUrl | string | path to anime url on MAL | 
+| videoUrl | string | path to video url on MAL |
+| animeUrl | string | path to anime url on MAL |
 | animeImagePath | string | path to anime thumbnail url on MAL |
 | isAddedToList | boolean | ??? |
 | animeMediaTypeString | string | Type of this anime |
@@ -668,7 +708,7 @@ An array of [User anime entry data model](https://github.com/Kylart/MalScraper/b
 | mangaMediaTypeString | string | The type of the manga, see the [Types references](https://github.com/Kylart/MalScraper/blob/master/README.md#types-references) |
 | startDateString | string | A `mm-dd-yyyy` format date of when the user started watching this manga |
 | finishDateString | string | A `mm-dd-yyyy` format date of when the user finished watching this manga |
-| mangaStartDateString | string | A `mm-dd-yyyy` format date of when the manga started | 
+| mangaStartDateString | string | A `mm-dd-yyyy` format date of when the manga started |
 | mangaEndDateString | string | A `mm-dd-yyyy` format date of when the manga ended |
 | daysString | string | ??? |
 | retailString | string | ??? |
@@ -710,7 +750,22 @@ The types, statuses and series statuses aren't explicitly given by MyAnimeList, 
 | text | string | A short preview of the news description |
 | newsNumber | string | The unique identifier of the news |
 
-#### Anime episodes data model
+#### Anime reviews data model
+
+| Property | Type | Description |
+| --- | --- | --- |
+| author | string | The name of the author |
+| date | date | The date of the comment |
+| seen | string | The number of episode seen |
+| overall | number | The overall note of the anime |
+| story | number | The story note of the anime |
+| animation | number | The animation note of the anime|
+| sound | number | The sound note of the anime |
+| character | number | The character note of the anime |
+| enjoyment | number | The enjoyment note of the anime |
+| review | string | The complete review |
+
+#### Anime reviews data model
 
 | Property | Type | Description |
 | --- | --- | --- |
@@ -731,7 +786,7 @@ The types, statuses and series statuses aren't explicitly given by MyAnimeList, 
 | episodes | string | The total count of aired episodes this anime has |
 | score | string | The average score given by users to this anime |
 | type | string | The type of the anime (TV, OVA...) |
-| status | string | The status of the anime (Airing, Finished airing...) | 
+| status | string | The status of the anime (Airing, Finished airing...) |
 | start_date | string | A yyyy-mm-dd date format of when the anime started to be aired |
 | end_date | string | A yyyy-mm-dd date format of when the anime finished |
 | synopsis | string | The synopsis of the anime |
@@ -749,7 +804,7 @@ The types, statuses and series statuses aren't explicitly given by MyAnimeList, 
 | volumes | string | The total count of volumes this manga has |
 | score | string | The average score given by users to this manga |
 | type | string | The type of the manga (Manga, Doujinshi...) |
-| status | string | The status of the manga (Publishing, Finished...) | 
+| status | string | The status of the manga (Publishing, Finished...) |
 | start_date | string | A yyyy-mm-dd date format of when the manga started publication |
 | end_date | string | A yyyy-mm-dd date format of when the manga finished |
 | synopsis | string | The synopsis of the manga |
@@ -766,4 +821,3 @@ The types, statuses and series statuses aren't explicitly given by MyAnimeList, 
 MIT License
 
 Copyright (c) Kylart
-

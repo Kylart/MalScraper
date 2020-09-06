@@ -5,6 +5,7 @@ const search = require('./search')
 const { getInfoFromName, getInfoFromURL, getResultsFromSearch } = require('./info.js')
 const { getWatchListFromUser } = require('./watchList.js')
 const { getEpisodesList } = require('./episodes.js')
+const { getReviewsList } = require('./reviews.js')
 
 module.exports = {
   officialApi,
@@ -15,5 +16,6 @@ module.exports = {
   getResultsFromSearch,
   getWatchListFromUser,
   getEpisodesList,
+  getReviewsList,
   search
 }
