@@ -64,3 +64,19 @@ test('getStats returns the stats for Ginga Eiyuu Densetsu with name only', async
     t.fail()
   }
 })
+
+test('getStats returns an error if called with no arguments', async t => {
+  try {
+    await getStats()
+  } catch (e) {
+    t.true(e.message === '[Mal-Scraper]: No id nor name received.')
+  }
+})
+
+test('getStats returns an error if called with malformed object', async t => {
+  try {
+    await getStats({ name: NS.name })
+  } catch (e) {
+    t.true(e.message === '[Mal-Scraper]: Malformed input. ID or name is malformed or missing.')
+  }
+})
