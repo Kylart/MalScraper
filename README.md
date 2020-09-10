@@ -51,6 +51,7 @@ Tables of content:
 - * [getNewsNoDetails()](https://github.com/Kylart/MalScraper/blob/master/README.md#getnewsnodetails)
 - * [getEpisodesList()](https://github.com/Kylart/MalScraper/blob/master/README.md#getepisodeslist)
 - * [getReviewsList()](https://github.com/Kylart/MalScraper/blob/master/README.md#getreviewslist)
+- * [getStats()](https://github.com/Kylart/MalScraper/blob/master/README.md#getstats)
 - * [Official API Constructor](https://github.com/Kylart/MalScraper/blob/master/README.md#official-api-constructor)
 - - * [checkCredentials()](https://github.com/Kylart/MalScraper/blob/master/README.md#checkcredentials)
 - - * [search()](https://github.com/Kylart/MalScraper/blob/master/README.md#search)
@@ -367,6 +368,35 @@ malScraper.getReviewsList({
 ```
 
 Returns: An array of [Anime reviews data model](https://github.com/Kylart/MalScraper/blob/master/README.md#anime-reviews-data-model) objects
+
+### getStats()
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| anime | object OR string | If an object, it must have the `name` and `id` property. If you only have the name and not the id, you may call the method with the name as a string, this will be slower but the id will be automatically fetched on the way |
+| anime.name | string | The name of the anime |
+| anime.id | number | The unique identifier of this anime |
+
+```javascript
+const malScraper = require('mal-scraper')
+
+malScraper.getStats({
+  name: 'Ginga Eiyuu Densetsu',
+  id: 820
+})
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err))
+
+//Alternatively, if you only have the name and not the id, you can let the method fetch the id on the way at the cost of being slower
+
+const name = "Ginga Eiyuu Densetsu"
+
+malScraper.getStats(name)
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err))
+```
+
+Returns: An array of [Anime stats data model](https://github.com/Kylart/MalScraper/blob/master/README.md#anime-stats-data-model) objects
 
 ### Official API constructor
 > This requires a valid MyAnimeList account
@@ -809,6 +839,27 @@ The types, statuses and series statuses aren't explicitly given by MyAnimeList, 
 | end_date | string | A yyyy-mm-dd date format of when the manga finished |
 | synopsis | string | The synopsis of the manga |
 | image | string | URL to the cover image of the manga |
+
+#### Anime stats data model
+
+| Property | Type | Description |
+| --- | --- | --- |
+| watching | number | The total number of person who are watching the anime |
+| completed | number | The total number of person who completed the anime |
+| onHold | number | The total number of person who stop watching the anime but will continue later |
+| dropped | number | The total number of person who stop watching the anime |
+| planToWatch | number | The total number of person who plan to watch the anime |
+| total | number | Total of stats |
+| score10 | number | The number of person ranking the anime with a 10/10 |
+| score9 | number | The number of person ranking the anime with a 9/10 |
+| score8 | number | The number of person ranking the anime with a 8/10 |
+| score7 | number | The number of person ranking the anime with a 7/10 |
+| score6 | number | The number of person ranking the anime with a 6/10 |
+| score5 | number | The number of person ranking the anime with a 5/10 |
+| score4 | number | The number of person ranking the anime with a 4/10 |
+| score3 | number | The number of person ranking the anime with a 3/10 |
+| score2 | number | The number of person ranking the anime with a 2/10 |
+| score1 | number | The number of person ranking the anime with a 1/10 |
 
 ## Contributing
 1. Fork it!

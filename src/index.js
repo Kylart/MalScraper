@@ -6,6 +6,7 @@ const { getInfoFromName, getInfoFromURL, getResultsFromSearch } = require('./inf
 const { getWatchListFromUser } = require('./watchList.js')
 const { getEpisodesList } = require('./episodes.js')
 const { getReviewsList } = require('./reviews.js')
+const { getStats } = require('./stats.js')
 
 module.exports = {
   officialApi,
@@ -17,5 +18,6 @@ module.exports = {
   getWatchListFromUser,
   getEpisodesList,
   getReviewsList,
+  getStats,
   search
 }
