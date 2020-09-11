@@ -795,7 +795,7 @@ The types, statuses and series statuses aren't explicitly given by MyAnimeList, 
 | enjoyment | number | The enjoyment note of the anime |
 | review | string | The complete review |
 
-#### Anime reviews data model
+#### Anime episodes data model
 
 | Property | Type | Description |
 | --- | --- | --- |
