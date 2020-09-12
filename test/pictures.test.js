@@ -29,7 +29,7 @@ test('getPictures returns the pictures for Ginga Eiyuu Densetsu with name only',
   try {
     const data = await getPictures(NS.name)
 
-	t.is(typeof data, 'object')
+    t.is(typeof data, 'object')
     t.is(data[0].imageLink, 'https://cdn.myanimelist.net/images/anime/8/9568.jpg')
     t.is(data[1].imageLink, 'https://cdn.myanimelist.net/images/anime/13/13225.jpg')
   } catch (e) {

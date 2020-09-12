@@ -9,9 +9,9 @@ const parsePage = ($) => {
   const result = []
 
   items.each(function () {
-	result.push({
-	  imageLink: $(this).attr('data-src').trim()
-  	})
+    result.push({
+      imageLink: $(this).attr('data-src').trim()
+    })
   })
 
   return result
