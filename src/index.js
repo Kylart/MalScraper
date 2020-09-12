@@ -7,6 +7,7 @@ const { getWatchListFromUser } = require('./watchList.js')
 const { getEpisodesList } = require('./episodes.js')
 const { getReviewsList } = require('./reviews.js')
 const { getStats } = require('./stats.js')
+const { getPictures } = require('./pictures.js')
 
 module.exports = {
   officialApi,
@@ -19,5 +20,6 @@ module.exports = {
   getEpisodesList,
   getReviewsList,
   getStats,
+  getPictures,
   search
 }
