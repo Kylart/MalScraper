@@ -51,6 +51,7 @@ Tables of content:
 - * [getNewsNoDetails()](https://github.com/Kylart/MalScraper/blob/master/README.md#getnewsnodetails)
 - * [getEpisodesList()](https://github.com/Kylart/MalScraper/blob/master/README.md#getepisodeslist)
 - * [getReviewsList()](https://github.com/Kylart/MalScraper/blob/master/README.md#getreviewslist)
+- * [getRecommendationsList()](https://github.com/Kylart/MalScraper/blob/master/README.md#getrecommendationslist)
 - * [getStats()](https://github.com/Kylart/MalScraper/blob/master/README.md#getstats)
 - * [Official API Constructor](https://github.com/Kylart/MalScraper/blob/master/README.md#official-api-constructor)
 - - * [checkCredentials()](https://github.com/Kylart/MalScraper/blob/master/README.md#checkcredentials)
@@ -368,6 +369,37 @@ malScraper.getReviewsList({
 ```
 
 Returns: An array of [Anime reviews data model](https://github.com/Kylart/MalScraper/blob/master/README.md#anime-reviews-data-model) objects
+
+### getRecommendationsList()
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| anime | object OR string | If an object, it must have the `name` and `id` property. If you only have the name and not the id, you may call the method with the name as a string, this will be slower but the id will be automatically fetched on the way |
+| anime.name | string | The name of the anime |
+| anime.id | number | The unique identifier of this anime |
+
+Usage example:
+
+```javascript
+const malScraper = require('mal-scraper')
+
+malScraper.getRecommendationsList({
+  name: 'Sakura Trick',
+  id: 20047
+})
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err))
+
+//Alternatively, if you only have the name and not the id, you can let the method fetch the id on the way at the cost of being slower
+
+const name = "Sakura Trick"
+
+malScraper.getRecommendationsList(name)
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err))
+```
+
+Returns: An array of [Anime recommendations data model](https://github.com/Kylart/MalScraper/blob/master/README.md#anime-recommendations-data-model) objects
 
 ### getStats()
 
@@ -794,6 +826,16 @@ The types, statuses and series statuses aren't explicitly given by MyAnimeList, 
 | character | number | The character note of the anime |
 | enjoyment | number | The enjoyment note of the anime |
 | review | string | The complete review |
+
+#### Anime recommendations data model
+
+| Property | Type | Description |
+| --- | --- | --- |
+| pictureImage | date | The link of the picture's anime recommended |
+| animeLink | string | The link of the anime recommended |
+| anime | number | The name of the anime recommended |
+| mainRecommendation | number | The recommendation |
+| author | string | The name of the author |
 
 #### Anime episodes data model
 
