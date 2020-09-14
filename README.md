@@ -562,6 +562,11 @@ api.actOnList({
 | aired | string | The date from which the airing started to the one from which it ended, this property will be empty if one of the two dates is unknown |
 | premiered | string | The date of when the anime has been premiered |
 | broadcast | string | When the anime is broadcasted |
+| volumes | string | The number of volumes of the novel |
+| chapters | string | The numbers of chapters of the novel |
+| published | string | The dates of publications of the novel |
+| authors | string | The authors of the novel |
+| serialization | string | The serialization of the novel |
 | producers | array | An array of the anime producers |
 | studios | array | An array of the anime producers |
 | source | string | On what the anime is based on (e.g: based on a manga...) |
