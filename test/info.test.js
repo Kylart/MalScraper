@@ -8,6 +8,20 @@ test.beforeEach(async t => {
   await new Promise(resolve => setTimeout(resolve, 1500))
 })
 
+test('getInfoFromURL Tests of informations', async t => {
+  try {
+    const data = await getInfoFromURL("https://myanimelist.net/manga/21479/Sword_Art_Online")
+
+	console.log(data)
+
+    t.is(typeof data, 'object')
+    t.is(data.title, 'Ansatsu Kyoushitsu 2nd Season')
+    t.not(data.picture, undefined)
+  } catch (e) {
+    t.fail()
+  }
+})
+
 test('getInfoFromURL returns an error if invalid url', async t => {
   try {
     await getInfoFromURL('hello')
