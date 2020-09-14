@@ -10,13 +10,13 @@ test.beforeEach(async t => {
 
 test('getInfoFromURL returns valid information for a novel', async t => {
   try {
-    const data = await getInfoFromURL("https://myanimelist.net/manga/21479/Sword_Art_Online")
+    const data = await getInfoFromURL('https://myanimelist.net/manga/21479/Sword_Art_Online')
 
     t.is(typeof data, 'object')
     t.is(data.title, 'Sword Art Online')
     t.is(data.type, 'Novel')
     t.not(data.synopsis, undefined)
-	t.not(data.picture, undefined)
+    t.not(data.picture, undefined)
   } catch (e) {
     t.fail()
   }
@@ -28,7 +28,7 @@ test('getInfoFromURL returns valid information for an anime that has mix names',
 
     t.is(typeof data, 'object')
     t.is(data.title, 'Ansatsu Kyoushitsu 2nd Season')
-	t.is(data.type, 'TV')
+    t.is(data.type, 'TV')
     t.not(data.synopsis, undefined)
     t.not(data.picture, undefined)
   } catch (e) {

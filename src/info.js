@@ -118,14 +118,14 @@ const parsePage = (data, anime = true) => {
     result.broadcast = getFromBorder($, 'Broadcast:')
     result.producers = getFromBorder($, 'Producers:').split(',       ')
     result.studios = getFromBorder($, 'Studios:').split(',       ')
-	result.source = getFromBorder($, 'Source:')
-	result.duration = getFromBorder($, 'Duration:')
-	result.rating = getFromBorder($, 'Rating:')
+    result.source = getFromBorder($, 'Source:')
+    result.duration = getFromBorder($, 'Duration:')
+    result.rating = getFromBorder($, 'Rating:')
   }
 
   if (!anime) {
-	result.volumes = getFromBorder($, 'Volumes:')
-	result.chapters = getFromBorder($, 'Chapters:')
+    result.volumes = getFromBorder($, 'Volumes:')
+    result.chapters = getFromBorder($, 'Chapters:')
     result.published = getFromBorder($, 'Published:')
     result.authors = getFromBorder($, 'Authors:').split(',       ')
     result.serialization = getFromBorder($, 'Serialization:')
@@ -149,8 +149,8 @@ const parsePage = (data, anime = true) => {
 * @return boolean True if the url is for an anime
 **/
 const isAnimeFromURL = url => {
-	const urlSplitted = url.split('/')
-	return urlSplitted[3] === 'anime'
+  const urlSplitted = url.split('/')
+  return urlSplitted[3] === 'anime'
 }
 
 const getInfoFromURL = (url) => {
@@ -161,7 +161,7 @@ const getInfoFromURL = (url) => {
     }
 
     url = encodeURI(url)
-	const anime = isAnimeFromURL(url)
+    const anime = isAnimeFromURL(url)
 
     axios.get(url)
       .then(({ data }) => {
