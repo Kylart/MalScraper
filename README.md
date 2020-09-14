@@ -53,6 +53,7 @@ Tables of content:
 - * [getReviewsList()](https://github.com/Kylart/MalScraper/blob/master/README.md#getreviewslist)
 - * [getRecommendationsList()](https://github.com/Kylart/MalScraper/blob/master/README.md#getrecommendationslist)
 - * [getStats()](https://github.com/Kylart/MalScraper/blob/master/README.md#getstats)
+- * [getPictures()](https://github.com/Kylart/MalScraper/blob/master/README.md#getpictures)
 - * [Official API Constructor](https://github.com/Kylart/MalScraper/blob/master/README.md#official-api-constructor)
 - - * [checkCredentials()](https://github.com/Kylart/MalScraper/blob/master/README.md#checkcredentials)
 - - * [search()](https://github.com/Kylart/MalScraper/blob/master/README.md#search)
@@ -429,6 +430,35 @@ malScraper.getStats(name)
 ```
 
 Returns: An array of [Anime stats data model](https://github.com/Kylart/MalScraper/blob/master/README.md#anime-stats-data-model) objects
+
+### getPictures()
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| anime | object OR string | If an object, it must have the `name` and `id` property. If you only have the name and not the id, you may call the method with the name as a string, this will be slower but the id will be automatically fetched on the way |
+| anime.name | string | The name of the anime |
+| anime.id | number | The unique identifier of this anime |
+
+```javascript
+const malScraper = require('mal-scraper')
+
+malScraper.getPictures({
+  name: 'Ginga Eiyuu Densetsu',
+  id: 820
+})
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err))
+
+//Alternatively, if you only have the name and not the id, you can let the method fetch the id on the way at the cost of being slower
+
+const name = "Ginga Eiyuu Densetsu"
+
+malScraper.getPictures(name)
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err))
+```
+
+Returns: An array of [Anime pictures data model](https://github.com/Kylart/MalScraper/blob/master/README.md#anime-pictures-data-model) objects
 
 ### Official API constructor
 > This requires a valid MyAnimeList account
@@ -902,6 +932,12 @@ The types, statuses and series statuses aren't explicitly given by MyAnimeList, 
 | score3 | number | The number of person ranking the anime with a 3/10 |
 | score2 | number | The number of person ranking the anime with a 2/10 |
 | score1 | number | The number of person ranking the anime with a 1/10 |
+
+#### Anime pictures data model
+
+| Property | Type | Description |
+| --- | --- | --- |
+| imageLink | number | The link of the image |
 
 ## Contributing
 1. Fork it!
