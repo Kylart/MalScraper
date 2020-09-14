@@ -8,14 +8,28 @@ test.beforeEach(async t => {
   await new Promise(resolve => setTimeout(resolve, 1500))
 })
 
-test('getInfoFromURL Tests of informations', async t => {
+test('getInfoFromURL returns valid information for a novel', async t => {
   try {
     const data = await getInfoFromURL("https://myanimelist.net/manga/21479/Sword_Art_Online")
 
-	console.log(data)
+    t.is(typeof data, 'object')
+    t.is(data.title, 'Sword Art Online')
+    t.is(data.type, 'Novel')
+    t.not(data.synopsis, undefined)
+	t.not(data.picture, undefined)
+  } catch (e) {
+    t.fail()
+  }
+})
+
+test('getInfoFromURL returns valid information for an anime that has mix names', async t => {
+  try {
+    const data = await getInfoFromURL('https://myanimelist.net/anime/30654/Ansatsu_Kyoushitsu_2nd_Season')
 
     t.is(typeof data, 'object')
     t.is(data.title, 'Ansatsu Kyoushitsu 2nd Season')
+	t.is(data.type, 'TV')
+    t.not(data.synopsis, undefined)
     t.not(data.picture, undefined)
   } catch (e) {
     t.fail()
@@ -42,18 +56,6 @@ test('getInfoFromURL returns valid information', async t => {
     t.is(data.staff.length, 4)
     t.is(data.status, 'Finished Airing')
     t.is(data.studios[0], 'Studio Deen')
-    t.not(data.picture, undefined)
-  } catch (e) {
-    t.fail()
-  }
-})
-
-test('getInfoFromURL returns valid information for an anime that has mix names', async t => {
-  try {
-    const data = await getInfoFromURL('https://myanimelist.net/anime/30654/Ansatsu_Kyoushitsu_2nd_Season')
-
-    t.is(typeof data, 'object')
-    t.is(data.title, 'Ansatsu Kyoushitsu 2nd Season')
     t.not(data.picture, undefined)
   } catch (e) {
     t.fail()

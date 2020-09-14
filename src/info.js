@@ -89,43 +89,50 @@ const getCharactersAndStaff = ($) => {
   return results
 }
 
-const parsePage = (data) => {
+const parsePage = (data, anime = true) => {
   const $ = cheerio.load(data)
   const result = {}
 
-  // We have to do this because MAL sometimes set the english title just below the japanese one
-  // Example:
-  //    - with: https://myanimelist.net/anime/30654/Ansatsu_Kyoushitsu_2nd_Season
-  //    - without: https://myanimelist.net/anime/20047/Sakura_Trick
-  $('h1.title-name br').remove()
-  $('h1.title-name span').remove()
-
-  result.title = $('h1.title-name').text()
-  result.synopsis = $('.js-scrollfix-bottom-rel p[itemprop="description"]').text()
-  result.picture = $(`img[itemprop="image"][alt="${result.title}"]`).attr('data-src')
+  result.title = anime ? $('.title-name').text() : $('.h1-title span').text()
+  result.synopsis = $('.js-scrollfix-bottom-rel [itemprop="description"]').text()
+  result.picture = $('img[itemprop="image"]').attr('data-src')
 
   const staffAndCharacters = getCharactersAndStaff($)
   result.characters = staffAndCharacters.characters
   result.staff = staffAndCharacters.staff
 
-  result.trailer = $('a.iframe.js-fancybox-video.video-unit.promotion').attr('href')
+  const trailer = $('a.iframe.js-fancybox-video.video-unit.promotion').attr('href')
+  if (trailer) {
+    result.trailer = trailer
+  }
 
   // Parsing left border.
   result.englishTitle = getFromBorder($, 'English:')
   result.japaneseTitle = getFromBorder($, 'Japanese:')
   result.synonyms = getFromBorder($, 'Synonyms:')
   result.type = getFromBorder($, 'Type:')
-  result.episodes = getFromBorder($, 'Episodes:')
+  if (anime) {
+    result.episodes = getFromBorder($, 'Episodes:')
+    result.aired = getFromBorder($, 'Aired:')
+    result.premiered = getFromBorder($, 'Premiered:')
+    result.broadcast = getFromBorder($, 'Broadcast:')
+    result.producers = getFromBorder($, 'Producers:').split(',       ')
+    result.studios = getFromBorder($, 'Studios:').split(',       ')
+	result.source = getFromBorder($, 'Source:')
+	result.duration = getFromBorder($, 'Duration:')
+	result.rating = getFromBorder($, 'Rating:')
+  }
+
+  if (!anime) {
+	result.volumes = getFromBorder($, 'Volumes:')
+	result.chapters = getFromBorder($, 'Chapters:')
+    result.published = getFromBorder($, 'Published:')
+    result.authors = getFromBorder($, 'Authors:').split(',       ')
+    result.serialization = getFromBorder($, 'Serialization:')
+  }
+
   result.status = getFromBorder($, 'Status:')
-  result.aired = getFromBorder($, 'Aired:')
-  result.premiered = getFromBorder($, 'Premiered:')
-  result.broadcast = getFromBorder($, 'Broadcast:')
-  result.producers = getFromBorder($, 'Producers:').split(',       ')
-  result.studios = getFromBorder($, 'Studios:').split(',       ')
-  result.source = getFromBorder($, 'Source:')
   result.genres = getFromBorder($, 'Genres:').split(', ').map((elem) => elem.trim().slice(0, elem.trim().length / 2))
-  result.duration = getFromBorder($, 'Duration:')
-  result.rating = getFromBorder($, 'Rating:')
   result.score = getFromBorder($, 'Score:').split(' ')[0].slice(0, -1)
   result.scoreStats = getScoreStats($)
   result.ranked = getFromBorder($, 'Ranked:').slice(0, -1)
@@ -136,6 +143,16 @@ const parsePage = (data) => {
   return result
 }
 
+/**
+* Check if the url is for an anime or not
+* @params string url the url to check
+* @return boolean True if the url is for an anime
+**/
+const isAnimeFromURL = url => {
+	const urlSplitted = url.split('/')
+	return urlSplitted[3] === 'anime'
+}
+
 const getInfoFromURL = (url) => {
   return new Promise((resolve, reject) => {
     if (!url || typeof url !== 'string' || !url.toLocaleLowerCase().includes('myanimelist')) {
@@ -144,10 +161,11 @@ const getInfoFromURL = (url) => {
     }
 
     url = encodeURI(url)
+	const anime = isAnimeFromURL(url)
 
     axios.get(url)
       .then(({ data }) => {
-        const res = parsePage(data)
+        const res = parsePage(data, anime)
         res.id = +url.split(/\/+/)[3]
         resolve(res)
       })
