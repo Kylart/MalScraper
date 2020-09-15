@@ -1,4 +1,5 @@
 const test = require('ava')
+const nock = require('nock')
 const { getInfoFromName, getInfoFromURL, getResultsFromSearch } = require('../src')
 
 const name = 'Sakura Trick'
@@ -8,15 +9,61 @@ test.beforeEach(async t => {
   await new Promise(resolve => setTimeout(resolve, 1500))
 })
 
+test('getInfoFromName returns null if no result - static tests', async t => {
+
+	// Static tests
+	const scope = nock('https://myanimelist.net')
+		.get('/search/prefix.json?type=anime&keyword=l')
+		.reply(200, {"categories":[{"type":"anime","items":[]}]})
+
+  try {
+    const data = await getInfoFromName('l')
+	t.is(data, null)
+
+	nock.cleanAll()
+	} catch (e) {
+	  t.fail()
+	}
+})
+
 test('getInfoFromURL returns valid information for a novel', async t => {
   try {
     const data = await getInfoFromURL('https://myanimelist.net/manga/21479/Sword_Art_Online')
 
+	console.log(data);
+
     t.is(typeof data, 'object')
+    t.is(data.id, 21479)
     t.is(data.title, 'Sword Art Online')
+    t.is(data.englishTitle, 'Sword Art Online')
+	t.is(data.japaneseTitle, 'ソードアート・オンライン')
+	t.is(data.status, 'Publishing')
+	t.is(data.authors[0], 'BUNBUN (Art)')
+	t.is(data.authors[1], 'Kawahara')
+	t.is(data.authors[2], 'Reki (Story)')
     t.is(data.type, 'Novel')
+    t.is(data.synonyms[0], 'S.A.O')
+    t.is(data.synonyms[1], 'SAO')
+    t.is(data.genres[0], 'Action')
+    t.is(data.genres[1], 'Adventure')
+    t.is(data.genres[2], 'Fantasy')
+    t.is(data.genres[3], 'Game')
+    t.is(data.genres[4], 'Romance')
+    t.is(data.genres[5], 'Sci-Fi')
+	t.is(data.staff.length, 10)
+	t.not(data.staff[0].link, undefined)
+	t.not(data.staff[0].picture, undefined)
+    t.is(data.staff[0].name, 'Kirigaya, Kazuto')
+    t.is(data.staff[0].role, 'Main')
+	//t.is(data.characters, undefined)
     t.not(data.synopsis, undefined)
     t.not(data.picture, undefined)
+    t.not(data.score, undefined)
+    t.not(data.scoreStats, undefined)
+    t.not(data.ranked, undefined)
+    t.not(data.popularity, undefined)
+    t.not(data.members, undefined)
+    t.not(data.favorites, undefined)
   } catch (e) {
     t.fail()
   }

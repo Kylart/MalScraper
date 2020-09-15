@@ -109,7 +109,7 @@ const parsePage = (data, anime = true) => {
   // Parsing left border.
   result.englishTitle = getFromBorder($, 'English:')
   result.japaneseTitle = getFromBorder($, 'Japanese:')
-  result.synonyms = getFromBorder($, 'Synonyms:')
+  result.synonyms = getFromBorder($, 'Synonyms:').split(', ')
   result.type = getFromBorder($, 'Type:')
   if (anime) {
     result.episodes = getFromBorder($, 'Episodes:')
@@ -127,7 +127,7 @@ const parsePage = (data, anime = true) => {
     result.volumes = getFromBorder($, 'Volumes:')
     result.chapters = getFromBorder($, 'Chapters:')
     result.published = getFromBorder($, 'Published:')
-    result.authors = getFromBorder($, 'Authors:').split(',       ')
+    result.authors = getFromBorder($, 'Authors:').split(', ')
     result.serialization = getFromBorder($, 'Serialization:')
   }
 
