@@ -55,7 +55,7 @@ const getType = (type, $) => {
         picture: picture.attr(picture.hasClass('lazyload') ? 'data-src' : 'src'),
         synopsis: synopsis.find('span').text().trim(),
         licensor: synopsis.find('p').attr('data-licensors') ? synopsis.find('p').attr('data-licensors').slice(0, -1) : '',
-        title: general.find('.title').find('p').text().trim(),
+        title: general.find('.title').find('h2 a').text().trim(),
         link: general.find('.title').find('a').attr('href') ? general.find('.title').find('a').attr('href').replace('/video', '') : '',
         genres: general.find('.genres').find('.genres-inner').text().trim().split('\n      \n        '),
         producers: prod.find('.producer').text().trim().split(', '),

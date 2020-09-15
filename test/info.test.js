@@ -10,20 +10,19 @@ test.beforeEach(async t => {
 })
 
 test('getInfoFromName returns null if no result - static tests', async t => {
-
-	// Static tests
-	const scope = nock('https://myanimelist.net')
-		.get('/search/prefix.json?type=anime&keyword=l')
-		.reply(200, {"categories":[{"type":"anime","items":[]}]})
+  // Static tests
+  nock('https://myanimelist.net')
+    .get('/search/prefix.json?type=anime&keyword=l')
+    .reply(200, { categories: [{ type: 'anime', items: [] }] })
 
   try {
     const data = await getInfoFromName('l')
-	t.is(data, null)
+    t.is(data, null)
 
-	nock.cleanAll()
-	} catch (e) {
-	  t.fail()
-	}
+    nock.cleanAll()
+  } catch (e) {
+    t.fail()
+  }
 })
 
 test('getInfoFromURL returns valid information for a novel', async t => {
@@ -71,8 +70,6 @@ test('getInfoFromURL returns valid information for a novel', async t => {
 test('getInfoFromURL returns valid information for an anime that has mix names', async t => {
   try {
     const data = await getInfoFromURL('https://myanimelist.net/anime/30654/Ansatsu_Kyoushitsu_2nd_Season')
-
-    console.log(data);
 
     t.is(typeof data, 'object')
     t.is(data.id, 30654)
