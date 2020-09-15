@@ -89,7 +89,7 @@ const getCharactersAndStaff = ($) => {
   return results
 }
 
-const parsePage = (data, anime = true) => {
+const parsePage = (data, anime) => {
   const $ = cheerio.load(data)
   const result = {}
 
@@ -99,7 +99,9 @@ const parsePage = (data, anime = true) => {
 
   const staffAndCharacters = getCharactersAndStaff($)
   result.characters = staffAndCharacters.characters
-  result.staff = staffAndCharacters.staff
+  if (anime) {
+    result.staff = staffAndCharacters.staff
+  }
 
   const trailer = $('a.iframe.js-fancybox-video.video-unit.promotion').attr('href')
   if (trailer) {
@@ -109,7 +111,7 @@ const parsePage = (data, anime = true) => {
   // Parsing left border.
   result.englishTitle = getFromBorder($, 'English:')
   result.japaneseTitle = getFromBorder($, 'Japanese:')
-  result.synonyms = getFromBorder($, 'Synonyms:')
+  result.synonyms = getFromBorder($, 'Synonyms:').split(', ')
   result.type = getFromBorder($, 'Type:')
   if (anime) {
     result.episodes = getFromBorder($, 'Episodes:')
@@ -127,7 +129,7 @@ const parsePage = (data, anime = true) => {
     result.volumes = getFromBorder($, 'Volumes:')
     result.chapters = getFromBorder($, 'Chapters:')
     result.published = getFromBorder($, 'Published:')
-    result.authors = getFromBorder($, 'Authors:').split(',       ')
+    result.authors = getFromBorder($, 'Authors:').split(', ')
     result.serialization = getFromBorder($, 'Serialization:')
   }
 
@@ -215,10 +217,9 @@ const getInfoFromName = (name, getBestMatch = true) => {
           return
         }
         try {
-          const bestMacth = getBestMatch
-            ? match(items, name, { keys: ['name'] })[0]
-            : items[0]
-          const url = bestMacth ? bestMacth.url : items[0].url
+          const bestMatch = match(items, name, { keys: ['name'] })
+          const itemMatch = getBestMatch && bestMatch ? bestMatch[0] : items[0]
+          const url = itemMatch.url
           const data = await getInfoFromURL(url)
 
           data.url = url
