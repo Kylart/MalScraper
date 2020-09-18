@@ -184,7 +184,7 @@ const getResults = (type, url, params = {}, maxResult = 50, result = []) => {
 
         resolve(
           _result.length < maxResult && next.hasNext
-            ? getResults(next.nextUrl, {}, maxResult, _result)
+            ? getResults(type, next.nextUrl, {}, maxResult, _result)
             : _result
         )
       })
