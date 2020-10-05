@@ -1,6 +1,5 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
-const matchSorter = require('match-sorter').default
 
 const SEASON_URI = 'https://myanimelist.net/anime/season/'
 const maxYear = 1901 + (new Date()).getYear()
@@ -10,9 +9,6 @@ const possibleSeasons = {
   summer: 1,
   fall: 1
 }
-
-const possibleTypes = ['TV', 'TVNew', 'TVCon', 'OVAs', 'ONAs', 'Movies', 'Specials']
-const possibleTV = ['TV (New)', 'TV (Continuing)']
 
 const type2Class = {
   TV: 1,
@@ -24,53 +20,59 @@ const type2Class = {
   ONAs: 5
 }
 
+const possibleTypes = Object.keys(type2Class)
+const possibleTV = {
+  TVNew: 'TV (New)',
+  TVCon: 'TV (Continuing)'
+}
+
 const getType = (type, $) => {
   const result = []
-
-  // If TV has been selected, filter New from Continuing.
-  const typeString = matchSorter(possibleTypes, type)[0]
+  const typeString = possibleTypes.find((_type) => type === _type)
 
   let classToSearch = `.js-seasonal-anime-list-key-${type2Class[typeString]} .seasonal-anime.js-seasonal-anime`
   const typeClass = `.js-seasonal-anime-list-key-${type2Class[typeString]}`
 
   // If TVNew or TVCon are selected, filter them out to the specific elements on page
-  if (typeString.substr(0, 2) === 'TV' && typeString !== 'TV') {
-    const tvType = matchSorter(possibleTV, typeString)[0]
+  if (Object.keys(possibleTV).includes(typeString)) {
+    const tvType = possibleTV[typeString]
+
     $(typeClass).children('.anime-header').each(function () {
       if ($(this).text() === tvType) {
-        classToSearch = $(this).parent().children()
+        classToSearch = $(this)
+          .parent()
+          .children()
+          .filter(function () { return $(this).hasClass('seasonal-anime') })
       }
     })
   }
 
   $(classToSearch).each(function () {
-    if (!$(this).hasClass('kids') && !$(this).hasClass('r18')) {
-      const general = $(this).find('div:nth-child(1)')
-      const picture = $(this).find('.image').find('img')
-      const prod = $(this).find('.prodsrc')
-      const info = $(this).find('.information')
-      const synopsis = $(this).find('.synopsis')
+    // For obvious reasons (or not)
+    if ($(this).hasClass('kids') || $(this).hasClass('r18')) return
 
-      result.push({
-        picture: picture.attr(picture.hasClass('lazyload') ? 'data-src' : 'src'),
-        synopsis: synopsis.find('span').text().trim(),
-        licensor: synopsis.find('p').attr('data-licensors') ? synopsis.find('p').attr('data-licensors').slice(0, -1) : '',
-        title: general.find('.title').find('h2 a').text().trim(),
-        link: general.find('.title').find('a').attr('href') ? general.find('.title').find('a').attr('href').replace('/video', '') : '',
-        genres: general.find('.genres').find('.genres-inner').text().trim().split('\n      \n        '),
-        producers: prod.find('.producer').text().trim().split(', '),
-        fromType: prod.find('.source').text().trim(),
-        nbEp: prod.find('.eps').find('a').text().trim().replace(' eps', ''),
-        releaseDate: info.find('.info').find('span').text().trim(),
-        score: info.find('.scormem').find('.score').text().trim(),
-        members: info.find('.scormem').find('.member.fl-r').text().trim().replace(/,/g, '')
-      })
-    }
+    const general = $(this).find('div:nth-child(1)')
+    const picture = $(this).find('.image').find('img')
+    const prod = $(this).find('.prodsrc')
+    const info = $(this).find('.information')
+    const synopsis = $(this).find('.synopsis')
+
+    result.push({
+      picture: picture.attr(picture.hasClass('lazyload') ? 'data-src' : 'src'),
+      synopsis: synopsis.find('span').text().trim(),
+      licensor: synopsis.find('p').attr('data-licensors') ? synopsis.find('p').attr('data-licensors').slice(0, -1) : '',
+      title: general.find('.title').find('h2 a').text().trim(),
+      link: general.find('.title').find('a').attr('href') ? general.find('.title').find('a').attr('href').replace('/video', '') : '',
+      genres: general.find('.genres').find('.genres-inner').text().trim().split('\n      \n        '),
+      producers: prod.find('.producer').text().trim().split(', '),
+      fromType: prod.find('.source').text().trim(),
+      nbEp: prod.find('.eps').find('a').text().trim().replace(' eps', ''),
+      releaseDate: info.find('.info').find('span').text().trim(),
+      score: info.find('.scormem').find('.score').text().trim(),
+      members: info.find('.scormem').find('.member.fl-r').text().trim().replace(/,/g, '')
+    })
   })
 
-  if (typeString === 'TVCon' || typeString === 'TVNew') {
-    result.splice(0, 1)
-  }
   return result
 }
 

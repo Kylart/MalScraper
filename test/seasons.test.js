@@ -29,6 +29,18 @@ test('getSeasons returns an error if not valid year', async t => {
   }
 })
 
+test('getSeasons returns an error if not valid type', async t => {
+  try {
+    await getSeason(2017, 'fall', 'TVc')
+
+    t.fail()
+  } catch (e) {
+    e.message.includes('[Mal-Scraper]: Invalid type provided')
+      ? t.pass()
+      : t.fail()
+  }
+})
+
 test('getSeasons with type TV returns the correct season', async t => {
   try {
     const data = await getSeason(2017, 'fall', 'TV')
@@ -45,7 +57,7 @@ test('getSeasons with type TVNew returns the correct season', async t => {
   try {
     const data = await getSeason(2017, 'fall', 'TVNew')
 
-    t.is(data.length, 59)
+    t.is(data.length, 58)
     t.is(data[0].title, 'Black Clover')
   } catch (e) {
     console.log(e.message)
@@ -57,7 +69,7 @@ test('getSeasons with type TVCon returns the correct season', async t => {
   try {
     const data = await getSeason(2017, 'fall', 'TVCon')
 
-    t.is(data.length, 39)
+    t.is(data.length, 38)
     t.is(data[0].title, 'One Piece')
   } catch (e) {
     console.log(e.message)
@@ -123,8 +135,8 @@ test('getSeasons returns the right season', async t => {
     t.is(typeof data.OVAs, 'object')
     t.is(typeof data.Movies, 'object')
     t.is(data.TV.length, 96)
-    t.is(data.TVNew.length, 59)
-    t.is(data.TVCon.length, 39)
+    t.is(data.TVNew.length, 58)
+    t.is(data.TVCon.length, 38)
     t.is(data.OVAs.length, 11)
     t.is(data.Movies.length, 21)
     t.is(data.TV[0].title, 'Black Clover')
