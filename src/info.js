@@ -218,7 +218,7 @@ const getInfoFromName = (name, getBestMatch = true) => {
         }
         try {
           const bestMatch = match(items, name, { keys: ['name'] })
-          const itemMatch = getBestMatch && bestMatch ? bestMatch[0] : items[0]
+          const itemMatch = getBestMatch && bestMatch && bestMatch.length ? bestMatch[0] : items[0]
           const url = itemMatch.url
           const data = await getInfoFromURL(url)
 

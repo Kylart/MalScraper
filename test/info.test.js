@@ -187,6 +187,18 @@ test('getInfoFromName returns valid  with not the best match', async t => {
   }
 })
 
+test('getInfoFromName returns valid when best match gives no answer', async t => {
+  try {
+    const data = await getInfoFromName('gakkou gurashi', false)
+
+    t.is(typeof data, 'object')
+    t.is(data.title, 'Gakkougurashi!')
+    t.is(data.url, 'https://myanimelist.net/anime/24765/Gakkougurashi')
+  } catch (e) {
+    t.fail()
+  }
+})
+
 test('getResultsFromSearch returns an error if invalid keyword', async t => {
   try {
     await getResultsFromSearch()
