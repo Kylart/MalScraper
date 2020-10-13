@@ -131,6 +131,7 @@ or [Manga search model](https://github.com/Kylart/MalScraper/blob/master/README.
 | Parameter | Type | Description |
 | --- | --- | --- |
 | Name | string | The name of the anime to search, the best match corresponding to that name will be returned |
+| getBestMatch | Boolean | Whether you want to use [`match-sorter`](https://github.com/kentcdodds/match-sorter) to find the best result or not (defaults to true) |
 
 Usage example:
 
@@ -140,6 +141,15 @@ const malScraper = require('mal-scraper')
 const name = 'Sakura Trick'
 
 malScraper.getInfoFromName(name)
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err))
+
+// same as
+malScraper.getInfoFromName(name, true)
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err))
+
+malScraper.getInfoFromName(name, false)
   .then((data) => console.log(data))
   .catch((err) => console.log(err))
 ```
