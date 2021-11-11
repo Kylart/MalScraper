@@ -13,7 +13,7 @@ declare module 'mal-scraper' {
    */
   function getInfoFromName(
     name: string,
-    getBestMatch: boolean
+    getBestMatch?: boolean
   ): Promise<AnimeDataModel>;
 
   /**
