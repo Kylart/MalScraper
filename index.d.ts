@@ -48,10 +48,17 @@ declare module 'mal-scraper' {
    * @param username The username of the user to search.
    * @param after Useful to paginate. Is the number of results you want to start from. By default, MAL returns 300 entries only.
    * @param type Optional, can be either `anime` or `manga`.
+   * @note The first overload is from v2.6.0. Else the second is for v2.5.2 and before
    */
   function getWatchListFromUser<T extends AllowedTypes = 'anime'>(
     username: string,
     after?: number,
+    type?: T
+  ): Promise<
+    T extends 'anime' ? UserAnimeEntryDataModel[] : UserMangaEntryDataModel[]
+  >;
+  function getWatchListFromUser<T extends AllowedTypes = 'anime'>(
+    username: string,
     type?: T
   ): Promise<
     T extends 'anime' ? UserAnimeEntryDataModel[] : UserMangaEntryDataModel[]
