@@ -129,7 +129,6 @@ declare module 'mal-scraper' {
       name: string
     ): Promise<T extends 'anime' ? AnimeDataModel[] : MangaDataModel[]>;
 
-
     /**
      * Act on the account given in the constructor MAL.
      * @param action An object wich should contain the type of the manga/anime and the action to do.
@@ -787,6 +786,73 @@ declare module 'mal-scraper' {
      * The URL of the anime page
      */
     url: string;
+  }
+
+  interface MangaDataModel {
+    /**
+     * The unique identifier of this manga
+     */
+    id: string;
+
+    /**
+     * The title of the manga
+     */
+    title: string;
+
+    /**
+     * The english title of the manga
+     */
+    english?: string;
+
+    /**
+     * A set of synonyms for the manga
+     */
+    synonyms?: string[];
+
+    /**
+     * Total count of chapters this manga has
+     */
+    chapters?: string;
+
+    /**
+     * Total count of volumes this manga has
+     */
+    volumes?: string;
+
+    /**
+     * The average score given by users to this manga
+     */
+    score?: string;
+
+    /**
+     * The type of the manga (Manga, Doujinshi...)
+     */
+    type: string;
+
+    /**
+     * The status of the manga (Publishing, Finished...)
+     */
+    status?: string;
+
+    /**
+     * A `YYYY-MM-DD` date format of when the manga started publishing
+     */
+    start_date?: string;
+
+    /**
+     * A `YYYY-MM-DD` date format of when the manga finished publishing
+     */
+    end_date?: string;
+
+    /**
+     * The synopsis of the manga
+     */
+    synopsis?: string;
+
+    /**
+     * An URL to the manga's cover image
+     */
+    image?: string;
   }
 
   interface CharacterDataModel {
