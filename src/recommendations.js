@@ -46,7 +46,7 @@ const getRecommendationsFromName = (name) => {
   })
 }
 
-const getRecommendationsFromNameAndId = (id, name) => {
+const getRecommendationsFromNameAndId = (id, name = 'anything') => {
   return new Promise((resolve, reject) => {
     searchPage(`${BASE_URI}${id}/${encodeURI(name)}/userrecs`)
       .then((data) => resolve(data))
@@ -64,7 +64,7 @@ const getRecommendationsList = (obj) => {
     if (typeof obj === 'object' && !obj[0]) {
       const { id, name } = obj
 
-      if (!id || !name || isNaN(+id) || typeof name !== 'string') {
+      if (!id || isNaN(+id) || (name && typeof name !== 'string')) {
         reject(new Error('[Mal-Scraper]: Malformed input. ID or name is malformed or missing.'))
         return
       }
