@@ -185,7 +185,7 @@ const getResultsFromSearch = (keyword) => {
     axios.get(SEARCH_URI, {
       params: {
         type: 'anime',
-        keyword
+        keyword: keyword.slice(0, 100)
       }
     }).then(({ data }) => {
       const items = []
