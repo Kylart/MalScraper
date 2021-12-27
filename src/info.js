@@ -123,18 +123,21 @@ const parsePage = (data, anime) => {
     result.source = getFromBorder($, 'Source:')
     result.duration = getFromBorder($, 'Duration:')
     result.rating = getFromBorder($, 'Rating:')
+    result.genres = getFromBorder($, 'Genres:').split(', ').map((elem) => elem.trim().slice(0, elem.trim().length / 2))
   }
 
   if (!anime) {
     result.volumes = getFromBorder($, 'Volumes:')
     result.chapters = getFromBorder($, 'Chapters:')
     result.published = getFromBorder($, 'Published:')
-    result.authors = getFromBorder($, 'Authors:').split(', ')
     result.serialization = getFromBorder($, 'Serialization:')
+    result.authors = $('span:contains("Authors")').parent().children('a')
+      .map(function (a) { return $(this).text().trim() }).get()
+    result.genres = $('span:contains("Genres:")').parent().children('a')
+      .map(function (a) { return $(this).attr('title') }).get()
   }
 
   result.status = getFromBorder($, 'Status:')
-  result.genres = getFromBorder($, 'Genres:').split(', ').map((elem) => elem.trim().slice(0, elem.trim().length / 2))
   result.score = getFromBorder($, 'Score:').split(' ')[0].slice(0, -1)
   result.scoreStats = getScoreStats($)
   result.ranked = getFromBorder($, 'Ranked:').slice(0, -1)

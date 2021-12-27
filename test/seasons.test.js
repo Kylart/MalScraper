@@ -45,7 +45,7 @@ test('getSeasons with type TV returns the correct season', async t => {
   try {
     const data = await getSeason(2017, 'fall', 'TV')
 
-    t.is(data.length, 96)
+    t.is(data.length, 93)
     t.is(data[0].title, 'Black Clover')
   } catch (e) {
     console.log(e.message)
@@ -57,7 +57,7 @@ test('getSeasons with type TVNew returns the correct season', async t => {
   try {
     const data = await getSeason(2017, 'fall', 'TVNew')
 
-    t.is(data.length, 58)
+    t.is(data.length, 57)
     t.is(data[0].title, 'Black Clover')
   } catch (e) {
     console.log(e.message)
@@ -69,7 +69,7 @@ test('getSeasons with type TVCon returns the correct season', async t => {
   try {
     const data = await getSeason(2017, 'fall', 'TVCon')
 
-    t.is(data.length, 38)
+    t.is(data.length, 36)
     t.is(data[0].title, 'One Piece')
   } catch (e) {
     console.log(e.message)
@@ -81,7 +81,7 @@ test('getSeasons with type ONAs returns the correct season', async t => {
   try {
     const data = await getSeason(2017, 'fall', 'ONAs')
 
-    t.is(data.length, 59)
+    t.is(data.length, 61)
     t.is(data[0].title, 'Net-juu no Susume')
   } catch (e) {
     console.log(e.message)
@@ -105,7 +105,7 @@ test('getSeasons with type returns the correct season', async t => {
   try {
     const data = await getSeason(2017, 'fall', 'Specials')
 
-    t.is(data.length, 25)
+    t.is(data.length, 27)
     t.is(data[0].title, 'Net-juu no Susume Special')
   } catch (e) {
     console.log(e.message)
@@ -117,7 +117,7 @@ test('getSeasons with type Movies returns the correct season', async t => {
   try {
     const data = await getSeason(2017, 'fall', 'Movies')
 
-    t.is(data.length, 21)
+    t.is(data.length, 22)
     t.is(data[0].title, 'Fate/stay night Movie: Heaven\'s Feel - I. Presage Flower')
   } catch (e) {
     console.log(e.message)
@@ -134,16 +134,15 @@ test('getSeasons returns the right season', async t => {
     t.is(typeof data.TVCon, 'object')
     t.is(typeof data.OVAs, 'object')
     t.is(typeof data.Movies, 'object')
-    t.is(data.TV.length, 96)
-    t.is(data.TVNew.length, 58)
-    t.is(data.TVCon.length, 38)
+    t.is(data.TV.length, 93)
+    t.is(data.TVNew.length, 57)
+    t.is(data.TVCon.length, 36)
     t.is(data.OVAs.length, 11)
-    t.is(data.Movies.length, 21)
+    t.is(data.Movies.length, 22)
     t.is(data.TV[0].title, 'Black Clover')
     t.is(data.TVNew[0].title, 'Black Clover')
     t.is(data.TVCon[0].title, 'One Piece')
   } catch (e) {
-    console.log(e.message)
-    t.fail()
+    t.fail(e)
   }
 })
