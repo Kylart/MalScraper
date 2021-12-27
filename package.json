@@ -3,6 +3,7 @@
   "version": "2.11.3",
   "description": "Scrap everything you can from MyAnimeList.net",
   "main": "src/index.js",
+  "types": "./index.d.ts",
   "scripts": {
     "test": "npm run lint && nyc ava --verbose --timeout=1m --serial test/*.test.js",
     "test-no": "nyc ava --verbose --timeout=1m --serial test/*.test.js",
