@@ -1,7 +1,7 @@
 declare module 'mal-scraper' {
   //=/ ----- VARIABLES ----- /=//
 
-  let search: Search;
+  declare let search: Search;
 
   //=/ ----- FUNCTIONS ----- /=//
 
@@ -11,9 +11,9 @@ declare module 'mal-scraper' {
    * @param getBestMatch Whether you want to use [`match-sorter`](https://github.com/kentcdodds/match-sorter) to find the best result or not. (Default to `true`)
    * @returns A promise that resolves to an object containing the infos about the anime.
    */
-  function getInfoFromName(
+  export function getInfoFromName<B extends boolean = true>(
     name: string,
-    getBestMatch?: boolean
+    getBestMatch?: B
   ): Promise<AnimeDataModel>;
 
   /**
@@ -21,13 +21,13 @@ declare module 'mal-scraper' {
    * @param url The URL of the anime to search.
    * @returns Same as {@link getInfoFromName `getInfoFromName()`}.
    */
-  function getInfoFromURL(url: string): Promise<AnimeDataModel>;
+  export function getInfoFromURL(url: string): Promise<AnimeDataModel>;
 
   /**
    * Return an array of a maximum length of 10 containing {@link SearchResultsDataModel Search result data model} objects.
    * @param query The query to search.
    */
-  function getResultsFromSearch(
+  export function getResultsFromSearch(
     query: string
   ): Promise<SearchResultsDataModel[]>;
 
@@ -37,7 +37,7 @@ declare module 'mal-scraper' {
    * @param season The season of the anime to search.
    * @param type The type of the anime to search.
    */
-  function getSeason(
+  export function getSeason(
     year: number,
     season: Seasons,
     type?: Types
@@ -48,20 +48,35 @@ declare module 'mal-scraper' {
    * @param username The username of the user to search.
    * @param after Useful to paginate. Is the number of results you want to start from. By default, MAL returns 300 entries only.
    * @param type Optional, can be either `anime` or `manga`.
-   * @note The first overload is from v2.6.0. Else the second is for v2.5.2 and before
+   * @note From v2.6.0.
    */
-  function getWatchListFromUser<T extends AllowedTypes = 'anime'>(
+  export function getWatchListFromUser<T extends AllowedTypes = 'anime'>(
     username: string,
     after?: number,
     type?: T
   ): Promise<
-    T extends 'anime' ? UserAnimeEntryDataModel[] : UserMangaEntryDataModel[]
+    T extends 'anime'
+      ? UserAnimeEntryDataModel[]
+      : T extends 'manga'
+      ? UserMangaEntryDataModel[]
+      : never
   >;
-  function getWatchListFromUser<T extends AllowedTypes = 'anime'>(
+
+  /**
+   * Get the watchlist of the given user.
+   * @param username The username of the user to search.
+   * @param type Optional, can be either `anime` or `manga`.
+   * @note From v2.5.2 and before.
+   */
+  export function getWatchListFromUser<T extends AllowedTypes = 'anime'>(
     username: string,
     type?: T
   ): Promise<
-    T extends 'anime' ? UserAnimeEntryDataModel[] : UserMangaEntryDataModel[]
+    T extends 'anime'
+      ? UserAnimeEntryDataModel[]
+      : T extends 'manga'
+      ? UserMangaEntryDataModel[]
+      : never
   >;
 
   /**
@@ -69,14 +84,14 @@ declare module 'mal-scraper' {
    * @param nbNews The count of news you want to get, default is 160. Note that there is a 20 news per page, so if you set if to 60 for example, it will result in 3 requests.
    * You should be aware of that, as MyAnimeList will most likely rate-limit you if more than 35-40~ requests are done in a few seconds.
    */
-  function getNewsNoDetails(nbNews: number): Promise<NewsDataModel[]>;
+  export function getNewsNoDetails(nbNews?: number): Promise<NewsDataModel[]>;
 
   /**
    * Get an episode list
    * @param anime If an object is passed, it must have the `name`and `id` property. If you only have the name and not the id, you may call the method with the name as string,
    * this will be slower but the id will be automatically fetched on the first way.
    */
-  function getEpisodesList(
+  export function getEpisodesList(
     anime: AnimeOptions | string
   ): Promise<AnimeEpisodesDataModel[]>;
 
@@ -85,7 +100,7 @@ declare module 'mal-scraper' {
    * @param anime An object that must have the `name` and `id` property or just the `name` alone. If you only have the name and not the id,
    * you may call the method with the name as string, this will be slower but the id will be automatically fetched on the first way.
    */
-  function getReviewsList(
+  export function getReviewsList(
     anime: ReviewsListAnimeOptions
   ): Promise<AnimeReviewsDataModel[]>;
 
@@ -94,7 +109,7 @@ declare module 'mal-scraper' {
    * @param anime If an object is passed, it must have the `name`and `id` property. If you only have the name and not the id,
    * you may call the method with the name as string, this will be slower but the id will be automatically fetched on the first way.
    */
-  function getRecommendationsList(
+  export function getRecommendationsList(
     anime: AnimeOptions | string
   ): Promise<AnimeRecommendationsDataModel[]>;
 
@@ -103,7 +118,7 @@ declare module 'mal-scraper' {
    * @param anime If an object is passed, it must have the `name`and `id` property. If you only have the name and not the id,
    * you may call the method with the name as string, this will be slower but the id will be automatically fetched on the first way.
    */
-  function getStats(
+  export function getStats(
     anime: AnimeOptions | string
   ): Promise<AnimeStatsDataModel[]>;
 
@@ -111,30 +126,36 @@ declare module 'mal-scraper' {
    * Get the pictures of the given anime.
    * @param anime If an object is passed, it must have the `name`and `id` property. If you only have the name and not the id,
    */
-  function getPictures(
+  export function getPictures(
     anime: AnimeOptions | string
   ): Promise<AnimePicturesDataModel[]>;
 
   //=/ ----- CLASSES ----- /=//
 
   class officialApi {
-    constructor(options: OfficialApiOptions);
+    public constructor(options: OfficialApiOptions);
 
     /**
      * Check if the credentials given in the constructor are valid.
      * @returns A string `"Invalid Credentials"` if the credentials are invalid, otherwise, the raw XML document with the id & the username of the account.
      */
-    checkCredentials(): Promise<string>;
+    public checkCredentials(): Promise<string>;
 
     /**
      * Search an anime/manga from the official MyAnimeList API.
      * @param type The type, can be either `anime` or `manga`. Defaults to `anime`.
      * @param name The name of the anime/manga to search.
      */
-    search<T extends AllowedTypes = 'anime'>(
+    public search<T extends AllowedTypes = 'anime'>(
       type: T,
       name: string
-    ): Promise<T extends 'anime' ? AnimeDataModel[] : MangaDataModel[]>;
+    ): Promise<
+      T extends 'anime'
+        ? AnimeDataModel[]
+        : T extends 'manga'
+        ? MangaDataModel[]
+        : never
+    >;
 
     /**
      * Act on the account given in the constructor MAL.
@@ -143,12 +164,14 @@ declare module 'mal-scraper' {
      * @param name The name of the anime/manga.
      * @param details An object that contains all the properties described [here](https://myanimelist.net/modules.php?go=api#animevalues).
      */
-    actOnList<T extends AllowedTypes = 'anime'>(
+    public actOnList<T extends AllowedTypes = 'anime'>(
       action: ActionActOnList<T>,
       id: number,
       name: string,
       details: ActionActOnListOptionsDetails
     ): Promise<void | string>;
+
+    private _credentials: OfficialApiOptions;
   }
 
   //=/ ---- TYPES ---- /=//
@@ -164,7 +187,13 @@ declare module 'mal-scraper' {
     search<A extends AllowedTypes>(
       type: A,
       options?: SearchOptions
-    ): Promise<A extends 'anime' ? AnimeSearchModel[] : MangaSearchModel[]>;
+    ): Promise<
+      A extends 'anime'
+        ? AnimeSearchModel[]
+        : A extends 'manga'
+        ? MangaSearchModel[]
+        : never
+    >;
 
     /**
      * Helpers for types, genres and list you might need for your research
@@ -1552,7 +1581,7 @@ declare module 'mal-scraper' {
     password: string;
   }
 
-  interface ActionActOnList<T> {
+  interface ActionActOnList<T extends AllowedTypes = 'anime'> {
     /**
      * The type of the manga/anime to act on. Can be either `anime` or `manga`
      * @default 'anime'
