@@ -5,11 +5,8 @@ const BASE_URI = 'https://myanimelist.net/profile/'
 
 const parsePage = ($, name) => {
   const pfp = $('#content .user-image img')
-  // eslint-disable-next-line no-unused-vars
-  let status1 = $('.user-profile .user-status-title')
-  status1 = status1.slice(0, 4)
-  let status2 = $('.user-profile .user-status-data')
-  status2 = status2.slice(0, 4)
+  const status1 = $('#content .user-profile .user-status-title')
+  const status2 = $('#content .user-profile .user-status-data')
   const result = []
   result.push({ username: name })
   pfp.each(function () {
@@ -17,11 +14,36 @@ const parsePage = ($, name) => {
       ProfilePictureLink: $(this).attr('data-src').trim()
     })
   })
-  status2.each(function () {
-    result.push({
-      Status: $(this).text()
-    })
+  result.push({
+    LastOnline: $(status2[0]).text()
   })
+  let i = 1
+  const arrayLength = status1.length
+  while (i < arrayLength - 1) {
+    const val = $(status1[i]).text()
+    switch (val) {
+      case 'Gender':
+        result.push({
+          Gender: $(status2[i]).text()
+        })
+        break
+      case 'Birthday':
+        result.push({
+          Birthday: $(status2[i]).text()
+        })
+        break
+      case 'Location':
+        result.push({
+          Location: $(status2[i]).text()
+        })
+        break
+      case 'Joined':
+        result.push({
+          Joined: $(status2[i]).text()
+        })
+    }
+    i++
+  }
   return result
 }
 
