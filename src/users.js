@@ -1,5 +1,6 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
+const { isNull } = require('js2xmlparser/lib/utils')
 
 const BASE_URI = 'https://myanimelist.net/profile/'
 
@@ -8,7 +9,7 @@ const parsePage = ($, name) => {
   const status1 = $('#content .user-profile .user-status-title')
   const status2 = $('#content .user-profile .user-status-data')
   const result = []
-  result.push({ username: name })
+  result.push({ Username: name })
   pfp.each(function () {
     result.push({
       ProfilePictureLink: $(this).attr('data-src').trim()
@@ -44,7 +45,17 @@ const parsePage = ($, name) => {
     }
     i++
   }
-  return result
+  const bio = $('#content .profile-about-user .word-break')
+  if (isNull(bio) !== true) {
+    result.push({
+      Bio: $(bio).text().replace(/\n\n/g, ' ').trim() // .replace(/\n/g, ' ')
+    })
+  }
+  const finalObj = {}
+  for (let i = 0; i < result.length; i++) {
+    Object.assign(finalObj, result[i])
+  }
+  return finalObj
 }
 
 const searchPage = (url, name) => {
