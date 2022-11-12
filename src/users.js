@@ -64,6 +64,47 @@ const parsePage = ($, name) => {
   result.push({
     MangaMeanScore: words[9]
   })
+  const fav = $('#anime_favorites .fs10')
+  if ($(fav).text() !== '') {
+    const favAnime = []
+    fav.each(function () {
+      favAnime.push($(this).text())
+    })
+    result.push({
+      FavoriteAnime: favAnime
+    })
+  }
+  const fav2 = $('#manga_favorites .fs10')
+  if ($(fav2).text() !== '') {
+    const favManga = []
+    fav2.each(function () {
+      favManga.push($(this).text())
+    })
+    result.push({
+      FavoriteManga: favManga
+    })
+  }
+  const fav3 = $('#character_favorites .fs10')
+  if ($(fav3).text() !== '') {
+    const favChar = []
+    fav3.each(function () {
+      favChar.push($(this).text())
+    })
+    result.push({
+      FavoriteCharacters: favChar
+    })
+  }
+  const fav4 = $('.favmore .fs10')
+  if ($(fav4).text() !== '') {
+    const favPeople = []
+    fav4.each(function () {
+      favPeople.push($(this).text())
+    })
+    result.push({
+      FavoritePeople: favPeople
+    })
+  }
+  // putting all the properties and values to one object
   const finalObj = {}
   for (let i = 0; i < result.length; i++) {
     Object.assign(finalObj, result[i])
@@ -94,7 +135,7 @@ const getUserFromName = (name) => {
 const getUser = (name) => {
   return new Promise((resolve, reject) => {
     if (!name || typeof name !== 'string') {
-      reject(new Error('[Mal-Scraper]: Malformed input. ID or name is malformed or missing.'))
+      reject(new Error('[Mal-Scraper]: Malformed input. Name is malformed or missing.'))
       return
     }
 
