@@ -1,6 +1,5 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
-const { isNull } = require('js2xmlparser/lib/utils')
 
 const BASE_URI = 'https://myanimelist.net/profile/'
 
@@ -46,11 +45,25 @@ const parsePage = ($, name) => {
     i++
   }
   const bio = $('#content .profile-about-user .word-break')
-  if (isNull(bio) !== true) {
+  if ($(bio).text() !== '') {
     result.push({
-      Bio: $(bio).text().replace(/\n\n/g, ' ').trim() // .replace(/\n/g, ' ')
+      Bio: $(bio).text().replace(/\n\n/g, '').trim().replace(/\n/g, ' ').trim()
     })
   }
+  const stats = $('#statistics .stat-score').text().replace(/\n\n/g, '').trim().replace(/\n/g, ' ').replace(/\s+/g, ' ').trim()
+  const words = stats.split(' ')
+  result.push({
+    AnimeDays: words[1]
+  })
+  result.push({
+    AnimeMeanScore: words[4]
+  })
+  result.push({
+    MangaDays: words[6]
+  })
+  result.push({
+    MangaMeanScore: words[9]
+  })
   const finalObj = {}
   for (let i = 0; i < result.length; i++) {
     Object.assign(finalObj, result[i])
