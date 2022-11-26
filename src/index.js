@@ -9,7 +9,7 @@ const { getReviewsList } = require('./reviews.js')
 const { getRecommendationsList } = require('./recommendations.js')
 const { getStats } = require('./stats.js')
 const { getPictures } = require('./pictures.js')
-const { getUser } = require('./users')
+const { getUser } = require('./users.js')
 
 module.exports = {
   officialApi,

@@ -54,6 +54,7 @@ Tables of content:
 - * [getRecommendationsList()](https://github.com/Kylart/MalScraper/blob/master/README.md#getrecommendationslist)
 - * [getStats()](https://github.com/Kylart/MalScraper/blob/master/README.md#getstats)
 - * [getPictures()](https://github.com/Kylart/MalScraper/blob/master/README.md#getpictures)
+- * [getUser()](https://github.com/Kylart/MalScraper/blob/master/README.md#getuser)
 - * [Official API Constructor](https://github.com/Kylart/MalScraper/blob/master/README.md#official-api-constructor)
 - - * [checkCredentials()](https://github.com/Kylart/MalScraper/blob/master/README.md#checkcredentials)
 - - * [search()](https://github.com/Kylart/MalScraper/blob/master/README.md#search)
@@ -469,6 +470,20 @@ malScraper.getPictures(name)
 ```
 
 Returns: An array of [Anime pictures data model](https://github.com/Kylart/MalScraper/blob/master/README.md#anime-pictures-data-model) objects
+
+### getUser()
+| Parameter | Type | Description |
+| --- | --- | --- |
+| name | string | The username of the user |
+
+``` javascript
+  const malScraper = require('mal-scraper')
+
+malScraper.getUser('Kame-nos')
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err))
+```
+Returns: A [User data model]()
 
 ### Official API constructor
 > This requires a valid MyAnimeList account
