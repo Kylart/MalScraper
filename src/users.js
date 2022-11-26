@@ -3,20 +3,19 @@ const cheerio = require('cheerio')
 
 const BASE_URI = 'https://myanimelist.net/profile/'
 
+/* the method that it's used in order to use to parse the page
+   and get all the info we want
+ */
 const parsePage = ($, name) => {
-  const pfp = $('#content .user-image img')
-  const status1 = $('#content .user-profile .user-status-title')
-  const status2 = $('#content .user-profile .user-status-data')
-  const result = []
+  const pfp = $('#content .user-image img') // getting the profile picture page section
+  const status1 = $('#content .user-profile .user-status-title') // getting the status titles page section
+  const status2 = $('#content .user-profile .user-status-data') // getting the status data page section
+  const result = [] // we will put here all the properties of the final object
+  // pushing some basic properties and values
   result.push({ Username: name })
-  pfp.each(function () {
-    result.push({
-      ProfilePictureLink: $(this).attr('data-src').trim()
-    })
-  })
-  result.push({
-    LastOnline: $(status2[0]).text()
-  })
+  result.push({ ProfilePictureLink: $(pfp).attr('data-src').trim() })
+  result.push({ LastOnline: $(status2[0]).text() })
+  // loop for the status
   let i = 1
   const arrayLength = status1.length
   while (i < arrayLength - 1) {
@@ -44,38 +43,35 @@ const parsePage = ($, name) => {
     }
     i++
   }
-  const bio = $('#content .profile-about-user .word-break')
-  if ($(bio).text() !== '') {
+  const bio = $('#content .profile-about-user .word-break') // getting the bio page section
+  if ($(bio).text() !== '') { // check if there is no bio
     result.push({
-      Bio: $(bio).text().replace(/\n\n/g, '').trim().replace(/\n/g, ' ').trim()
+      Bio: $(bio).text().replace(/\n\n/g, '').trim().replace(/\n/g, ' ').trim() // trim the whitespaces and remove extra newlines
     })
   }
+  // getting the text of the stats page section
   const stats = $('#statistics .stat-score').text().replace(/\n\n/g, '').trim().replace(/\n/g, ' ').replace(/\s+/g, ' ').trim()
+  // getting the words of the text
   const words = stats.split(' ')
-  result.push({
-    AnimeDays: words[1]
-  })
-  result.push({
-    AnimeMeanScore: words[4]
-  })
-  result.push({
-    MangaDays: words[6]
-  })
-  result.push({
-    MangaMeanScore: words[9]
-  })
+  // pushing the right values
+  result.push({ AnimeDays: words[1] })
+  result.push({ AnimeMeanScore: words[4] })
+  result.push({ MangaDays: words[6] })
+  result.push({ MangaMeanScore: words[9] })
+  /*
+    getting and pushing the user's favorites
+    anime, manga, characters and people
+  */
   const fav = $('#anime_favorites .fs10')
-  if ($(fav).text() !== '') {
+  if ($(fav).text() !== '') { // check if there are no favorites
     const favAnime = []
     fav.each(function () {
       favAnime.push($(this).text())
     })
-    result.push({
-      FavoriteAnime: favAnime
-    })
+    result.push({ FavoriteAnime: favAnime })
   }
   const fav2 = $('#manga_favorites .fs10')
-  if ($(fav2).text() !== '') {
+  if ($(fav2).text() !== '') { // check if there are no favorites
     const favManga = []
     fav2.each(function () {
       favManga.push($(this).text())
@@ -85,7 +81,7 @@ const parsePage = ($, name) => {
     })
   }
   const fav3 = $('#character_favorites .fs10')
-  if ($(fav3).text() !== '') {
+  if ($(fav3).text() !== '') { // check if there are no favorites
     const favChar = []
     fav3.each(function () {
       favChar.push($(this).text())
@@ -95,7 +91,7 @@ const parsePage = ($, name) => {
     })
   }
   const fav4 = $('.favmore .fs10')
-  if ($(fav4).text() !== '') {
+  if ($(fav4).text() !== '') { // check if there are no favorites
     const favPeople = []
     fav4.each(function () {
       favPeople.push($(this).text())
@@ -132,6 +128,7 @@ const getUserFromName = (name) => {
   })
 }
 
+// wrapper method to check if @name is actually string
 const getUser = (name) => {
   return new Promise((resolve, reject) => {
     if (!name || typeof name !== 'string') {
