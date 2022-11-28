@@ -10,11 +10,12 @@ const parsePage = ($, name) => {
   const pfp = $('#content .user-image img') // getting the profile picture page section
   const status1 = $('#content .user-profile .user-status-title') // getting the status titles page section
   const status2 = $('#content .user-profile .user-status-data') // getting the status data page section
-  const result = [] // we will put here all the properties of the final object
+  const result = {} // we will put here all the properties
   // pushing some basic properties and values
-  result.push({ Username: name })
-  result.push({ ProfilePictureLink: $(pfp).attr('data-src').trim() })
-  result.push({ LastOnline: $(status2[0]).text() })
+  Object.assign(result, { Username: name })
+  Object.assign(result, { ProfilePictureLink: $(pfp).attr('data-src').trim() })
+  Object.assign(result, { LastOnline: $(status2[0]).text() })
+
   // loop for the status
   let i = 1
   const arrayLength = status1.length
@@ -22,90 +23,69 @@ const parsePage = ($, name) => {
     const val = $(status1[i]).text()
     switch (val) {
       case 'Gender':
-        result.push({
-          Gender: $(status2[i]).text()
-        })
+        Object.assign(result, { Gender: $(status2[i]).text() })
         break
       case 'Birthday':
-        result.push({
-          Birthday: $(status2[i]).text()
-        })
+        Object.assign(result, { Birthday: $(status2[i]).text() })
         break
       case 'Location':
-        result.push({
-          Location: $(status2[i]).text()
-        })
+        Object.assign(result, { Location: $(status2[i]).text() })
         break
       case 'Joined':
-        result.push({
-          Joined: $(status2[i]).text()
-        })
+        Object.assign(result, { Joined: $(status2[i]).text() })
     }
     i++
   }
   const bio = $('#content .profile-about-user .word-break') // getting the bio page section
   if ($(bio).text() !== '') { // check if there is no bio
-    result.push({
-      Bio: $(bio).text().replace(/\n\n/g, '').trim().replace(/\n/g, ' ').trim() // trim the whitespaces and remove extra newlines
-    })
+    Object.assign(result, { Bio: $(bio).text().replace(/\n\n/g, '').trim().replace(/\n/g, ' ').trim() }) // trim the whitespaces and remove extra newlines
   }
   // getting the text of the stats page section
   const stats = $('#statistics .stat-score').text().replace(/\n\n/g, '').trim().replace(/\n/g, ' ').replace(/\s+/g, ' ').trim()
   // getting the words of the text
   const words = stats.split(' ')
   // pushing the right values
-  result.push({ AnimeDays: words[1] })
-  result.push({ AnimeMeanScore: words[4] })
-  result.push({ MangaDays: words[6] })
-  result.push({ MangaMeanScore: words[9] })
+  Object.assign(result, { AnimeDays: words[1] })
+  Object.assign(result, { AnimeMeanScore: words[4] })
+  Object.assign(result, { MangaDays: words[6] })
+  Object.assign(result, { MangaMeanScore: words[9] })
   /*
     getting and pushing the user's favorites
     anime, manga, characters and people
   */
-  const fav = $('#anime_favorites .fs10')
-  if ($(fav).text() !== '') { // check if there are no favorites
+  const favAnimes = $('#anime_favorites .fs10')
+  if ($(favAnimes).text() !== '') { // check if there are no favorites
     const favAnime = []
-    fav.each(function () {
+    favAnimes.each(function () {
       favAnime.push($(this).text())
     })
-    result.push({ FavoriteAnime: favAnime })
+    Object.assign(result, { FavoriteAnime: favAnime })
   }
-  const fav2 = $('#manga_favorites .fs10')
-  if ($(fav2).text() !== '') { // check if there are no favorites
+  const favMangas = $('#manga_favorites .fs10')
+  if ($(favMangas).text() !== '') { // check if there are no favorites
     const favManga = []
-    fav2.each(function () {
+    favMangas.each(function () {
       favManga.push($(this).text())
     })
-    result.push({
-      FavoriteManga: favManga
-    })
+    Object.assign(result, { FavoriteManga: favManga })
   }
-  const fav3 = $('#character_favorites .fs10')
-  if ($(fav3).text() !== '') { // check if there are no favorites
+  const favChars = $('#character_favorites .fs10')
+  if ($(favChars).text() !== '') { // check if there are no favorites
     const favChar = []
-    fav3.each(function () {
+    favChars.each(function () {
       favChar.push($(this).text())
     })
-    result.push({
-      FavoriteCharacters: favChar
-    })
+    Object.assign(result, { FavoriteCharacters: favChar })
   }
-  const fav4 = $('.favmore .fs10')
-  if ($(fav4).text() !== '') { // check if there are no favorites
+  const favActors = $('.favmore .fs10')
+  if ($(favActors).text() !== '') { // check if there are no favorites
     const favPeople = []
-    fav4.each(function () {
+    favActors.each(function () {
       favPeople.push($(this).text())
     })
-    result.push({
-      FavoritePeople: favPeople
-    })
+    Object.assign(result, { FavoritePeople: favPeople })
   }
-  // putting all the properties and values to one object
-  const finalObj = {}
-  for (let i = 0; i < result.length; i++) {
-    Object.assign(finalObj, result[i])
-  }
-  return finalObj
+  return result
 }
 
 const searchPage = (url, name) => {
