@@ -3,6 +3,24 @@ const cheerio = require('cheerio')
 
 const BASE_URI = 'https://myanimelist.net/profile/'
 
+const addFavorites = ($, res, fav, i) => {
+  if ($(fav).text() !== '') { // check if there are no favorites
+    const favs = []
+    fav.each(function () {
+      favs.push($(this).text())
+    })
+    if (i === 1) {
+      Object.assign(res, { FavoriteAnime: favs })
+    } else if (i === 2) {
+      Object.assign(res, { FavoriteManga: favs })
+    } else if (i === 3) {
+      Object.assign(res, { FavoriteCharacters: favs })
+    } else {
+      Object.assign(res, { FavoritePeopleav: favs })
+    }
+  }
+}
+
 /* the method that it's used in order to use to parse the page
    and get all the info we want
  */
@@ -53,38 +71,14 @@ const parsePage = ($, name) => {
     getting and pushing the user's favorites
     anime, manga, characters and people
   */
-  const favAnimes = $('#anime_favorites .fs10')
-  if ($(favAnimes).text() !== '') { // check if there are no favorites
-    const favAnime = []
-    favAnimes.each(function () {
-      favAnime.push($(this).text())
-    })
-    Object.assign(result, { FavoriteAnime: favAnime })
-  }
+  const FavoriteAnime = $('#anime_favorites .fs10')
+  addFavorites($, result, FavoriteAnime, 1)
   const favMangas = $('#manga_favorites .fs10')
-  if ($(favMangas).text() !== '') { // check if there are no favorites
-    const favManga = []
-    favMangas.each(function () {
-      favManga.push($(this).text())
-    })
-    Object.assign(result, { FavoriteManga: favManga })
-  }
+  addFavorites($, result, favMangas, 2)
   const favChars = $('#character_favorites .fs10')
-  if ($(favChars).text() !== '') { // check if there are no favorites
-    const favChar = []
-    favChars.each(function () {
-      favChar.push($(this).text())
-    })
-    Object.assign(result, { FavoriteCharacters: favChar })
-  }
+  addFavorites($, result, favChars, 3)
   const favActors = $('.favmore .fs10')
-  if ($(favActors).text() !== '') { // check if there are no favorites
-    const favPeople = []
-    favActors.each(function () {
-      favPeople.push($(this).text())
-    })
-    Object.assign(result, { FavoritePeople: favPeople })
-  }
+  addFavorites($, result, favActors, 4)
   return result
 }
 
