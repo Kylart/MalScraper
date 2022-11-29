@@ -3,6 +3,11 @@ const cheerio = require('cheerio')
 
 const BASE_URI = 'https://myanimelist.net/profile/'
 
+/**
+ * funtction that makes a string in camelCase
+ * @param str a string
+ * @returns camelCase string
+ */
 function camelize (str) {
   return str.replace(/^\w|[A-Z]|\b\w/g, function (word, index) {
     return index === 0 ? word.toLowerCase() : word.toUpperCase()
