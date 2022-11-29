@@ -3,6 +3,19 @@ const cheerio = require('cheerio')
 
 const BASE_URI = 'https://myanimelist.net/profile/'
 
+function camelize (str) {
+  return str.replace(/^\w|[A-Z]|\b\w/g, function (word, index) {
+    return index === 0 ? word.toLowerCase() : word.toUpperCase()
+  }).replace(/\s+/g, '')
+}
+
+/**
+ * Method that it's used to add user's favorites
+ * @param $
+ * @param res the result object
+ * @param fav list of favourites
+ * @param i integer for specific favorite
+ */
 const addFavorites = ($, res, fav, i) => {
   if ($(fav).text() !== '') { // check if there are no favorites
     const favs = []
@@ -10,13 +23,13 @@ const addFavorites = ($, res, fav, i) => {
       favs.push($(this).text())
     })
     if (i === 1) {
-      Object.assign(res, { FavoriteAnime: favs })
+      Object.assign(res, { favoriteAnime: favs })
     } else if (i === 2) {
-      Object.assign(res, { FavoriteManga: favs })
+      Object.assign(res, { favoriteManga: favs })
     } else if (i === 3) {
-      Object.assign(res, { FavoriteCharacters: favs })
+      Object.assign(res, { favoriteCharacters: favs })
     } else {
-      Object.assign(res, { FavoritePeopleav: favs })
+      Object.assign(res, { favoritePeople: favs })
     }
   }
 }
@@ -26,34 +39,18 @@ const addFavorites = ($, res, fav, i) => {
  */
 const parsePage = ($, name) => {
   const pfp = $('#content .user-image img') // getting the profile picture page section
-  const status1 = $('#content .user-profile .user-status-title') // getting the status titles page section
-  const status2 = $('#content .user-profile .user-status-data') // getting the status data page section
-  const result = {} // we will put here all the properties
+  const statusTitles = $('#content .user-profile .user-status-title') // getting the status titles page section
+  const statusData = $('#content .user-profile .user-status-data') // getting the status data page section
+  const result = [] // we will put here all the properties of the final object
   // pushing some basic properties and values
-  Object.assign(result, { Username: name })
-  Object.assign(result, { ProfilePictureLink: $(pfp).attr('data-src').trim() })
-  Object.assign(result, { LastOnline: $(status2[0]).text() })
-
-  // loop for the status
-  let i = 1
-  const arrayLength = status1.length
-  while (i < arrayLength - 1) {
-    const val = $(status1[i]).text()
-    switch (val) {
-      case 'Gender':
-        Object.assign(result, { Gender: $(status2[i]).text() })
-        break
-      case 'Birthday':
-        Object.assign(result, { Birthday: $(status2[i]).text() })
-        break
-      case 'Location':
-        Object.assign(result, { Location: $(status2[i]).text() })
-        break
-      case 'Joined':
-        Object.assign(result, { Joined: $(status2[i]).text() })
+  Object.assign(result, { username: name })
+  Object.assign(result, { profilePictureLink: $(pfp).attr('data-src').trim() })
+  Object.assign(result, { lastOnline: $(statusData[0]).text() })
+  statusTitles.each(function (index, status) {
+    if ($(status).text() === 'Gender' || $(status).text() === 'Birthday' || $(status).text() === 'Joined') {
+      Object.assign(result, { [camelize($(status).text())]: $(statusData[index]).text() })
     }
-    i++
-  }
+  })
   const bio = $('#content .profile-about-user .word-break') // getting the bio page section
   if ($(bio).text() !== '') { // check if there is no bio
     Object.assign(result, { Bio: $(bio).text().replace(/\n\n/g, '').trim().replace(/\n/g, ' ').trim() }) // trim the whitespaces and remove extra newlines
@@ -63,12 +60,12 @@ const parsePage = ($, name) => {
   // getting the words of the text
   const words = stats.split(' ')
   // pushing the right values
-  Object.assign(result, { AnimeDays: words[1] })
-  Object.assign(result, { AnimeMeanScore: words[4] })
-  Object.assign(result, { MangaDays: words[6] })
-  Object.assign(result, { MangaMeanScore: words[9] })
+  Object.assign(result, { animeDays: words[1] })
+  Object.assign(result, { animeMeanScore: words[4] })
+  Object.assign(result, { mangaDays: words[6] })
+  Object.assign(result, { mangaMeanScore: words[9] })
   /*
-    getting and pushing the user's favorites
+    getting and adding the user's favorites
     anime, manga, characters and people
   */
   const FavoriteAnime = $('#anime_favorites .fs10')
