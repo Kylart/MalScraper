@@ -21,11 +21,12 @@ const format = (obj) => {
  * @param {string} user The name of the user.
  * @param {number} after How many results you already have.
  * @param {string} type Can be either 'anime' or 'manga'
+ * @param {number} status Status in the user's watch list (completed, on-hold...)
  *
  * @returns {promise}
  */
 
-const getWatchListFromUser = (user, after = 0, type = 'anime') => {
+const getWatchListFromUser = (user, after = 0, type = 'anime', status = 7) => {
   return new Promise((resolve, reject) => {
     if (!user) {
       reject(new Error('[Mal-Scraper]: No user received.'))
@@ -34,7 +35,8 @@ const getWatchListFromUser = (user, after = 0, type = 'anime') => {
 
     axios.get(`https://myanimelist.net/${type}list/${user}/load.json`, {
       params: {
-        offset: after
+        offset: after,
+        status
       }
     })
       .then(({ data }) => {

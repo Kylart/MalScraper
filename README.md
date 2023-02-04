@@ -245,6 +245,31 @@ Returns: A [Seasonal anime release data model](https://github.com/Kylart/MalScra
 
 ### getWatchListFromUser()
 
+#### From v2.11.6
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| username | string | The name of the user |
+| after | number | Useful to paginate. Is the number of results you want to start from. By default, MAL returns 300 entries only. |
+| type | string | Optional, can be either `anime` or `manga` |
+| status | number | Optional, Status in the user's watch list (completed, on-hold...) |
+
+Usage example:
+
+```javascript
+const malScraper = require('mal-scraper')
+
+const username = 'Kylart'
+const after = 25
+const type = 'anime' // can be either `anime` or `manga`
+const status = 7 // All anime
+
+// Get you an object containing all the entries with status, score... from this user's watch list
+malScraper.getWatchListFromUser(username, after, type, status)
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err))
+```
+
 #### From v2.6.0
 
 | Parameter | Type | Description |
