@@ -27,6 +27,10 @@ test('getUser() returns the user for Sebelius with name only', async t => {
     t.is(data.favoriteAnime[0], 'Toradora!')
     t.is(data.favoriteAnime[1], 'Eromanga-sensei!')
     t.is(data.favoriteManga[0], 'Boruto: Naruto Next Generations')
+    t.is(data.favoriteCharacters[0], 'All Might')
+    t.is(data.favoriteCharacters[1], 'Ichinose, Takumi')
+    t.is(data.favoritePeople[0], 'Aoyama, Yutaka')
+    t.is(data.favoritePeople[1], 'Yamaguchi, Kappei')
   } catch (e) {
     t.fail()
   }
