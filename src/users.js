@@ -52,7 +52,7 @@ const parsePage = ($, name) => {
   Object.assign(result, { profilePictureLink: $(pfp).attr('data-src').trim() })
   Object.assign(result, { lastOnline: $(statusData[0]).text() })
   statusTitles.each(function (index, status) {
-    if ($(status).text() === 'Gender' || $(status).text() === 'Birthday' || $(status).text() === 'Joined') {
+    if ($(status).text() === 'Gender' || $(status).text() === 'Birthday' || $(status).text() === 'Joined' || $(status).text() === 'Location') {
       Object.assign(result, { [camelize($(status).text())]: $(statusData[index]).text() })
     }
   })

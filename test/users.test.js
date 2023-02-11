@@ -18,6 +18,7 @@ test('getUser() returns the user for Sebelius with name only', async t => {
     t.is(data.profilePictureLink, 'https://cdn.myanimelist.net/images/userimages/16289646.jpg?t=1676115000')
     t.is(data.gender, 'Male')
     t.is(data.birthday, 'Jun 16, 1964')
+    t.is(data.location, 'Sri Lanka')
     t.is(data.joined, 'Feb 11, 2023')
     t.is(data.animeDays, '0.8')
     t.is(data.animeMeanScore, '10.00')
