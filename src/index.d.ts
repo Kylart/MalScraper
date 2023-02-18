@@ -43,6 +43,28 @@ declare module 'mal-scraper' {
     type?: Types
   ): Promise<SeasonDataModel>;
 
+
+  /**
+   * Get the watchlist of the given user.
+   * @param username The username of the user to search.
+   * @param after Useful to paginate. Is the number of results you want to start from. By default, MAL returns 300 entries only.
+   * @param type Optional, can be either `anime` or `manga`.
+   * @param status Optional, Status in the user's watch list (completed, on-hold...)
+   * @note From v2.11.6.
+   */
+  export function getWatchListFromUser<T extends AllowedTypes = 'anime'>(
+    username: string,
+    after?: number,
+    type?: T,
+    status?: number
+  ): Promise<
+    T extends 'anime'
+      ? UserAnimeEntryDataModel[]
+      : T extends 'manga'
+      ? UserMangaEntryDataModel[]
+      : never
+  >;
+
   /**
    * Get the watchlist of the given user.
    * @param username The username of the user to search.
@@ -353,6 +375,16 @@ declare module 'mal-scraper' {
    * `6` - Plan-to-Watch | Plan-to-Read
    */
   type StatusReference = 1 | 2 | 3 | 4 | 6;
+
+  /**
+   * `1` - Watching | Reading\
+   * `2` - Completed\
+   * `3` - On-Hold\
+   * `4` - Dropped\
+   * `6` - Plan-to-Watch | Plan-to-Read\
+   * `7` - All status above
+   */
+    type SearchStatusReference = StatusReference | 7
 
   /**
    * `1` - Currently airing | Publishing\
