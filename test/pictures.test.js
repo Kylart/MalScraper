@@ -45,7 +45,7 @@ test('getPictures returns an error if called with no arguments', async t => {
   }
 })
 
-test('getStats returns an error if called with malformed object', async t => {
+test('getPictures returns an error if called with malformed object', async t => {
   try {
     await getPictures({ name: NS.name })
   } catch (e) {
