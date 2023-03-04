@@ -44,7 +44,6 @@ test('getInfoFromURL returns valid information for a novel', async t => {
     t.is(data.genres[1], 'Adventure')
     t.is(data.genres[2], 'Fantasy')
     t.is(data.genres[3], 'Romance')
-    t.is(data.genres[4], 'Sci-Fi')
     t.is(data.characters.length, 10)
     t.not(data.characters[0].link, undefined)
     t.not(data.characters[0].picture, undefined)

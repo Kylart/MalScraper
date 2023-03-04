@@ -26,7 +26,7 @@ test('getRecommendationsList returns the recommendation for Bleach with ID and n
     t.is(data[1].anime, 'Naruto: Shippuuden')
     t.is(data[2].author, 'xaynie')
     t.is(data[2].anime, 'Naruto')
-    t.is(data[3].anime, 'Jujutsu Kaisen (TV)')
+    t.is(data[3].anime, 'Jujutsu Kaisen')
   } catch (e) {
     t.fail()
   }

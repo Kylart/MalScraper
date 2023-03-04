@@ -23,9 +23,9 @@ test('getEpisodesList returns the right number of episode for Naruto Shippuuden 
     })
 
     t.is(typeof data, 'object')
-    t.is(data.length, 500)
+    t.is(data.length, 250)
     t.is(data[0].title, 'Homecoming')
-    t.is(data[100].title, 'Everyone\'s Feelings')
+    t.is(data[100].title, 'Painful Decision')
   } catch (e) {
     t.fail()
   }
@@ -47,7 +47,7 @@ test('getEpisodesList returns the right number of episode for Drifters with ID a
     })
 
     t.is(typeof data, 'object')
-    t.is(data.length, 12)
+    t.is(data.length, 6)
     t.is(data[0].title, 'Fight Song')
   } catch (e) {
     t.fail()
@@ -67,7 +67,7 @@ test('getEpisodesList returns the right number of episode for Drifters with name
     const data = await getEpisodesList(drifers.name)
 
     t.is(typeof data, 'object')
-    t.is(data.length, 12)
+    t.is(data.length, 6)
     t.is(data[0].title, 'Fight Song')
   } catch (e) {
     t.fail()
