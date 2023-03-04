@@ -30,7 +30,7 @@ test('getWatchListFromUser returns a valid array with entries', async t => {
   }
 })
 
-test.only('getWatchListFromUser returns an error if invalid user', async t => {
+test('getWatchListFromUser returns an error if invalid user', async t => {
   try {
     await getWatchListFromUser('thisuserprollyDoesNotExist')
 

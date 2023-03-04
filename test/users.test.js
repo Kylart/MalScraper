@@ -9,7 +9,7 @@ test.beforeEach(async t => {
   await new Promise(resolve => setTimeout(resolve, 5000))
 })
 
-test.only('getUser() returns the user for Sebelius with name only', async t => {
+test('getUser() returns the user for Sebelius with name only', async t => {
   try {
     const data = await getUser(NS.name)
     console.log(data)
