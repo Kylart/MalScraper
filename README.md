@@ -133,6 +133,7 @@ or [Manga search model](https://github.com/Kylart/MalScraper/blob/master/README.
 | --- | --- | --- |
 | Name | string | The name of the anime to search, the best match corresponding to that name will be returned |
 | getBestMatch | Boolean | Whether you want to use [`match-sorter`](https://github.com/kentcdodds/match-sorter) to find the best result or not (defaults to true) |
+| type | string | The type, can be either `manga` or `anime`. Default is `anime` |
 
 Usage example:
 
@@ -151,6 +152,15 @@ malScraper.getInfoFromName(name, true)
   .catch((err) => console.log(err))
 
 malScraper.getInfoFromName(name, false)
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err))
+
+// same as
+malScraper.getInfoFromName(name, true, 'anime')
+  .then((data) => console.log(data))
+  .catch((err) => console.log(err))
+
+malScraper.getInfoFromName(name, false, 'anime')
   .then((data) => console.log(data))
   .catch((err) => console.log(err))
 ```
@@ -184,6 +194,7 @@ Returns: A [Anime data model](https://github.com/Kylart/MalScraper/blob/master/R
 | Parameter | Type | Description |
 | --- | --- | --- |
 | query | string | The search query |
+| type | string | The type, can be either `manga` or `anime`. Default is `anime` |
 
 Usage example:
 
@@ -192,7 +203,7 @@ const malScraper = require('mal-scraper')
 
 const query = 'sakura'
 
-malScraper.getResultsFromSearch(query)
+malScraper.getResultsFromSearch(query, 'anime')
   .then((data) => console.log(data))
   .catch((err) => console.log(err))
 ```
