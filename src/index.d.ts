@@ -11,10 +11,17 @@ declare module 'mal-scraper' {
    * @param getBestMatch Whether you want to use [`match-sorter`](https://github.com/kentcdodds/match-sorter) to find the best result or not. (Default to `true`)
    * @returns A promise that resolves to an object containing the infos about the anime.
    */
-  export function getInfoFromName<B extends boolean = true>(
+  export function getInfoFromName<B extends boolean = true, T extends AllowedTypes = 'anime'>(
     name: string,
-    getBestMatch?: B
-  ): Promise<AnimeDataModel>;
+    getBestMatch?: B,
+    type?: T,
+  ): Promise<
+  T extends 'anime'
+    ? AnimeDataModel
+    : T extends 'manga'
+    ? MangaDataModel
+    : never
+  >;
 
   /**
    * Get infos about an anime from the given URL.
@@ -27,8 +34,9 @@ declare module 'mal-scraper' {
    * Return an array of a maximum length of 10 containing {@link SearchResultsDataModel Search result data model} objects.
    * @param query The query to search.
    */
-  export function getResultsFromSearch(
-    query: string
+  export function getResultsFromSearch<T extends AllowedTypes = 'anime'>(
+    query: string,
+    type?: T
   ): Promise<SearchResultsDataModel[]>;
 
   /**
@@ -858,39 +866,34 @@ declare module 'mal-scraper' {
 
   interface MangaDataModel {
     /**
-     * The unique identifier of this manga
-     */
-    id: string;
-
-    /**
      * The title of the manga
      */
     title: string;
 
     /**
+     * The synopsis of the manga
+     */
+    synopsis?: string;
+
+    /**
+     * An URL to the manga's cover image
+     */
+    picture?: string;
+
+    /**
+     * An array of {@link CharacterDataModel Character data model} objects.
+     */
+    characters?: CharacterDataModel[];
+
+    /**
      * The english title of the manga
      */
-    english?: string;
+    englishTitle?: string;
 
     /**
      * A set of synonyms for the manga
      */
     synonyms?: string[];
-
-    /**
-     * Total count of chapters this manga has
-     */
-    chapters?: string;
-
-    /**
-     * Total count of volumes this manga has
-     */
-    volumes?: string;
-
-    /**
-     * The average score given by users to this manga
-     */
-    score?: string;
 
     /**
      * The type of the manga (Manga, Doujinshi...)
@@ -913,14 +916,75 @@ declare module 'mal-scraper' {
     end_date?: string;
 
     /**
-     * The synopsis of the manga
+     * Total count of volumes this manga has
      */
-    synopsis?: string;
+    volumes?: string;
 
     /**
-     * An URL to the manga's cover image
+     * Total count of chapters this manga has
      */
-    image?: string;
+    chapters?: string;
+
+    /**
+     * The date from which the publishing started to the one from which it ended,
+     * this property will be empty if one of the two dates is unknown
+     */
+    published?: string;
+
+    /**
+     * The authors of the novel
+     */
+    authors?: string;
+
+    /**
+     * The serialization of the novel
+     */
+    serialization?: string;
+
+    /**
+     * An array of genres of the manga (Action, Slice of Life, Drama, etc.)
+     */
+    genres?: GenreName[];
+
+    /**
+     * The average score given by users to this manga
+     */
+    score?: string;
+
+    /**
+     * By how many users this manga has been rated, like `"scored by 255,693 users"`
+     */
+    scoreStats?: string;
+
+    /**
+     * The rank of the manga
+     */
+    ranked?: string;
+
+    /**
+     * The popularity of the manga
+     */
+    popularity?: string;
+
+    /**
+     * How many users are members of the manga (have it on their list)
+     */
+    members?: string;
+
+    /**
+     * The count of how many users marked this manga as favorite
+     */
+    favorites?: string;
+
+    /**
+     * The unique identifier of this manga
+     */
+    id: string;
+
+    /**
+     * The URL of the manga page
+     */
+    url: string;
   }
 
   interface CharacterDataModel {

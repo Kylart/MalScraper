@@ -178,7 +178,7 @@ const getInfoFromURL = (url) => {
   })
 }
 
-const getResultsFromSearch = (keyword) => {
+const getResultsFromSearch = (keyword, type = 'anime') => {
   return new Promise((resolve, reject) => {
     if (!keyword) {
       reject(new Error('[Mal-Scraper]: Received no keyword to search.'))
@@ -187,7 +187,7 @@ const getResultsFromSearch = (keyword) => {
 
     axios.get(SEARCH_URI, {
       params: {
-        type: 'anime',
+        type: type,
         keyword: keyword.slice(0, 100)
       }
     }).then(({ data }) => {
@@ -206,14 +206,14 @@ const getResultsFromSearch = (keyword) => {
   })
 }
 
-const getInfoFromName = (name, getBestMatch = true) => {
+const getInfoFromName = (name, getBestMatch = true, type = 'anime') => {
   return new Promise((resolve, reject) => {
     if (!name || typeof name !== 'string') {
       reject(new Error('[Mal-Scraper]: Invalid name.'))
       return
     }
 
-    getResultsFromSearch(name)
+    getResultsFromSearch(name, type)
       .then(async (items) => {
         if (!items.length) {
           resolve(null)
