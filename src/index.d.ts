@@ -1,7 +1,7 @@
 declare module 'mal-scraper' {
   //=/ ----- VARIABLES ----- /=//
 
-  declare let search: Search;
+  let search: Search;
 
   //=/ ----- FUNCTIONS ----- /=//
 
