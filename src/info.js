@@ -40,11 +40,13 @@ const parseCharacterOrStaff = (tr, isStaff = false) => {
     picture: getPicture(1),
     name: tr.find('td:nth-child(2)').text().trim().split('\n')[0],
     role: tr.find('td:nth-child(2)').text().trim().split('\n')[2].trim(),
-    seiyuu: !isStaff ? {
-      link: tr.find('td:nth-child(3)').find('a').attr('href'),
-      picture: getPicture(3),
-      name: tr.find('td:nth-child(3)').find('a').text().trim()
-    } : undefined
+    seiyuu: !isStaff
+      ? {
+        link: tr.find('td:nth-child(3)').find('a').attr('href'),
+        picture: getPicture(3),
+        name: tr.find('td:nth-child(3)').find('a').text().trim()
+      }
+      : undefined
   }))
 }
 
@@ -89,6 +91,69 @@ const getCharactersAndStaff = ($) => {
   return results
 }
 
+const getRelated = ($) => {
+  const results = {
+    Adaptation: [],
+    Prequel: [],
+    Sequel: [],
+    SideStory: [],
+    AlternativeVersion: [],
+    Other: []
+  }
+
+  const Adaptation = $('td:contains(\'Adaptation:\')').next()
+  const Prequel = $('td:contains(\'Prequel:\')').next()
+  const Sequel = $('td:contains(\'Sequel:\')').next()
+  const SideStory = $('td:contains(\'Side story:\')').next()
+  const AlternativeVersion = $('td:contains(\'Alternative version:\')').next()
+  const Other = $('td:contains(\'Other:\')').next()
+
+  Adaptation.find('a').each(function () {
+    results.Adaptation.push({
+      mal_id: $(this).attr('href').split('/')[2],
+      name: $(this).text(),
+      type: $(this).attr('href').split('/')[1]
+    })
+  })
+  Prequel.find('a').each(function () {
+    results.Prequel.push({
+      mal_id: $(this).attr('href').split('/')[2],
+      name: $(this).text(),
+      type: $(this).attr('href').split('/')[1]
+    })
+  })
+  Sequel.find('a').each(function () {
+    results.Sequel.push({
+      mal_id: $(this).attr('href').split('/')[2],
+      name: $(this).text(),
+      type: $(this).attr('href').split('/')[1]
+    })
+  })
+  SideStory.find('a').each(function () {
+    results.SideStory.push({
+      mal_id: $(this).attr('href').split('/')[2],
+      name: $(this).text(),
+      type: $(this).attr('href').split('/')[1]
+    })
+  })
+  AlternativeVersion.find('a').each(function () {
+    results.AlternativeVersion.push({
+      mal_id: $(this).attr('href').split('/')[2],
+      name: $(this).text(),
+      type: $(this).attr('href').split('/')[1]
+    })
+  })
+  Other.find('a').each(function () {
+    results.Other.push({
+      mal_id: $(this).attr('href').split('/')[2],
+      name: $(this).text(),
+      type: $(this).attr('href').split('/')[1]
+    })
+  })
+
+  return results
+}
+
 const parsePage = (data, anime) => {
   const $ = cheerio.load(data)
   const result = {}
@@ -106,6 +171,11 @@ const parsePage = (data, anime) => {
   const trailer = $('a.iframe.js-fancybox-video.video-unit.promotion').attr('href')
   if (trailer) {
     result.trailer = trailer
+  }
+
+  const relatedTitles = getRelated($)
+  if (relatedTitles) {
+    result.related = relatedTitles
   }
 
   // Parsing left border.

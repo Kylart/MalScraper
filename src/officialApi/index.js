@@ -144,9 +144,11 @@ module.exports = class {
 
       this.req.post({
         url: routes.lists[type.support][type.action](id),
-        formData: type.action !== 'delete' ? {
-          data: JSON2Xml(opts)
-        } : {}
+        formData: type.action !== 'delete'
+          ? {
+            data: JSON2Xml(opts)
+          }
+          : {}
       }, (err, res, body) => {
         if (err) {
           reject(err)
