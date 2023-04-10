@@ -26,6 +26,13 @@ const possibleTV = {
   TVCon: 'TV (Continuing)'
 }
 
+function parseDate (date) {
+  const year = date.substr(0, 4)
+  const month = date.substr(4, 2) - 1
+  const day = date.substr(6, 2)
+  return new Date(year, month, day)
+}
+
 const getType = (type, $) => {
   const result = []
   const typeString = possibleTypes.find((_type) => type === _type)
@@ -54,22 +61,24 @@ const getType = (type, $) => {
     const general = $(this).find('div:nth-child(1)')
     const picture = $(this).find('.image').find('img')
     const prod = $(this).find('.prodsrc')
-    const info = $(this).find('.information')
+    const info = $(this).find('.title')
     const synopsis = $(this).find('.synopsis')
+    const epsRuntime = prod.find('span:contains(\'eps\')').text().split('\n').map(i => i.trim())
 
     result.push({
       picture: picture.attr(picture.hasClass('lazyload') ? 'data-src' : 'src'),
-      synopsis: synopsis.find('span').text().trim(),
+      synopsis: synopsis.find('p.preline').text().trim(),
       licensor: synopsis.find('p').attr('data-licensors') ? synopsis.find('p').attr('data-licensors').slice(0, -1) : '',
       title: general.find('.title').find('h2 a').text().trim(),
       link: general.find('.title').find('a').attr('href') ? general.find('.title').find('a').attr('href').replace('/video', '') : '',
-      genres: general.find('.genres').find('.genres-inner').text().trim().split('\n      \n        '),
-      producers: prod.find('.producer').text().trim().split(', '),
-      fromType: prod.find('.source').text().trim(),
-      nbEp: prod.find('.eps').find('a').text().trim().replace(' eps', ''),
-      releaseDate: info.find('.info').find('span').text().trim(),
-      score: info.find('.scormem').find('.score').text().trim(),
-      members: info.find('.scormem').find('.member.fl-r').text().trim().replace(/,/g, '')
+      genres: general.find('.genres').find('.genres-inner').text().trim().split('          \n').map(genre => genre.trim()),
+      producers: synopsis.find('.caption:contains(\'Studio\')').next().find('a').text(),
+      fromType: synopsis.find('.caption:contains(\'Source\')').next().text(),
+      nbEp: epsRuntime[1],
+      runtime: epsRuntime[2],
+      releaseDate: parseDate(info.find('.js-start_date').text()),
+      score: parseFloat(info.find('.js-score').text()),
+      members: parseInt(info.find('.js-members').text())
     })
   })
 
