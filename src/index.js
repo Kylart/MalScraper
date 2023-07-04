@@ -1,4 +1,3 @@
-const officialApi = require('./officialApi')
 const getSeason = require('./seasons.js')
 const getNewsNoDetails = require('./news.js')
 const search = require('./search')
@@ -12,7 +11,6 @@ const { getPictures } = require('./pictures.js')
 const { getUser } = require('./users.js')
 
 module.exports = {
-  officialApi,
   getSeason,
   getNewsNoDetails,
   getInfoFromName,
