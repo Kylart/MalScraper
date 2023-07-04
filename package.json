@@ -28,12 +28,9 @@
     "node": ">=8"
   },
   "dependencies": {
-    "axios": "^0.21.1",
-    "cheerio": "^1.0.0-rc.3",
-    "js2xmlparser": "^4.0.0",
-    "match-sorter": "^4.0.2",
-    "request": "^2.88.0",
-    "xml2js": "^0.4.22"
+    "axios": "^1.4.0",
+    "cheerio": "^1.0.0-rc.12",
+    "match-sorter": "^6.3.1"
   },
   "devDependencies": {
     "ava": "^3.9.0",
