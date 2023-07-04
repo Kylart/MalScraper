@@ -124,12 +124,12 @@ const parsePage = (data, anime) => {
     result.duration = getFromBorder($, 'Duration:')
     result.rating = getFromBorder($, 'Rating:')
     result.genres = getFromBorder($, 'Genres:')
-    ? getFromBorder($, 'Genres:')
-          .split(', ')
-          .map((elem) => elem.trim().slice(0, elem.trim().length / 2))
-    : getFromBorder($, 'Genre:')
-          .split(', ')
-          .map((elem) => elem.trim().slice(0, elem.trim().length / 2));
+      ? getFromBorder($, 'Genres:')
+        .split(', ')
+        .map((elem) => elem.trim().slice(0, elem.trim().length / 2))
+      : getFromBorder($, 'Genre:')
+        .split(', ')
+        .map((elem) => elem.trim().slice(0, elem.trim().length / 2))
   }
 
   if (!anime) {
