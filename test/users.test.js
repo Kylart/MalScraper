@@ -12,7 +12,6 @@ test.beforeEach(async t => {
 test('getUser() returns the user for Sebelius with name only', async t => {
   try {
     const data = await getUser(NS.name)
-    console.log(data)
     t.is(typeof data, 'object')
     t.is(data.username, 'Sebelius')
     t.is(data.gender, 'Male')
