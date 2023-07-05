@@ -1,6 +1,6 @@
 const axios = require('axios')
 const cheerio = require('cheerio')
-const match = require('match-sorter').default
+const { matchSorter } = require('match-sorter')
 
 const SEARCH_URI = 'https://myanimelist.net/search/prefix.json'
 
@@ -226,7 +226,7 @@ const getInfoFromName = (name, getBestMatch = true, type = 'anime') => {
           return
         }
         try {
-          const bestMatch = match(items, name, { keys: ['name'] })
+          const bestMatch = matchSorter(items, name, { keys: ['name'] })
           const itemMatch = getBestMatch && bestMatch && bestMatch.length ? bestMatch[0] : items[0]
           const url = itemMatch.url
           const data = await getInfoFromURL(url)
