@@ -8,10 +8,7 @@ const parsePage = ($) => {
   const allItems = $('tr.episode-list-data')
   const result = []
 
-  // Because MAL shows twice the number of elements for the order
-  const items = allItems.slice(0, allItems.length / 2)
-
-  items.each(function (elem) {
+  allItems.each(function (elem) {
     result.push({
       epNumber: +$(this).find('td.episode-number').text().trim(),
       aired: $(this).find('td.episode-aired').text().trim(),
