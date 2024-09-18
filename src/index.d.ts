@@ -420,7 +420,7 @@ declare module 'mal-scraper' {
 
     orderTypes: OrderTypes;
 
-    producerList: {
+    producersList: {
       anime: {
         name: string;
         value: string;
