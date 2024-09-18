@@ -1,6 +1,6 @@
 {
   "name": "mal-scraper",
-  "version": "2.13.1",
+  "version": "2.13.2",
   "description": "Scrap everything you can from MyAnimeList.net",
   "main": "src/index.js",
   "types": "src/index.d.ts",
